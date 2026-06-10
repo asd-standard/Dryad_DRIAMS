@@ -1,0 +1,19 @@
+# Data (too large for git)
+Proc_DRIAMS-A/
+Proc_DRIAMS-B/
+Proc_DRIAMS-C/
+Proc_DRIAMS-D/
+global_summary.csv
+
+# Python cache
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Generated results
+results_lr_aggregated/
+results_mlp_aggregated/
+
+# Archives
+*.tar.gz
+*.zip
