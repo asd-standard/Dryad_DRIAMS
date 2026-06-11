@@ -318,6 +318,24 @@ X_train, X_test, y_train, y_test = stratified_species_drug_split(
 | Amikacin                     | 2,015    | 1,981  | 34    | 1.7%    |
 | Meropenem                    | 1,936    | 1,919  | 17    | 0.9%    |
 
+## Cross-Site Analysis — 10 Drugs Present in All 4 Sites
+
+These 10 drugs have processed data in all four hospitals, making them suitable
+for cross-site generalisation experiments (train on A, test on B/C/D).
+
+| Drug                          | Total Sp. | Samples | A sp. | B sp. | C sp. | D sp. |
+|-------------------------------|-----------|---------|-------|-------|-------|-------|
+| Amoxicillin-Clavulanic acid   | 222       | 19,967  | 97    | 65    | 106   | 28    |
+| Ciprofloxacin                 | 214       | 23,662  | 145   | 62    | 71    | 44    |
+| Ceftriaxone                   | 214       | 17,608  | 132   | 48    | 59    | 29    |
+| Imipenem                      | 170       | 17,538  | 100   | 52    | 44    | 41    |
+| Piperacillin-Tazobactam       | 168       | 18,176  | 119   | 32    | 52    | 31    |
+| Gentamicin                    | 160       | 18,312  | 42    | 38    | 83    | 47    |
+| Vancomycin                    | 146       | 9,685   | 99    | 50    | 39    | 13    |
+| Cefepime                      | 139       | 17,826  | 104   | 39    | 39    | 33    |
+| Ceftazidime                   | 114       | 15,263  | 73    | 23    | 44    | 32    |
+| Amikacin                      | 104       | 9,442   | 57    | 30    | 41    | 32    |
+
 ## Reproducing from Scratch
 
 1. Download the DRIAMS dataset from Dryad:
