@@ -1,0 +1,339 @@
+# DRIAMS Processing Pipeline
+
+Reproducible pipeline for selecting, filtering, and preparing the
+[DRIAMS](https://doi.org/10.1101/2020.07.30.228411) dataset into per-drug,
+ML-ready CSV files.
+
+## Overview
+
+**Input:** DRIAMS `binned_6000` spectra (`.txt` files, 6,000 bins at 3 Da
+resolution) + antimicrobial resistance metadata.
+
+**Output:** One `data.csv` per drug per site, containing:
+
+| Column              | Description                                  |
+|---------------------|----------------------------------------------|
+| `code`              | Sample identifier (links to original `.txt`) |
+| `species`           | Organism name                                |
+| `label`             | 0 = Susceptible, 1 = Resistant               |
+| `bin_0` … `bin_5999` | 6,000 binned m/z intensity features          |
+
+## Dataset
+
+**DRIAMS** = Database of ResIstance against Antimicrobials with MALDI-TOF Mass
+Spectrometry. MALDI-TOF spectra from clinical bacterial isolates linked to
+AMR profiles from three Swiss hospitals (2018).
+
+| Site  | Hospital                        | Binned spectra | Metadata rows |
+|-------|---------------------------------|----------------|---------------|
+| B     | Canton Hospital Basel-Land      | 2,386          | 5,897         |
+| C     | Canton Hospital Aarau           | 4,737          | 4,696         |
+| D     | Viollier AG laboratory          | 10,436         | 10,436        |
+
+Each `.txt` file in `binned_6000/2018/` contains 6,000 rows
+(bin_index, binned_intensity) with 3 Da bin width, spanning the full
+m/z range.
+
+## Prerequisites
+
+### Environment
+
+```bash
+conda create -n driams python=3.12 -y
+conda activate driams
+pip install numpy pandas tqdm
+```
+
+### Data layout
+
+The script expects this directory structure:
+
+```
+Dryad-DataSet/
+├── DRIAMS-B/
+│   ├── binned_6000/2018/   # {code}.txt files
+│   └── id/2018/2018_clean.csv
+├── DRIAMS-C/
+│   ├── binned_6000/2018/
+│   └── id/2018/2018_clean.csv
+└── DRIAMS-D/
+    ├── binned_6000/2018/
+    └── id/2018/2018_clean.csv
+```
+
+## Usage
+
+### Basic run
+
+```bash
+python process_driams.py
+```
+
+This processes all three sites with default filters (S ≥ 500, R ≥ 10).
+
+### Filtering drugs
+
+The script selects drugs that meet **two thresholds**:
+
+| Parameter | Variable   | Default | Meaning                            |
+|-----------|------------|---------|------------------------------------|
+| Min S     | `MIN_S`    | 500     | At least this many susceptible     |
+| Min R     | `MIN_R`    | 10      | At least this many resistant       |
+
+To change thresholds, edit the constants at the top of `process_driams.py`:
+
+```python
+MIN_S = 500      # minimum susceptible count per drug
+MIN_R = 10       # minimum resistant count
+```
+
+### Configuration
+
+Site paths are configured in the `SITES` dictionary:
+
+```python
+SITES = {
+    "DRIAMS-B": {
+        "binned": DRYAD / "DRIAMS-B/binned_6000/2018",
+        "meta":   DRYAD / "DRIAMS-B/id/2018/2018_clean.csv",
+    },
+    # ... C, D
+}
+```
+
+Set `DRYAD` and `OUTPUT` to point to your own paths.
+
+## Output Structure
+
+```
+Processed/
+├── Processing/                  # This directory (scripts + docs)
+│   ├── README.md
+│   └── process_driams.py
+├── global_summary.csv           # All drug-site results
+├── Proc_DRIAMS-B/
+│   ├── summary.csv              # Per-site stats
+│   └── Amikacin/
+│       └── data.csv             # (N, 6003) feature matrix
+├── Proc_DRIAMS-C/
+│   └── {drug}/data.csv
+└── Proc_DRIAMS-D/
+    └── {drug}/data.csv
+```
+
+### `global_summary.csv` columns
+
+| Column            | Description                     |
+|-------------------|---------------------------------|
+| `site`            | DRIAMS-B, C, or D              |
+| `drug`            | Antibiotic name                 |
+| `n_samples`       | Total R+S samples               |
+| `n_susceptible`   | Susceptible count               |
+| `n_resistant`     | Resistant count                 |
+| `resistance_rate` | R / (R+S) × 100                 |
+| `n_features`      | Always 6000                     |
+| `output_path`     | Directory containing data.csv   |
+
+### `data.csv` columns
+
+| Column              | Type   | Description                        |
+|---------------------|--------|------------------------------------|
+| `code`              | str    | Sample UUID, links to original file |
+| `species`           | str    | Organism name                      |
+| `label`             | int    | 0=S, 1=R                          |
+| `bin_0` … `bin_5999` | float | Binned spectral intensities        |
+
+## Loading Data for ML
+
+### Single drug, single site
+
+```python
+import pandas as pd
+
+df = pd.read_csv("Processed/Proc_DRIAMS-D/Ciprofloxacin/data.csv")
+X = df.filter(like="bin_").values        # (n_samples, 6000)
+y = df["label"].values                    # (n_samples,)
+species = df["species"].values
+
+print(f"Shape: {X.shape}, S={sum(y==0)}, R={sum(y==1)}")
+```
+
+### With sklearn
+
+```python
+from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+
+pipe = Pipeline([
+    ("scaler", StandardScaler()),
+    ("clf", RandomForestClassifier(n_estimators=100, random_state=42)),
+])
+
+scores = cross_val_score(pipe, X, y, cv=5, scoring="balanced_accuracy")
+print(f"Balanced accuracy: {scores.mean():.3f} ± {scores.std():.3f}")
+```
+
+### Stratified splitting by species
+
+```python
+from maldiamrkit.evaluation import stratified_species_drug_split
+
+X_train, X_test, y_train, y_test = stratified_species_drug_split(
+    X, y, species=species, test_size=0.2, random_state=42
+)
+```
+
+## Results Summary
+
+**63 drug-site combinations** generated with default thresholds.
+
+### DRIAMS-B — 24 drugs
+
+| Drug                         | Samples  | S      | R     | Resist% |
+|------------------------------|----------|--------|-------|---------|
+| Ampicillin                   | 1,348    | 634    | 714   | 53.0%   |
+| Ciprofloxacin                | 1,982    | 1,680  | 302   | 15.2%   |
+| Amoxicillin-Clavulanic acid  | 1,969    | 1,454  | 515   | 26.2%   |
+| Cotrimoxazol                 | 1,748    | 1,553  | 195   | 11.2%   |
+| Cefepime                     | 1,675    | 1,420  | 255   | 15.2%   |
+| Gentamicin                   | 1,544    | 1,414  | 130   | 8.4%    |
+| Fosfomycin                   | 1,535    | 1,242  | 293   | 19.1%   |
+| Vancomycin                   | 1,236    | 1,220  | 16    | 1.3%    |
+| Imipenem                     | 1,173    | 1,123  | 50    | 4.3%    |
+| Levofloxacin                 | 1,179    | 1,007  | 172   | 14.6%   |
+| Piperacillin-Tazobactam      | 1,159    | 987    | 172   | 14.8%   |
+| Ceftriaxone                  | 1,082    | 970    | 112   | 10.4%   |
+| Clindamycin                  | 1,031    | 822    | 209   | 20.3%   |
+| Erythromycin                 | 947      | 714    | 233   | 24.6%   |
+| Ceftazidime                  | 933      | 834    | 99    | 10.6%   |
+| Amikacin                     | 911      | 900    | 11    | 1.2%    |
+| Tetracycline                 | 877      | 747    | 130   | 14.8%   |
+| Ertapenem                    | 804      | 785    | 19    | 2.4%    |
+| Rifampicin                   | 801      | 789    | 12    | 1.5%    |
+| Norfloxacin                  | 793      | 657    | 136   | 17.2%   |
+| Teicoplanin                  | 746      | 736    | 10    | 1.3%    |
+| Cefoxitin                    | 742      | 566    | 176   | 23.7%   |
+| Fusidic acid                 | 736      | 560    | 176   | 23.9%   |
+| Oxacillin                    | 731      | 545    | 186   | 25.4%   |
+
+### DRIAMS-C — 22 drugs
+
+| Drug                         | Samples  | S      | R     | Resist% |
+|------------------------------|----------|--------|-------|---------|
+| Ampicillin                   | 4,547    | 1,523  | 3,024 | 66.5%   |
+| Amoxicillin-Clavulanic acid  | 4,544    | 3,150  | 1,394 | 30.7%   |
+| Gentamicin                   | 3,980    | 3,441  | 539   | 13.5%   |
+| Ciprofloxacin                | 3,769    | 3,385  | 384   | 10.2%   |
+| Cotrimoxazole                | 3,729    | 2,822  | 907   | 24.3%   |
+| Ceftriaxone                  | 2,868    | 2,159  | 709   | 24.7%   |
+| Cefuroxime                   | 2,840    | 1,766  | 1,074 | 37.8%   |
+| Polymyxin B                  | 2,790    | 2,305  | 485   | 17.4%   |
+| Ceftazidime                  | 2,757    | 2,420  | 337   | 12.2%   |
+| Piperacillin-Tazobactam      | 2,462    | 2,185  | 277   | 11.3%   |
+| Imipenem                     | 1,850    | 1,812  | 38    | 2.1%    |
+| Amikacin                     | 1,842    | 1,813  | 29    | 1.6%    |
+| Cefepime                     | 1,820    | 1,582  | 238   | 13.1%   |
+| Nitrofurantoin               | 1,751    | 1,426  | 325   | 18.6%   |
+| Oxacillin                    | 1,561    | 851    | 710   | 45.5%   |
+| Norfloxacin                  | 1,322    | 1,140  | 182   | 13.8%   |
+| Fosfomycin                   | 1,255    | 752    | 503   | 40.1%   |
+| Clindamycin                  | 1,223    | 826    | 397   | 32.5%   |
+| Vancomycin                   | 1,124    | 1,108  | 16    | 1.4%    |
+| Clarithromycin               | 973      | 835    | 138   | 14.2%   |
+| Doxycycline                  | 837      | 793    | 44    | 5.3%    |
+| Fusidic acid                 | 745      | 714    | 31    | 4.2%    |
+
+### DRIAMS-D — 17 drugs
+
+| Drug                         | Samples  | S      | R     | Resist% |
+|------------------------------|----------|--------|-------|---------|
+| Gentamicin                   | 10,026   | 9,531  | 495   | 4.9%    |
+| Ciprofloxacin                | 9,817    | 8,676  | 1,141 | 11.6%   |
+| Fosfomycin                   | 9,616    | 8,156  | 1,460 | 15.2%   |
+| Ceftazidime                  | 6,889    | 6,375  | 514   | 7.5%    |
+| Ampicillin                   | 6,877    | 2,037  | 4,840 | 70.4%   |
+| Piperacillin-Tazobactam      | 6,857    | 6,284  | 573   | 8.4%    |
+| Imipenem                     | 6,815    | 6,263  | 552   | 8.1%    |
+| Cefepime                     | 6,767    | 6,607  | 160   | 2.4%    |
+| Ceftriaxone                  | 6,618    | 6,089  | 529   | 8.0%    |
+| Amoxicillin-Clavulanic acid  | 6,596    | 5,080  | 1,516 | 23.0%   |
+| Ertapenem                    | 6,597    | 6,478  | 119   | 1.8%    |
+| Vancomycin                   | 3,331    | 3,314  | 17    | 0.5%    |
+| Tetracycline                 | 3,046    | 2,747  | 299   | 9.8%    |
+| Rifampicin                   | 3,008    | 2,987  | 21    | 0.7%    |
+| Erythromycin                 | 2,431    | 1,729  | 702   | 28.9%   |
+| Amikacin                     | 2,015    | 1,981  | 34    | 1.7%    |
+| Meropenem                    | 1,936    | 1,919  | 17    | 0.9%    |
+
+## Reproducing from Scratch
+
+1. Download the DRIAMS dataset from Dryad:
+   `https://doi.org/10.5061/dryad.bzkh1899q`
+
+2. Extract each site archive maintaining the directory structure:
+   ```bash
+   tar -xzf DRIAMS_B.tar.gz
+   tar -xzf DRIAMS_C.tar.gz
+   tar -xzf DRIAMS_D.tar.gz
+   ```
+
+3. Ensure the layout matches the expected structure described above.
+
+4. Activate the conda environment and run:
+   ```bash
+   conda activate driams
+   python Processing/process_driams.py
+   ```
+
+5. Output lands in `Processed/Proc_{SITE}/{drug}/data.csv`.
+
+## Using MaldiAMRKit for Downstream Tasks
+
+The output CSVs are ready for [MaldiAMRKit](https://github.com/EttoreRocchi/MaldiAMRKit)
+pipelines:
+
+```python
+from maldiamrkit import MaldiSet
+from maldiamrkit.alignment import Warping
+from maldiamrkit.detection import MaldiPeakDetector
+from maldiamrkit.evaluation import stratified_species_drug_split, amr_classification_report
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.pipeline import Pipeline
+
+# Load data with MaldiAMRKit
+df = pd.read_csv("Proc_DRIAMS-D/Ciprofloxacin/data.csv")
+X = df.filter(like="bin_").values
+y = df["label"].values
+species = df["species"].values
+
+# Species-stratified split
+X_train, X_test, y_train, y_test, sp_train, sp_test = stratified_species_drug_split(
+    X, y, species=species, test_size=0.2, random_state=42
+)
+
+# Train
+pipe = Pipeline([
+    ("detect", MaldiPeakDetector(method="local", prominence=0.01)),
+    ("warp", Warping(method="shift")),
+    ("clf", RandomForestClassifier(n_estimators=100, random_state=42)),
+])
+pipe.fit(X_train, y_train)
+y_pred = pipe.predict(X_test)
+
+# Report
+print(amr_classification_report(y_test, y_pred))
+```
+
+## Notes
+
+- Only samples with `R` or `S` labels are included; `I` (Intermediate) and
+  `NaN` (not tested) are excluded.
+- The `binned_6000` stage was chosen because the spectra are already
+  preprocessed (smoothing, baseline correction, normalization) and QC-filtered,
+  matching the published DRIAMS pipeline exactly.
+- For raw-to-binned reprocessing with custom parameters, use MaldiAMRKit's
+  `PreprocessingPipeline` on the `raw/` or `preprocessed/` directories.
+- Species-stratified splitting is recommended to prevent data leakage, as
+  spectra from the same species tend to be more similar.

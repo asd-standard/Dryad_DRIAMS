@@ -1,0 +1,8 @@
+Proc_DRIAMS-*/
+DRIAMS-*/
+results_*/
+__pycache__/
+.ipynb_checkpoints/
+*.pyc
+*.tar.gz
+*.zip
