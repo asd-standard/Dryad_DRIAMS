@@ -22,10 +22,11 @@ resolution) + antimicrobial resistance metadata.
 
 **DRIAMS** = Database of ResIstance against Antimicrobials with MALDI-TOF Mass
 Spectrometry. MALDI-TOF spectra from clinical bacterial isolates linked to
-AMR profiles from three Swiss hospitals (2018).
+AMR profiles from four Swiss hospitals (2018).
 
 | Site  | Hospital                        | Binned spectra | Metadata rows |
 |-------|---------------------------------|----------------|---------------|
+| A     | University Hospital of Basel    | 30,069         | 30,069        |
 | B     | Canton Hospital Basel-Land      | 2,386          | 5,897         |
 | C     | Canton Hospital Aarau           | 4,737          | 4,696         |
 | D     | Viollier AG laboratory          | 10,436         | 10,436        |
@@ -50,8 +51,11 @@ The script expects this directory structure:
 
 ```
 Dryad-DataSet/
-├── DRIAMS-B/
+├── DRIAMS-A/
 │   ├── binned_6000/2018/   # {code}.txt files
+│   └── id/2018/2018_clean.csv
+├── DRIAMS-B/
+│   ├── binned_6000/2018/
 │   └── id/2018/2018_clean.csv
 ├── DRIAMS-C/
 │   ├── binned_6000/2018/
@@ -69,7 +73,7 @@ Dryad-DataSet/
 python process_driams.py
 ```
 
-This processes all three sites with default filters (S ≥ 500, R ≥ 10).
+This processes all four sites with default filters (S ≥ 500, R ≥ 10).
 
 ### Filtering drugs
 
@@ -93,6 +97,10 @@ Site paths are configured in the `SITES` dictionary:
 
 ```python
 SITES = {
+    "DRIAMS-A": {
+        "binned": DRYAD / "DRIAMS-A/binned_6000/2018",
+        "meta":   DRYAD / "DRIAMS-A/id/2018/2018_clean.csv",
+    },
     "DRIAMS-B": {
         "binned": DRYAD / "DRIAMS-B/binned_6000/2018",
         "meta":   DRYAD / "DRIAMS-B/id/2018/2018_clean.csv",
@@ -109,12 +117,16 @@ Set `DRYAD` and `OUTPUT` to point to your own paths.
 Processed/
 ├── Processing/                  # This directory (scripts + docs)
 │   ├── README.md
-│   └── process_driams.py
+│   ├── process_driams.py
+│   ├── 01-LogisticAnalysis-Aggregated.ipynb
+│   └── 02-MLPClassifier-Aggregated.ipynb
 ├── global_summary.csv           # All drug-site results
-├── Proc_DRIAMS-B/
+├── Proc_DRIAMS-A/
 │   ├── summary.csv              # Per-site stats
-│   └── Amikacin/
+│   └── Ciprofloxacin/
 │       └── data.csv             # (N, 6003) feature matrix
+├── Proc_DRIAMS-B/
+│   └── {drug}/data.csv
 ├── Proc_DRIAMS-C/
 │   └── {drug}/data.csv
 └── Proc_DRIAMS-D/
@@ -125,7 +137,7 @@ Processed/
 
 | Column            | Description                     |
 |-------------------|---------------------------------|
-| `site`            | DRIAMS-B, C, or D              |
+| `site`            | DRIAMS-A, B, C, or D          |
 | `drug`            | Antibiotic name                 |
 | `n_samples`       | Total R+S samples               |
 | `n_susceptible`   | Susceptible count               |
@@ -187,7 +199,46 @@ X_train, X_test, y_train, y_test = stratified_species_drug_split(
 
 ## Results Summary
 
-**63 drug-site combinations** generated with default thresholds.
+**97 drug-site combinations** generated with default thresholds.
+
+### DRIAMS-A — 34 drugs
+
+| Drug                         | Samples  | S      | R     | Resist% |
+|------------------------------|----------|--------|-------|---------|
+| Ciprofloxacin                | 8,094    | 6,450  | 1,644 | 20.3%   |
+| Meropenem                    | 7,956    | 6,787  | 1,169 | 14.7%   |
+| Imipenem                     | 7,700    | 6,283  | 1,417 | 18.4%   |
+| Piperacillin-Tazobactam      | 7,698    | 6,115  | 1,583 | 20.6%   |
+| Cefepime                     | 7,564    | 6,247  | 1,317 | 17.4%   |
+| Ampicillin-Amoxicillin       | 7,366    | 1,440  | 5,926 | 80.5%   |
+| Cotrimoxazole                | 7,176    | 5,907  | 1,269 | 17.7%   |
+| Ceftriaxone                  | 7,040    | 5,302  | 1,738 | 24.7%   |
+| Amoxicillin-Clavulanic acid  | 6,858    | 4,191  | 2,667 | 38.9%   |
+| Levofloxacin                 | 5,704    | 4,711  | 993   | 17.4%   |
+| Colistin                     | 5,028    | 4,215  | 813   | 16.2%   |
+| Tobramycin                   | 5,020    | 4,660  | 360   | 7.2%    |
+| Ceftazidime                  | 4,684    | 4,167  | 517   | 11.0%   |
+| Amikacin                     | 4,674    | 4,627  | 47    | 1.0%    |
+| Ertapenem                    | 4,029    | 3,976  | 53    | 1.3%    |
+| Vancomycin                   | 3,994    | 3,909  | 85    | 2.1%    |
+| Tigecycline                  | 3,367    | 3,349  | 18    | 0.5%    |
+| Linezolid                    | 3,366    | 3,354  | 12    | 0.4%    |
+| Penicillin                   | 3,299    | 862    | 2,437 | 73.9%   |
+| Daptomycin                   | 3,068    | 3,038  | 30    | 1.0%    |
+| Clindamycin                  | 3,048    | 2,200  | 848   | 27.8%   |
+| Oxacillin                    | 2,984    | 1,859  | 1,125 | 37.7%   |
+| Rifampicin                   | 2,946    | 2,868  | 78    | 2.6%    |
+| Fusidic acid                 | 2,891    | 2,026  | 865   | 29.9%   |
+| Erythromycin                 | 2,878    | 1,779  | 1,099 | 38.2%   |
+| Gentamicin                   | 2,762    | 2,239  | 523   | 18.9%   |
+| Cefuroxime                   | 2,744    | 1,712  | 1,032 | 37.6%   |
+| Cefazolin                    | 2,740    | 1,708  | 1,032 | 37.7%   |
+| Tetracycline                 | 2,686    | 1,998  | 688   | 25.6%   |
+| Teicoplanin                  | 2,113    | 2,091  | 22    | 1.0%    |
+| Cefpodoxime                  | 1,949    | 1,272  | 677   | 34.7%   |
+| Fosfomycin-Trometamol        | 1,720    | 1,349  | 371   | 21.6%   |
+| Norfloxacin                  | 1,667    | 1,472  | 195   | 11.7%   |
+| Nitrofurantoin               | 551      | 515    | 36    | 6.5%    |
 
 ### DRIAMS-B — 24 drugs
 
@@ -274,6 +325,7 @@ X_train, X_test, y_train, y_test = stratified_species_drug_split(
 
 2. Extract each site archive maintaining the directory structure:
    ```bash
+   tar -xzf DRIAMS_A.tar.gz
    tar -xzf DRIAMS_B.tar.gz
    tar -xzf DRIAMS_C.tar.gz
    tar -xzf DRIAMS_D.tar.gz
@@ -309,7 +361,7 @@ y = df["label"].values
 species = df["species"].values
 
 # Species-stratified split
-X_train, X_test, y_train, y_test, sp_train, sp_test = stratified_species_drug_split(
+X_train, X_test, y_train, y_test = stratified_species_drug_split(
     X, y, species=species, test_size=0.2, random_state=42
 )
 
