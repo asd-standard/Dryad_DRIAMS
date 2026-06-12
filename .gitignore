@@ -1,0 +1,12 @@
+# Ignore everything
+*
+
+# Allow directories (needed so subdirectory contents are even checked)
+!*/
+
+# Allow only .md and .ipynb files
+!*.md
+!*.ipynb
+
+# And .gitignore itself
+!.gitignore
