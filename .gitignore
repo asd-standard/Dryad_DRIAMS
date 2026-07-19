@@ -4,9 +4,12 @@
 # Allow directories (needed so subdirectory contents are even checked)
 !*/
 
-# Allow only .md and .ipynb files
+# Allow only .md, .ipynb, .rst, .py files
 !*.md
 !*.ipynb
+!*.rst
+!*.py
+!Makefile
 
 # And .gitignore itself
 !.gitignore
