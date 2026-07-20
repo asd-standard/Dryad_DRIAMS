@@ -156,6 +156,10 @@ centralized-vs-federated comparison. The notebook runs in four phases:
    ``mask_delta.pdf`` — bar chart showing per-site improvement of each mask
    vs. unmasked. Saved RF species classifiers are reusable by 08.
 
+   ``fedprox_mu{mu}_per_round.csv`` — Per-round validation metrics (BalAcc, AUC) per site.
+   ``fedprox_mu{mu}_train_loss_per_round.csv`` — Per-site + aggregated training loss per round.
+   ``fedavg_train_loss_per_round.csv`` — Aggregated training loss from FedAvg MLP (best mask).
+
 **Key difference from 06-03a**:
    =========  ========================  =========================
    Aspect     06-03a                    06-03c
@@ -163,8 +167,29 @@ centralized-vs-federated comparison. The notebook runs in four phases:
    Species    *E. coli* only             All species
    Masking    Pre-configured mask        Data-driven mask selection
    Purpose    Baseline FL experiment     Fair comparison accounting
-                                         for species distribution
+                                          for species distribution
+   Loss data  Validation only            Training + validation per site, per round
    =========  ========================  =========================
+
+Training Loss Monitoring
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+The ``06-03c`` notebook captures **per-site training loss** (cross-entropy)
+at every round alongside the existing validation metrics. This enables:
+
+* **Overfitting diagnosis** — comparing train vs. validation loss curves to
+  detect when the model starts memorizing local data
+* **Site-specific training dynamics** — identifying which hospitals learn
+  fastest/slowest, revealing data quality or size differences
+* **Proximal regularisation effect** — quantifying how :term:`FedProx` μ
+  influences local optimisation vs. standard :term:`FedAvg`
+
+Training loss is extracted directly from each client's ``fit()`` return
+value (which already computes per-epoch cross-entropy). For :term:`FedProx`,
+this is captured via the custom ``CheckpointFedProx.aggregate_fit``
+override, which records per-site and aggregated losses before model
+aggregation. For :term:`FedAvg`, a ``fit_metrics_aggregation_fn`` is
+registered on the strategy to collect the mean training loss across clients.
 
 Notebooks
 ---------

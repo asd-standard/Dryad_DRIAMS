@@ -125,13 +125,37 @@ a 4-phase notebook that works on **all species** (not just *E. coli*):
    FedLR, FedRF, and cross-site baselines all run
 
 **Output**: ``mask_delta.pdf`` (per-site improvement per mask vs. unmasked),
-the results table above, and saved RF species classifiers for potential
-reuse in 08.
+the results table above, saved RF species classifiers for potential reuse in 08,
+and per-round CSV files with validation metrics and training loss.
+
+``fedprox_mu{mu}_per_round.csv`` — Per-round validation metrics (BalAcc, AUC) per site.
+``fedprox_mu{mu}_train_loss_per_round.csv`` — Per-site + aggregated training loss per round.
+``fedavg_train_loss_per_round.csv`` — Aggregated training loss from FedAvg MLP (best mask).
 
 The winning mask for this Ceftriaxone × *E. coli* run was **`none`**
 (no masking), meaning species-filtering did not improve worst-site
 performance on this drug–pathogen pair. This may differ for Ceftazidime
 (:doc:`06a </06a-Ceftazidime-E-coli/Docs/federated>`).
+
+Training Loss Monitoring
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+The ``06-03c`` notebook captures **per-site training loss** (cross-entropy)
+at every round alongside the existing validation metrics. This enables:
+
+* **Overfitting diagnosis** — comparing train vs. validation loss curves to
+  detect when the model starts memorizing local data
+* **Site-specific training dynamics** — identifying which hospitals learn
+  fastest/slowest, revealing data quality or size differences
+* **Proximal regularisation effect** — quantifying how :term:`FedProx` μ
+  influences local optimisation vs. standard :term:`FedAvg`
+
+Training loss is extracted directly from each client's ``fit()`` return
+value (which already computes per-epoch cross-entropy). For :term:`FedProx`,
+this is captured via the custom ``CheckpointFedProx.aggregate_fit``
+override, which records per-site and aggregated losses before model
+aggregation. For :term:`FedAvg`, a ``fit_metrics_aggregation_fn`` is
+registered on the strategy to collect the mean training loss across clients.
 
 FedRF Threshold Issue
 ~~~~~~~~~~~~~~~~~~~~~
