@@ -10,6 +10,29 @@ gap analyses. The ``masked_aggregated_analysis.ipynb`` variant does the
 same for runs with :term:`Species masking` enabled, adding mask-specific
 delta charts.
 
+Masked Aggregated Analysis
+--------------------------
+
+``masked_aggregated_analysis.ipynb`` is a configurable variant that
+loads per-drug runs filtered by ``MASK_STRATEGY`` (read from each run's
+``best_params_used.txt``). It produces the same visualisations as the
+main notebook plus:
+
+**Mask Delta Chart**
+   Bar chart comparing BalAcc and AUC deltas (masked − unmasked) per
+   drug. Positive deltas indicate species masking improved performance;
+   negative deltas suggest the mask removed useful signal.
+
+**Unmasked Reference**
+   When unmasked runs are available, the notebook loads them in parallel
+   as ``df_final_unmasked`` and includes them in comparison plots.
+
+Results are saved to ``masked_aggregated_results/`` instead of the
+default ``aggregated_results/``.
+
+See :doc:`../Species-Masking/Docs/index` for mask computation and
+usage in per-drug notebooks.
+
 Data Sources
 ------------
 
