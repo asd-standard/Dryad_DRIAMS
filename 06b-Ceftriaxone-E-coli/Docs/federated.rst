@@ -4,6 +4,12 @@ Federated Ceftriaxone × *E. coli* — Results
 :term:`Flower (flwr)`-based :term:`Federated learning` across 4
 :term:`DRIAMS` sites (A/B/C/D), 30 rounds, 4 strategies.
 
+These results were produced by ``06-03c-Species-Masked-Ceftriaxone-Federated.ipynb``
+— see `06-03c: How It Works`_ for the 4-phase pipeline. The Ceftazidime
+counterpart lives in
+:doc:`06a </06a-Ceftazidime-E-coli/Docs/federated>`. 
+
+
 Final Results
 -------------
 
@@ -100,6 +106,33 @@ clients see locally.
 The ``none`` and ``majority`` variants produce the strongest results;
 the federated models approach their performance.
 
+These mask variants were computed by ``06-03c`` via per-site species RF
+classifiers — see `06-03c: How It Works`_ for the full pipeline.
+
+06-03c: How It Works
+~~~~~~~~~~~~~~~~~~~~
+
+The results on this page come from ``06-03c-Species-Masked-Ceftriaxone-Federated.ipynb``,
+a 4-phase notebook that works on **all species** (not just *E. coli*):
+
+1. **Per-site species RF classifiers** — Identifies the top 500 m/z bins
+   most predictive of species on each site
+2. **Mask computation** — Three strategies (union/majority/persite) plus
+   unmasked baseline. Each mask zeroes out species-specific bins
+3. **Mask comparison** — FedAvg MLP trained on all 4 masked variants;
+   winning mask = highest worst-site improvement over unmasked
+4. **Full FL pipeline** — Best mask applied, then FedAvg, FedProx μ=0.1,
+   FedLR, FedRF, and cross-site baselines all run
+
+**Output**: ``mask_delta.pdf`` (per-site improvement per mask vs. unmasked),
+the results table above, and saved RF species classifiers for potential
+reuse in 08.
+
+The winning mask for this Ceftriaxone × *E. coli* run was **`none`**
+(no masking), meaning species-filtering did not improve worst-site
+performance on this drug–pathogen pair. This may differ for Ceftazidime
+(:doc:`06a </06a-Ceftazidime-E-coli/Docs/federated>`).
+
 FedRF Threshold Issue
 ~~~~~~~~~~~~~~~~~~~~~
 
@@ -129,3 +162,16 @@ Training on DRIAMS-A alone and testing on B/C/D yields BalAcc 0.608
 at all. Federated learning recovers most of this gap (0.745 vs. 0.608,
 a 14-point improvement), demonstrating the value of collaborative
 model training without data centralization.
+
+Notebooks
+---------
+
+- ``06-03a-Ceftriaxone-E-coli-Federated.ipynb`` — Basic FL (E. coli only):
+  FedAvg + FedProx + FedLR + FedRF
+- ``06-03b-Ceftriaxone-E-coli-Federated.ipynb`` — FL variant B
+- ``06-03c-Species-Masked-Ceftriaxone-Federated.ipynb`` — **Ran to produce**
+  these results: 4-phase pipeline with per-site species RF, data-driven
+  mask selection, and full FL pipeline. Produces the centralized MLP
+  (none/union/majority/persite) baselines and ``mask_delta.pdf``.
+- ``06-03b-Re-Run-lr-Ceftriaxone-E-coli-Fed.ipynb`` — FedLR re-run
+- ``retry_fedprox.ipynb`` — :term:`FedProx` μ retry utility

@@ -82,8 +82,8 @@ Baselines             Centralized MLP (4 :term:`Species masking` variants),
 Species Masking Variants
 ------------------------
 
-Four centralized baseline variants control for species distribution
-differences between sites:
+The four centralized baseline variants above are produced by
+``06-03c`` via a 4-phase pipeline (see `06-03c: Species-Masked Federated Learning`_).
 
 ``none``
    Full training set, no species filtering — the true upper bound.
@@ -102,11 +102,77 @@ See :term:`Species masking` for full descriptions.
 For the Ceftriaxone results that informed these expectations, see
 :doc:`06b </06b-Ceftriaxone-E-coli/Docs/federated>`.
 
+06-03c: Species-Masked Federated Learning
+-----------------------------------------
+
+``06-03c`` is the most sophisticated notebook in the 06a pipeline.
+Unlike ``06-03a/03b`` which operate on *E. coli* only, 06-03c works on
+**all species** and uses a data-driven approach to find the fairest
+centralized-vs-federated comparison. The notebook runs in four phases:
+
+**Phase 1 — Per-site species RF classifiers**
+   Trains a :term:`Random Forest` on each :term:`DRIAMS` site to
+   identify which m/z bins are predictive of *species* (not drug
+   resistance). The top 500 most important bins become that site's
+   "species signature" — bins strongly associated with the site's
+   bacterial ecology.
+
+**Phase 2 — Three mask strategies computed**
+   Each strategy produces a set of bins to **zero out** from the
+   training data, removing species-specific spectral information:
+
+   ==============  =======================================================
+   `none`          No masking — full 6000 bins. The true upper bound.
+   `union`         Bins flagged by **any** site's species RF. Removes
+                   species-identifiable bins across all sites.
+   `majority`      Bins flagged by **≥2** sites. Removes broadly
+                   informative species bins (more conservative).
+   `persite`       Per-site masking — each site removes **its own**
+                   flagged bins. Simulates per-client local species
+                   distributions.
+   ==============  =======================================================
+
+**Phase 3 — Mask comparison and selection**
+   Trains a :term:`FedAvg` MLP on each of the 4 masked datasets. For
+   each strategy, computes the **per-site improvement over unmasked**.
+   Selects the mask with the highest **worst-site** delta:
+
+   ::
+
+      best_strategy = argmax( min_site(BalAcc_masked - BalAcc_unmasked) )
+
+   This ensures the chosen mask helps the site that needs it most.
+
+**Phase 4 — Full FL pipeline with best mask**
+   Switches all active data to the winning mask and runs:
+
+   - :term:`FedAvg` MLP (30 rounds)
+   - :term:`FedProx` μ=0.1, 0.5 (30 rounds)
+   - :term:`FedLR` with per-site tuned C (Option B)
+   - :term:`FedRF` tree collection (5 rounds)
+   - Cross-Site MLP + RF (train on mask-filtered A data)
+
+**Output**:
+   ``mask_delta.pdf`` — bar chart showing per-site improvement of each mask
+   vs. unmasked. Saved RF species classifiers are reusable by 08.
+
+**Key difference from 06-03a**:
+   =========  ========================  =========================
+   Aspect     06-03a                    06-03c
+   =========  ========================  =========================
+   Species    *E. coli* only             All species
+   Masking    Pre-configured mask        Data-driven mask selection
+   Purpose    Baseline FL experiment     Fair comparison accounting
+                                         for species distribution
+   =========  ========================  =========================
+
 Notebooks
 ---------
 
-- ``06-03a-Ceftazidime-E-coli-Federated.ipynb`` — Main federated notebook
-- ``06-03b-Ceftazidime-E-coli-Federated.ipynb`` — Federated variant B
-- ``06-03c-Species-Masked-Ceftazidime-Federated.ipynb`` — Species masking
-  variants for centralized baselines
+- ``06-03a-Ceftazidime-E-coli-Federated.ipynb`` — Basic FL (E. coli only):
+  FedAvg + FedProx + FedLR + FedRF
+- ``06-03b-Ceftazidime-E-coli-Federated.ipynb`` — FL variant B
+- ``06-03c-Species-Masked-Ceftazidime-Federated.ipynb`` — Species-masked FL
+  (all species): 4-phase pipeline with data-driven mask selection. Produces
+  the centralized MLP (none/union/majority/persite) baselines.
 - ``retry_fedprox.ipynb`` — :term:`FedProx` μ retry utility
