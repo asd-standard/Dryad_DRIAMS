@@ -6,7 +6,9 @@ Aggregated Cross-Drug Analysis
 The ``aggregated_analysis.ipynb`` notebook loads per-drug
 ``final_results.csv`` files from all available drugs and produces
 cross-drug comparisons, strategy rankings, and :term:`Federated learning`
-gap analyses.
+gap analyses. The ``masked_aggregated_analysis.ipynb`` variant does the
+same for runs with :term:`Species masking` enabled, adding mask-specific
+delta charts.
 
 Data Sources
 ------------

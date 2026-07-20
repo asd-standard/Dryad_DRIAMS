@@ -31,7 +31,8 @@ Drugs                 6 drugs: Ciprofloxacin, Gentamicin,
 Species               All species, :term:`species-stratified split`\ s
 Sites                 :term:`DRIAMS` A (Basel), B (Basel-Land), C (Aarau), D (Viollier)
 Strategies            :term:`FedAvg` MLP, :term:`FedProx` MLP, :term:`FedAvg` LR,
-                      :term:`FedRF` tree collection
+                       :term:`FedRF` tree collection,
+                       :term:`Species masking` (optional)
 Baselines             Centralized (pooled) MLP, RF; :term:`Cross-site evaluation` (A→B/C/D)
 Framework             :term:`Flower (flwr)` with :term:`Ray simulation` backend
 Checkpoints           :term:`Checkpoint` — per-client + global model saved every round
@@ -43,6 +44,9 @@ Directory Structure
 ::
 
    08-Federated-mlp-lr-rf/
+   ├── Species-Masking/
+   │   ├── compute_masks.ipynb             ← One-time mask computation
+   │   └── shared_masks/                  ← .npy masks + .joblib RF models
    ├── Drugs/
    │   ├── Ciprofloxacin/
    │   │   ├── federated.ipynb              ← Main FL notebook
@@ -55,7 +59,8 @@ Directory Structure
    │   ├── Ceftriaxone/
    │   └── Ceftazidime/
    ├── Agg-Analysis/
-   │   └── aggregated_analysis.ipynb        ← Cross-drug comparison
+   │   ├── aggregated_analysis.ipynb        ← Cross-drug comparison
+   │   └── masked_aggregated_analysis.ipynb ← Cross-drug (masked runs)
    └── Docs/
 
 Each drug notebook is self-contained: it loads data, preprocesses, runs

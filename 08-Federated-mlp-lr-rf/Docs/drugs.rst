@@ -13,10 +13,12 @@ Run Directory Structure
    ├── results/
    │   ├── final_results.csv         ← Best metrics per strategy
    │   ├── fedavg_per_round.csv      ← Per-round FedAvg MLP metrics
+   │   ├── fedavg_train_loss_per_round.csv ← FedAvg training loss
    │   ├── fedlr_per_round.csv       ← Per-round FedAvg LR metrics
    │   ├── fedrf_per_round.csv       ← Per-round FedRF metrics
    │   ├── fedprox_mu{μ}_per_round.csv ← Per-round FedProx metrics
-   │   ├── best_params_used.txt      ← Hyperparameters snapshot
+   │   ├── fedprox_mu{μ}_train_loss_per_round.csv ← FedProx training loss
+   │   ├── best_params_used.txt      ← Hyperparameters + mask strategy used
    │   ├── convergence.pdf           ← Convergence plot (all methods)
    │   ├── convergence_fedprox.pdf   ← FedProx per-site convergence
    │   ├── convergence_fedlr.pdf     ← FedLR per-site convergence

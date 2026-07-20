@@ -130,6 +130,60 @@ within each drug notebook:
    :term:`Cross-site evaluation`: train MLP/RF on :term:`DRIAMS`-A only, test
    on B/C/D. Analogous to 03's approach, measuring the single-site lower bound.
 
+Strategy 5: Species Masking (Optional)
+--------------------------------------
+
+Activated by ``USE_SPECIES_MASKING = True`` and ``MASK_STRATEGY`` in each
+drug's ``federated.ipynb``. Masks are precomputed once by
+``Species-Masking/compute_masks.ipynb`` and reused across all 6 drugs.
+
+**How it works:**
+  Per-site :term:`Random Forest` classifiers are trained on species labels
+  (not drug resistance) to identify m/z bins predictive of bacterial species.
+  The top-K most important bins per site are zeroed out from the training
+  data, removing species-specific spectral information.
+
+**Mask strategies:**
+
+  ``none``
+     No masking — full 6000 bins. Default.
+
+  ``union``
+     Bins flagged by any site's species RF — removes species-identifiable
+     bins across all sites.
+
+  ``majority``
+     Bins flagged by ≥2 sites — removes broadly informative species bins.
+
+  ``persite``
+     Each site removes its own flagged bins — simulates per-client local
+     species distributions. Most natural for federated learning.
+
+**Why it matters:**
+  Without species masking, a centralized baseline trained on all 4 sites'
+  data may benefit from species-identifiable bins that federated clients
+  cannot exploit locally. Masking ensures a fair centralized-vs-federated
+  comparison by removing cross-site species leakage.
+
+See :term:`Species masking` and ``Species-Masking/compute_masks.ipynb``.
+
+Training Loss Tracking
+----------------------
+
+Each drug notebook now records per-round training loss for MLP-based
+strategies, enabling convergence diagnostics beyond evaluation metrics:
+
+- **FedAvg MLP**: ``fit_metrics_aggregation_fn`` collects the aggregated
+  training loss (mean cross-entropy across all clients) per round.
+  Saved as ``fedavg_train_loss_per_round.csv``.
+
+- **FedProx MLP**: ``CheckpointFedProx`` records per-site training loss
+  (``{site}_train_loss``) and aggregated loss per round.
+  Saved as ``fedprox_mu{μ}_train_loss_per_round.csv``.
+
+The loss is the raw cross-entropy returned by each client's ``fit()``
+method and averaged server-side.
+
 Evaluation
 ----------
 
