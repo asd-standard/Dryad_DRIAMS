@@ -138,10 +138,11 @@ drug's ``federated.ipynb``. Masks are precomputed once by
 ``Species-Masking/compute_masks.ipynb`` and reused across all 6 drugs.
 
 **How it works:**
-  Per-site :term:`Random Forest` classifiers are trained on species labels
-  (not drug resistance) to identify m/z bins predictive of bacterial species.
-  The top-K most important bins per site are zeroed out from the training
-  data, removing species-specific spectral information.
+  Data from all 6 drugs is pooled per site and deduplicated. Per-site
+  :term:`Random Forest` classifiers are trained on species labels (not drug
+  resistance) to identify m/z bins predictive of bacterial species. The
+  top-K most important bins per site are zeroed out from the training data,
+  removing species-specific spectral information.
 
 **Mask strategies:**
 

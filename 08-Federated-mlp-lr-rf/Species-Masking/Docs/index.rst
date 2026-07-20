@@ -22,11 +22,13 @@ How It Works
 The notebook ``compute_masks.ipynb`` runs two phases:
 
 **Phase 1 — Per-site RF species classifiers**
-   A :term:`Random Forest` is trained on each site's data to classify
-   *bacterial species* (not drug resistance). The top 500 most important
-   m/z bins per site are identified — these are the bins most predictive
-   of which species a spectrum belongs to. Each site's RF model is saved
-   as ``shared_masks/rf_species_models/site_{A,B,C,D}_rf_species.joblib``.
+   Data from **all 6 drugs** is pooled per site and deduplicated (a sample
+   tested for multiple drugs appears once). A :term:`Random Forest` is then
+   trained on this maximally populated dataset to classify *bacterial species*
+   (not drug resistance). The top 500 most important m/z bins per site are
+   identified — these are the bins most predictive of which species a spectrum
+   belongs to. Each site's RF model is saved as
+   ``shared_masks/rf_species_models/site_{A,B,C,D}_rf_species.joblib``.
 
 **Phase 2 — Mask computation**
    From the per-site bin lists, three mask strategies are computed:
@@ -73,12 +75,12 @@ Why Drug-Independent
 --------------------
 
 Species labels are identical across all drug CSVs — a sample's species
-is the same regardless of which drug resistance is being tested. The
-species-predictive bins are therefore intrinsic to the MALDI-TOF
-instrument + bacterial ecology of each site, not to any specific drug.
-Computing masks once on a single drug (the one with the most samples
-per site) and reusing them across all 6 drugs is both valid and
-efficient.
+is the same regardless of which drug resistance is being tested.
+``compute_masks.ipynb`` pools all 6 drugs per site and deduplicates
+identical spectra, giving the species RF the maximum possible training
+signal. The resulting masks are intrinsic to the MALDI-TOF instrument
++ bacterial ecology of each site, not to any specific drug. Run once,
+reuse across all 6 drug federated notebooks.
 
 Output Files
 ------------
