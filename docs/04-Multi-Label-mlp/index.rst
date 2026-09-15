@@ -4,7 +4,6 @@
 Train on :term:`DRIAMS`-A (9,443 samples), test on B, C, D. Predict resistance to
 10 drugs simultaneously — :term:`Multi-label classification`.
 
-.. _notebook: 04-00-MultiLabel-CLassifier/04-MultiLabel-Classifier.ipynb
 
 .. toctree::
    :maxdepth: 2
@@ -57,5 +56,5 @@ multi-label model. See :doc:`experiments` for full details.
 References Back
 ---------------
 
-- :doc:`02 </02-MLPClassifier-Aggregated/Docs/index>` for the MLP architecture fundamentals
-- :doc:`03 </03-CrossSite-Classifier/Docs/index>` for the cross-site evaluation pattern
+- :doc:`02 </02-MLPClassifier-Aggregated/index>` for the MLP architecture fundamentals
+- :doc:`03 </03-CrossSite-Classifier/index>` for the cross-site evaluation pattern

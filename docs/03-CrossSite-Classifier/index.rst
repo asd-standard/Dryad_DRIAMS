@@ -4,7 +4,6 @@
 Train on :term:`DRIAMS`-A (University Hospital Basel), test on B (Canton
 Basel-Land), C (Canton Aarau), D (Viollier).
 
-.. _notebook: 03-CrossSite-Classifier.ipynb
 
 .. toctree::
    :maxdepth: 1
@@ -34,11 +33,11 @@ Approaches
 
 **Logistic Regression:** Per-drug :term:`L2 regularization` :term:`LogisticRegression`
 + :term:`Threshold Tuning`, with and without :term:`PCA`.
-See :doc:`01 </01-LogisticAnalysis-Aggregated/Docs/index>` for method details.
+See :doc:`01 </01-LogisticAnalysis-Aggregated/index>` for method details.
 
 **MLP:** Per-drug regularised :term:`MLP` + attention :term:`MLP`, both with
 :term:`Threshold Tuning`.
-See :doc:`02 </02-MLPClassifier-Aggregated/Docs/index>` for architecture details.
+See :doc:`02 </02-MLPClassifier-Aggregated/index>` for architecture details.
 
 Preprocessing
 -------------
@@ -63,6 +62,6 @@ References Back
 
 Cross-site evaluation methodology is reused in:
 
-- :doc:`04 </04-Multi-Label-mlp/Docs/index>` — Multi-label cross-site (A→B/C/D)
-- :doc:`05 </05-RandomForest-Ceftazidime-Ecoli/Docs/index>` — RF cross-site
-- :doc:`06a </06a-Ceftazidime-E-coli/Docs/index>` — Species-specific cross-site
+- :doc:`04 </04-Multi-Label-mlp/index>` — Multi-label cross-site (A→B/C/D)
+- :doc:`05 </05-RandomForest-Ceftazidime-Ecoli/index>` — RF cross-site
+- :doc:`06a </06a-Ceftazidime-E-coli/index>` — Species-specific cross-site

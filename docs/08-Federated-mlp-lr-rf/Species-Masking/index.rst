@@ -4,7 +4,6 @@ Species Masking
 One-time computation of species-predictive m/z bins for fair
 centralized-vs-federated comparisons across all 6 drugs.
 
-.. _notebook: ../compute_masks.ipynb
 
 Objective
 ---------
@@ -105,7 +104,7 @@ Related
 -------
 
 - :term:`Species masking` — glossary entry with full strategy descriptions
-- :doc:`06b </06b-Ceftriaxone-E-coli/Docs/federated>` — first use of species
+- :doc:`06b </06b-Ceftriaxone-E-coli/federated>` — first use of species
   masking in the Ceftriaxone federated experiment (06-03c notebook)
-- :doc:`/08-Federated-mlp-lr-rf/Docs/methodology` — 08 methodology, including Strategy 5:
+- :doc:`/08-Federated-mlp-lr-rf/methodology` — 08 methodology, including Strategy 5:
   Species Masking section

@@ -1,7 +1,6 @@
 Aggregated Cross-Drug Analysis
 =================================
 
-.. _notebook: ../Agg-Analysis/aggregated_analysis.ipynb
 
 The ``aggregated_analysis.ipynb`` notebook loads per-drug
 ``final_results.csv`` files from all available drugs and produces
@@ -30,7 +29,7 @@ main notebook plus:
 Results are saved to ``masked_aggregated_results/`` instead of the
 default ``aggregated_results/``.
 
-See :doc:`../Species-Masking/Docs/index` for mask computation and
+See :doc:`Species-Masking/index` for mask computation and
 usage in per-drug notebooks.
 
 Data Sources

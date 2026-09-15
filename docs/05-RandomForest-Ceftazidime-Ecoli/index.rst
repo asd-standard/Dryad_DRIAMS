@@ -3,14 +3,13 @@
 
 Species-specific, drug-specific Random Forest classifier.
 
-.. _notebook: 05-RandomForest-Ceftazidime-Ecoli.ipynb
 
 Objective
 ---------
 
 Introduce :term:`Random Forest` as a third model family (after
-:term:`LogisticRegression` in :doc:`01 </01-LogisticAnalysis-Aggregated/Docs/index>`
-and :term:`MLP` in :doc:`02 </02-MLPClassifier-Aggregated/Docs/index>`). Evaluated
+:term:`LogisticRegression` in :doc:`01 </01-LogisticAnalysis-Aggregated/index>`
+and :term:`MLP` in :doc:`02 </02-MLPClassifier-Aggregated/index>`). Evaluated
 on a single well-populated drug–pathogen combination.
 
 Scope
@@ -54,6 +53,6 @@ References Forward
 
 RF methodology is reused in:
 
-- :doc:`06a </06a-Ceftazidime-E-coli/Docs/index>` — Species-specific RF comparison
-- :doc:`07 </07-Dedicated-MLP-Aggregated/Docs/index>` — Per-drug RF for 10 drugs
-- :doc:`08 </08-Federated-mlp-lr-rf/Docs/index>` — Federated RF (:term:`FedRF` tree collection)
+- :doc:`06a </06a-Ceftazidime-E-coli/index>` — Species-specific RF comparison
+- :doc:`07 </07-Dedicated-MLP-Aggregated/index>` — Per-drug RF for 10 drugs
+- :doc:`08 </08-Federated-mlp-lr-rf/index>` — Federated RF (:term:`FedRF` tree collection)

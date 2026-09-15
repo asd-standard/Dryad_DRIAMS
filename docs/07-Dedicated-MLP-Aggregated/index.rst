@@ -5,7 +5,6 @@
 This is the most comprehensive non-federated baseline, producing the
 hyperparameters reused by the :term:`Federated learning` study (08).
 
-.. _notebook: 07-Dedicated-MLP-Aggregated.ipynb
 
 .. toctree::
    :maxdepth: 1
@@ -65,12 +64,12 @@ Key Relationships
 -----------------
 
 - Draws :term:`LogisticRegression` methodology from
-  :doc:`01 </01-LogisticAnalysis-Aggregated/Docs/index>`
+  :doc:`01 </01-LogisticAnalysis-Aggregated/index>`
 - Draws :term:`MLP` architecture from
-  :doc:`02 </02-MLPClassifier-Aggregated/Docs/index>`
+  :doc:`02 </02-MLPClassifier-Aggregated/index>`
 - Draws :term:`Random Forest` methodology from
-  :doc:`05 </05-RandomForest-Ceftazidime-Ecoli/Docs/index>`
+  :doc:`05 </05-RandomForest-Ceftazidime-Ecoli/index>`
 - Feeds :term:`best_params.csv` and ``rf_results.pkl`` directly into
-  :doc:`08 </08-Federated-mlp-lr-rf/Docs/index>` as the source of
+  :doc:`08 </08-Federated-mlp-lr-rf/index>` as the source of
   :term:`Federated learning` hyperparameters and centralized (Pooled)
   baselines

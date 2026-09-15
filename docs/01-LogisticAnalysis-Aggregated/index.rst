@@ -3,7 +3,6 @@
 
 Aggregated DRIAMS (A+B+C+D) — Top 3 drugs.
 
-.. _notebook: 01-LogisticAnalysis-Aggregated.ipynb
 
 Objective
 ---------
@@ -59,7 +58,7 @@ References Back
 
 LR methodology established here is reused and extended in:
 
-- :doc:`03 </03-CrossSite-Classifier/Docs/index>` — Cross-site (A→B/C/D)
-- :doc:`06a </06a-Ceftazidime-E-coli/Docs/index>` — Species-specific LR
-- :doc:`07 </07-Dedicated-MLP-Aggregated/Docs/index>` — Per-drug LR grid search
-- :doc:`08 </08-Federated-mlp-lr-rf/Docs/index>` — Federated LR (FedAvg LR)
+- :doc:`03 </03-CrossSite-Classifier/index>` — Cross-site (A→B/C/D)
+- :doc:`06a </06a-Ceftazidime-E-coli/index>` — Species-specific LR
+- :doc:`07 </07-Dedicated-MLP-Aggregated/index>` — Per-drug LR grid search
+- :doc:`08 </08-Federated-mlp-lr-rf/index>` — Federated LR (FedAvg LR)

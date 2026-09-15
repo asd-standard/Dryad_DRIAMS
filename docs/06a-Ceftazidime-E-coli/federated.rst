@@ -7,7 +7,7 @@ Extends the non-federated Ceftazidime analysis
 (:doc:`analysis`) to a federation setting.
 
 This is the Ceftazidime counterpart of the Ceftriaxone federated experiment
-documented in :doc:`06b </06b-Ceftriaxone-E-coli/Docs/federated>`.
+documented in :doc:`06b </06b-Ceftriaxone-E-coli/federated>`.
 
 Final Results
 -------------
@@ -100,7 +100,7 @@ The four centralized baseline variants above are produced by
 See :term:`Species masking` for full descriptions.
 
 For the Ceftriaxone results that informed these expectations, see
-:doc:`06b </06b-Ceftriaxone-E-coli/Docs/federated>`.
+:doc:`06b </06b-Ceftriaxone-E-coli/federated>`.
 
 06-03c: Species-Masked Federated Learning
 -----------------------------------------

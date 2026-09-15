@@ -4,7 +4,7 @@
 Non-federated and federated analysis of a single drug–pathogen pair
 with progressive model complexity. The federated counterpart for
 Ceftriaxone × *E. coli* lives in
-:doc:`06b </06b-Ceftriaxone-E-coli/Docs/index>`. 
+:doc:`06b </06b-Ceftriaxone-E-coli/index>`. 
 
 .. toctree::
    :maxdepth: 1
@@ -54,14 +54,14 @@ Related Analyses
 
 Methodologies drawn from:
 
-- :doc:`01 </01-LogisticAnalysis-Aggregated/Docs/index>` — :term:`LogisticRegression` with
+- :doc:`01 </01-LogisticAnalysis-Aggregated/index>` — :term:`LogisticRegression` with
   :term:`L2 regularization` and :term:`Threshold Tuning`
-- :doc:`02 </02-MLPClassifier-Aggregated/Docs/index>` — :term:`MLP` architecture and training
-- :doc:`05 </05-RandomForest-Ceftazidime-Ecoli/Docs/index>` — :term:`Random Forest` for same
+- :doc:`02 </02-MLPClassifier-Aggregated/index>` — :term:`MLP` architecture and training
+- :doc:`05 </05-RandomForest-Ceftazidime-Ecoli/index>` — :term:`Random Forest` for same
   drug–pathogen pair
-- :doc:`03 </03-CrossSite-Classifier/Docs/index>` — :term:`Cross-site evaluation` pattern
+- :doc:`03 </03-CrossSite-Classifier/index>` — :term:`Cross-site evaluation` pattern
 
 Results feed forward to:
 
-- :doc:`06b </06b-Ceftriaxone-E-coli/Docs/index>` — Federated follow-up on Ceftriaxone × *E. coli*
-- :doc:`08 </08-Federated-mlp-lr-rf/Docs/index>` — Full federated study across all 6 drugs
+- :doc:`06b </06b-Ceftriaxone-E-coli/index>` — Federated follow-up on Ceftriaxone × *E. coli*
+- :doc:`08 </08-Federated-mlp-lr-rf/index>` — Full federated study across all 6 drugs

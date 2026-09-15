@@ -11,7 +11,7 @@ using :term:`Flower (flwr)`.
    methodology
    drugs
    aggregated
-   ../Species-Masking/Docs/index
+   Species-Masking/index
 
 Objective
 ---------

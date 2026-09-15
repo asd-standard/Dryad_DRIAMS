@@ -3,7 +3,7 @@
 
 The project's first :term:`Federated learning` experiment. Extends the
 methodological foundation established in
-:doc:`06a </06a-Ceftazidime-E-coli/Docs/index>` to a federation
+:doc:`06a </06a-Ceftazidime-E-coli/index>` to a federation
 across 4 hospital sites.
 
 .. toctree::
@@ -46,5 +46,5 @@ Files
 Related Analyses
 ----------------
 
-- :doc:`06a </06a-Ceftazidime-E-coli/Docs/index>` — Ceftazidime non-federated foundation
-- :doc:`08 </08-Federated-mlp-lr-rf/Docs/index>` — Full federated study across all 6 drugs
+- :doc:`06a </06a-Ceftazidime-E-coli/index>` — Ceftazidime non-federated foundation
+- :doc:`08 </08-Federated-mlp-lr-rf/index>` — Full federated study across all 6 drugs

@@ -3,12 +3,11 @@
 
 Aggregated DRIAMS (A+B+C+D) — Top 3 drugs.
 
-.. _notebook: 02-MLPClassifier-Aggregated.ipynb
 
 Objective
 ---------
 
-Replace the linear :term:`LogisticRegression` baseline (see :doc:`01 </01-LogisticAnalysis-Aggregated/Docs/index>`)
+Replace the linear :term:`LogisticRegression` baseline (see :doc:`01 </01-LogisticAnalysis-Aggregated/index>`)
 with a non-linear :term:`MLP`, evaluating whether deep learning
 extracts richer information from MALDI-TOF spectra.
 
@@ -56,8 +55,8 @@ Where This Appears Next
 The MLP architecture (6000→512→256→128→2) and hyperparameter tuning
 pattern are reused in:
 
-- :doc:`03 </03-CrossSite-Classifier/Docs/index>` — Cross-site MLP
-- :doc:`04 </04-Multi-Label-mlp/Docs/index>` — Multi-label shared-backbone MLP
-- :doc:`06a </06a-Ceftazidime-E-coli/Docs/index>` — Species-specific MLP
-- :doc:`07 </07-Dedicated-MLP-Aggregated/Docs/index>` — Per-drug 8×8 grid MLP
-- :doc:`08 </08-Federated-mlp-lr-rf/Docs/index>` — Federated MLP (FedAvg / FedProx)
+- :doc:`03 </03-CrossSite-Classifier/index>` — Cross-site MLP
+- :doc:`04 </04-Multi-Label-mlp/index>` — Multi-label shared-backbone MLP
+- :doc:`06a </06a-Ceftazidime-E-coli/index>` — Species-specific MLP
+- :doc:`07 </07-Dedicated-MLP-Aggregated/index>` — Per-drug 8×8 grid MLP
+- :doc:`08 </08-Federated-mlp-lr-rf/index>` — Federated MLP (FedAvg / FedProx)

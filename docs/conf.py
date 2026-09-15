@@ -16,12 +16,12 @@ extensions = [
 ]
 
 templates_path = ["_templates"]
-exclude_patterns = ["_build", "Docs/_build", "Docs/_static"]
+exclude_patterns = ["_build", "_static"]
 source_suffix = ".rst"
 master_doc = "index"
 
 html_theme = "sphinx_rtd_theme"
-html_static_path = ["Docs/_static"]
+html_static_path = ["_static"]
 html_theme_options = {
     "navigation_depth": 3,
     "collapse_navigation": False,

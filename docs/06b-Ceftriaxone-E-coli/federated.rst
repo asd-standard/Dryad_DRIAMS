@@ -7,7 +7,7 @@ Federated Ceftriaxone × *E. coli* — Results
 These results were produced by ``06-03c-Species-Masked-Ceftriaxone-Federated.ipynb``
 — see `06-03c: How It Works`_ for the 4-phase pipeline. The Ceftazidime
 counterpart lives in
-:doc:`06a </06a-Ceftazidime-E-coli/Docs/federated>`. 
+:doc:`06a </06a-Ceftazidime-E-coli/federated>`. 
 
 
 Final Results
@@ -135,7 +135,7 @@ and per-round CSV files with validation metrics and training loss.
 The winning mask for this Ceftriaxone × *E. coli* run was **`none`**
 (no masking), meaning species-filtering did not improve worst-site
 performance on this drug–pathogen pair. This may differ for Ceftazidime
-(:doc:`06a </06a-Ceftazidime-E-coli/Docs/federated>`).
+(:doc:`06a </06a-Ceftazidime-E-coli/federated>`).
 
 Training Loss Monitoring
 ~~~~~~~~~~~~~~~~~~~~~~~~
