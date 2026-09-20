@@ -11,6 +11,7 @@ across 4 hospital sites.
    :caption: Sections
 
    federated
+   mask-diagnostic
 
 Why Ceftriaxone
 ---------------

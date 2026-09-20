@@ -134,7 +134,7 @@ and per-round CSV files with validation metrics and training loss.
 
 The winning mask for this Ceftriaxone × *E. coli* run was **`none`**
 (no masking), meaning species-filtering did not improve worst-site
-performance on this drug–pathogen pair. This may differ for Ceftazidime
+performance on this drug–pathogen pair. A follow-up diagnostic (:doc:`mask-diagnostic`) showed this is not a weak-mask artifact — species information is redundant across the spectrum, so zeroing the top-500 species bins removes almost no species signal regardless of the RF's ``max_features``. This may differ for Ceftazidime
 (:doc:`06a </06a-Ceftazidime-E-coli/federated>`).
 
 Training Loss Monitoring

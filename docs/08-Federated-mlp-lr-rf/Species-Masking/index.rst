@@ -100,6 +100,18 @@ Output Files
        ├── site_C_rf_species.joblib
        └── site_D_rf_species.joblib
 
+Caveat
+------
+
+A diagnostic on the Ceftriaxone 06-03c experiment
+(:doc:`06b mask diagnostic </06b-Ceftriaxone-E-coli/mask-diagnostic>`) found that
+concentrating importance by raising ``max_features`` does not make the top-500
+mask remove more species signal — the masking-drop (out-of-bag accuracy on
+zeroed data) stays near zero. Species signal is redundant across the spectrum,
+so zeroing a few hundred bins cannot strip it. A ``none`` (unmasked) result
+therefore does not indicate a weak mask, but rather that species information
+cannot be localized to a small bin set.
+
 Related
 -------
 

@@ -174,6 +174,13 @@ Glossary
       trees from growing too complex. ``None`` = no limit; trees grow until
       leaves are pure or :term:`min_samples_leaf` is reached.
 
+   max_features
+      Number of input features (m/z bins) randomly sampled at each split when
+      training a :term:`Random Forest`. The default ``"sqrt"`` (~77 of 6000 bins)
+      maximizes tree diversity but dilutes :term:`Feature importance` across
+      correlated bins; larger values (e.g. 0.2 to 0.5) concentrate importance
+      into fewer bins. Controls the speed-vs-diversity-vs-importance tradeoff.
+
    min_samples_leaf
       Minimum number of samples required to be at a leaf node. Higher values
       enforce simpler trees and stronger regularisation. Typical values:
