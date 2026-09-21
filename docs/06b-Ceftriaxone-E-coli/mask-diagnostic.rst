@@ -1,12 +1,17 @@
-Species-Mask Diagnostic — Why Masking Doesn't Help
-==================================================
+Mask & Deconfounding Diagnostics — Why Masking Fails
+====================================================
 
-The Ceftriaxone 06-03c run selected the ``none`` mask — zeroing
-species-predictive bins did not improve worst-site :term:`Balanced Accuracy`.
-This page documents a follow-up diagnostic that isolates *why*.
+The Ceftriaxone 06-03c and 06-03d runs both found that zeroing species- or
+site-predictive bins did not improve worst-site :term:`Balanced Accuracy`.
+This page documents the follow-up diagnostics that isolate *why*: species and
+site signals are non-linear, redundant across the spectrum, and (for site)
+entangled with resistance.
+
+Species-Mask Diagnostic
+-----------------------
 
 Question
---------
+~~~~~~~~
 
 06-03c builds each site's mask from the top-500 bins of a per-site
 :term:`Random Forest` trained to classify bacterial species. That RF uses the
@@ -17,7 +22,7 @@ configuration, and would a better RF (higher ``max_features``) produce a mask
 that removes more species signal?
 
 Method
-------
+~~~~~~
 
 ``06-03c-Phase1-Mask-Diagnostic.ipynb`` reuses the exact 06-03c data pipeline
 (same species-stratified split, downsampling, preprocessing, seed) and sweeps
@@ -56,7 +61,7 @@ For each configuration, per site, it records:
   retraining — a direct measure of how much species signal the mask removes.
 
 Results
--------
+~~~~~~~
 
 .. list-table:: Mean across sites (per configuration)
    :header-rows: 1
@@ -103,7 +108,7 @@ Three observations:
    more site-specific).
 
 Interpretation
---------------
+~~~~~~~~~~~~~~
 
 :term:`Feature importance` concentration is not the same as unique information.
 Even with 95% of the Gini importance packed into the top-500, zeroing those bins
@@ -111,18 +116,100 @@ removes essentially no species signal — the RF re-learns it from the remaining
 5,500 correlated bins. Species information is **redundant across the whole
 spectrum** and cannot be localized to a few hundred m/z bins.
 
+Site-Deconfounding Diagnostics
+------------------------------
+
+The site-masked counterpart (06-03d) asks whether the **site/instrument**
+signal can be removed to narrow the :term:`Cross-site evaluation` gap. Three
+approaches were tried, and all three failed.
+
+Site mask (drop vs K)
+~~~~~~~~~~~~~~~~~~~~~
+
+``06-03d-Phase1-SiteMask-Diagnostic.ipynb`` zeroes the top-K site bins and
+measures the site-RF OOB drop (pooled site RF, OOB = 1.000):
+
+.. list-table:: Site masking-drop vs K
+   :header-rows: 1
+
+   * - config
+     - K=500
+     - K=1000
+     - K=1500
+     - K=2000
+   * - baseline (sqrt)
+     - +0.0005
+     - +0.0042
+     - +0.0198
+     - +0.0384
+   * - mf_0.2
+     - +0.0001
+     - +0.0016
+     - +0.0039
+     - +0.0041
+
+Even zeroing 2,000 of 6,000 bins leaves site classification at ~96–99.6%.
+The site signal is **redundant across the spectrum**, exactly like species.
+
+LDA projection
+~~~~~~~~~~~~~~
+
+``06-03d-SiteDeconfound-Diagnostic.ipynb`` projects out the linear
+site-discriminative directions. LDA itself classifies site at **0.0993**
+(well below the 0.25 chance), and projecting out its directions leaves the
+site-RF OOB at 1.0. Because per-site ``log1p+standardize`` already zeroes each
+site's mean, the surviving site signal is **non-linear** — invisible to linear
+methods.
+
+Adversarial site-invariance
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+``06-03d-AdversarialSite-Diagnostic.ipynb`` trains a resistance MLP with a
+gradient-reversal site head (DANN). The site-probe accuracy *rose* with the
+reversal weight (0.66 → 0.72) instead of falling toward 0.25, and resistance
+(~0.76 centralised, ~0.55 cross-site) stayed flat. The features cannot be made
+site-invariant because **site is entangled with resistance** — different
+hospitals have genuinely different resistance, so the resistance objective
+itself rewards site-informative features.
+
+.. list-table:: Three deconfounding attempts and why each failed
+   :header-rows: 1
+
+   * - Approach
+     - Result
+     - Why it failed
+   * - mask top-K bins
+     - site OOB barely drops
+     - signal redundant across bins
+   * - LDA projection
+     - no effect (LDA < chance)
+     - signal non-linear
+   * - adversarial GRL
+     - site probe rises
+     - site entangled with resistance
+
 Conclusion
 ----------
 
-* The 06-03c ``none`` result is **robust**: it reflects spectral redundancy plus
-  species/resistance entanglement, not a weak mask.
-* There is no value in re-running 06-03c with a higher ``max_features`` — a more
-  concentrated, more site-specific mask would be, if anything, worse.
-* Species masking by zeroing top-K bins is fundamentally limited for MALDI-TOF
-  spectra.
+Species and site deconfounding both fail, for overlapping reasons:
+
+* Species and site signals are **non-linear** and **redundant** across the
+  spectrum, so neither zeroing bins nor linear projection removes them.
+* Site is additionally **entangled with resistance** (different hospitals have
+  different resistance), so even adversarial training cannot make features
+  site-invariant.
+* The cross-site gap (~0.20 :term:`Balanced Accuracy`) is therefore a genuine,
+  hard :term:`Domain shift` cost, not an artifact of the masking approach.
+
+The practical implication is that MALDI-TOF AMR models are site-specific, and
+cross-site generalisation is best handled by :term:`Federated learning` (each
+site trains locally) rather than by deconfounding the raw spectra.
 
 Files
 -----
 
-* ``06-03c-Phase1-Mask-Diagnostic.ipynb`` — the diagnostic notebook
-* ``mask_diagnostic.csv`` / ``mask_concentration.pdf`` — outputs
+* ``06-03c-Phase1-Mask-Diagnostic.ipynb`` — species-mask diagnostic
+* ``06-03d-Phase1-SiteMask-Diagnostic.ipynb`` — site-mask drop-vs-K diagnostic
+* ``06-03d-SiteDeconfound-Diagnostic.ipynb`` — LDA site-deconfounding diagnostic
+* ``06-03d-AdversarialSite-Diagnostic.ipynb`` — adversarial site-invariance diagnostic
+* outputs: ``mask_diagnostic.csv``, ``site_mask_drop_vs_k.csv``, ``site_deconfound_diagnostic.csv``, ``adversarial_site_diagnostic.csv`` (+ PDFs)
