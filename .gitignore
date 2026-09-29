@@ -13,3 +13,6 @@
 
 # And .gitignore itself
 !.gitignore
+
+# Local-only snapshot (06d copy of 06b 06-03c), not tracked
+06d/
