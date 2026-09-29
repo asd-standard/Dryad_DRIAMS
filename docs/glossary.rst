@@ -120,13 +120,33 @@ Glossary
       demographics, or bacterial species composition across hospital sites.
 
    DRIAMS
-      **D**\Ried **M**\icrobes **A**\nd **M**\ass **S**\pectra dataset.
-      Four Swiss hospital sites:
+      Database of ResIstance against Antimicrobials with MALDI-TOF Mass
+      Spectrometry. Four Swiss hospital sites:
       **A** — University Hospital Basel,
       **B** — Canton Basel-Land,
       **C** — Canton Aarau,
       **D** — Viollier (private diagnostic lab).
       Spectra are binned at 3 Da resolution producing 6000 features.
+
+   binned_6000
+      DRIAMS spectra stage after the published preprocessing pipeline:
+      intensities binned along the m/z axis with 3 Da width, producing
+      6000 features per spectrum. The input to ``process_driams.py``.
+
+   spectra code
+      Unique identifier linking a metadata row to its ``{code}.txt``
+      spectrum file, preserved as the ``code`` column in processed
+      ``data.csv`` files.
+
+   Susceptible / Resistant / Intermediate
+      Clinical susceptibility categories in the DRIAMS metadata.
+      Processing keeps only ``S`` (label 0) and ``R`` (label 1);
+      ``I`` and untested entries are dropped.
+
+   Proc_DRIAMS
+      Output tree of ``process_driams.py``:
+      ``Proc_DRIAMS-{A,B,C,D}/{drug}/data.csv`` plus a ``summary.csv``
+      per site and a global ``global_summary.csv``.
 
    Multi-label classification
       Predicting multiple binary outcomes from a single input. One MALDI-TOF
@@ -148,6 +168,12 @@ Glossary
       Multiplying per-sample per-drug loss by a binary mask where known
       labels = 1.0 and untested drugs = 0.0. The mathematically correct way
       to handle partial label matrices with missing entries.
+
+   aggregated_multilabel_data.npz
+      Cached multi-label matrix built by 04-00 from the per-drug CSVs:
+      ``X_all`` (26642 × 6000 spectra), ``Y_all`` (26642 × 10 labels,
+      NaN = untested), ``sp_all`` (species). Reused by the other 04
+      sub-experiments.
 
    OneVsRest
       Decomposes a multi-label problem into N independent binary classifiers.

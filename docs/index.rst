@@ -7,6 +7,13 @@ to federated learning with Flower, covering 10 drugs and multiple bacterial spec
 
 .. toctree::
    :maxdepth: 2
+   :caption: Overview
+
+   Introduction <introduction>
+   Data Processing <data-processing>
+
+.. toctree::
+   :maxdepth: 2
    :caption: Analyses
 
    01. Logistic Regression <01-LogisticAnalysis-Aggregated/index>
