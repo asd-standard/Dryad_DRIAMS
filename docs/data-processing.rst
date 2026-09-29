@@ -4,9 +4,9 @@ Data Processing
 How the raw :term:`DRIAMS` archives become the per-drug, ML-ready CSV
 files consumed by every analysis (01–08). This page covers dataset
 provenance, the local ``process_driams.py`` pipeline, and the derived
-artifacts shared between notebooks. The long-form version with complete
-per-drug statistics lives in ``Processed/Processing/README.md`` in the
-data tree.
+artifacts shared between notebooks. The script and the long-form
+documentation with complete per-drug statistics live in
+``00-Data-Processing/`` of this repository.
 
 Source Dataset
 --------------
@@ -64,7 +64,9 @@ preprocessing.
 Running the Pipeline
 --------------------
 
-Script: ``process_driams.py`` in the data tree (identical copy under
+Script: `00-Data-Processing/process_driams.py
+<https://github.com/asd-standard/Dryad_DRIAMS/blob/main/00-Data-Processing/process_driams.py>`_
+in this repository (identical run copies remain in the data tree's
 ``Processed/Processing/``). Configuration at the top of the file:
 
 - ``DRYAD`` — path to the extracted DRIAMS root
@@ -219,7 +221,9 @@ Reproduce
    conda create -n driams python=3.12 -y
    conda activate driams
    pip install numpy pandas tqdm
-   python process_driams.py
+   python 00-Data-Processing/process_driams.py
 
-See ``Processed/Processing/README.md`` for download and extraction steps,
-filter thresholds, and complete per-drug tables.
+See `00-Data-Processing/README.md
+<https://github.com/asd-standard/Dryad_DRIAMS/blob/main/00-Data-Processing/README.md>`_
+for download and extraction steps, filter thresholds, and complete
+per-drug tables.
