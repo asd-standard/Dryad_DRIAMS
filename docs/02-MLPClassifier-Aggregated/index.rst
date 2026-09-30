@@ -67,14 +67,15 @@ saved as ``results_mlp_aggregated/metrics_*.csv`` and plotted by
 Key Findings
 ------------
 
-- On validation AUROC the MLP improves over the tuned L2 LR (see
+- Test performance is level with the tuned L2 LR (see
   :doc:`01 </01-LogisticAnalysis-Aggregated/index>`) on all three drugs:
-  0.828 vs 0.796, 0.899 vs 0.891 and 0.863 vs 0.856 for Ciprofloxacin,
-  Amoxicillin-Clavulanic acid and Gentamicin respectively. On the
-  Ciprofloxacin test set the two are close (MLP 0.80–0.81 vs LR 0.80).
-- Attention helps on Ciprofloxacin (test AUC 0.81 vs 0.78 for the
-  regularised MLP; validation AUROC 0.821 vs 0.797) but does not separate
-  from it on the other two drugs (validation AUROC within 0.003).
+  Ciprofloxacin 0.720 BalAcc / 0.806 AUC (attention) vs 0.721 / 0.798
+  (L2 LR); Amoxicillin-Clavulanic acid 0.819 / 0.895 (regularised) vs
+  0.821 / 0.892; Gentamicin 0.784 / 0.853 (regularised) vs 0.779 / 0.859.
+  The MLP leads on validation AUROC by 0.007–0.033.
+- Attention helps on Ciprofloxacin (test BalAcc 0.720 vs 0.707, AUC 0.806 vs
+  0.783 for the regularised MLP) but does not separate from it on the other
+  two drugs (test AUC within 0.006, validation AUROC within 0.003).
 - Establishes the **non-linear baseline** and architecture used throughout
   the rest of the project.
 
