@@ -24,7 +24,8 @@ Activation and Regularisation
 -----------------------------
 
 - **ReLU** activations with **BatchNorm** after each linear layer
-- **Dropout** applied after BatchNorm (typical range 0.3–0.8, tuned per drug)
+- **Dropout** applied after BatchNorm; per-variant settings are listed under
+  `Training Recipe`_ below
 
    See :term:`ReLU`, :term:`BatchNorm`, :term:`Dropout`.
 - Output is raw logits; ``CrossEntropyLoss`` is used during training
@@ -37,20 +38,31 @@ applied to the 512-dimensional hidden representation. The gating vector
 (element-wise sigmoid) is learned from the same hidden state, allowing
 the model to suppress or amplify individual features.
 
-Training
---------
+Training Recipe
+---------------
 
-- **Optimiser**: :term:`AdamW` with weight decay (1e-4 to 1e-3)
-- **LR schedule**: :term:`Cosine annealing` (T_max=90, eta_min=1e-6) with
-  10-epoch linear warmup
-- **Early stopping**: :term:`Early stopping` with patience 10–15 on
-  internal validation loss
-- **Batch size**: 64
+This page describes the shared architecture; the recipe of the 02 variants
+(see :doc:`index`) differs as follows:
+
+- **A — Baseline**: dropout 0, weight decay 0, batch size 32, 100 epochs,
+  fixed lr 1e-4, no warmup.
+- **B — Regularised**: dropout 0.5–0.8 (grid-searched), weight decay 1e-4,
+  batch size 64, 50 epochs, 10-epoch warmup, lr searched (coarse 8×8 + fine
+  5×5 on Ciprofloxacin only).
+- **C — Attention**: dropout 0.4/0.2, weight decay 1e-3, batch size 32,
+  100 epochs, fixed lr 1e-3, no warmup.
+
+All variants use :term:`AdamW`, :term:`Cosine annealing`
+(:math:`T_{\max} = \text{epochs} - \text{warmup}`, i.e. 40 for B and 100 for
+A/C, ``eta_min=1e-6``) and :term:`Early stopping` with patience 10 on the
+internal validation split, restoring the best-validation weights.
 
 Hyperparameter Search
 ---------------------
 
-- **Learning rate**: :term:`GridSearchCV` 8×8 over lr × dropout (07+08)
-- **Dropout**: 0.2–0.8 (tuned per drug, per model)
-- Best params saved to :term:`best_params.csv`, reused by federated
-  notebooks (08)
+- 02 searches lr × dropout with manual coarse (8×8) and fine (5×5) grids on
+  Ciprofloxacin; the winning configuration is reused for the other two drugs.
+- The systematic per-drug grid and the shipped :term:`best_params.csv` are
+  produced in :doc:`07 </07-Dedicated-MLP-Aggregated/index>`.
+- :term:`GridSearchCV` (8×8) is also used by the multi-label and federated
+  studies (04, 08).

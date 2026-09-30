@@ -28,8 +28,8 @@ bins) are more informative than a fully-connected first layer.
 
 Adds a :term:`sigmoid-gated attention` mechanism to the 512-dim hidden layer.
 The model learns to dynamically weight spectral features per sample.
-Tests whether attention, which helped in the per-drug MLP (02), also
-helps in the multi-label setting.
+Tests whether attention, which helped on Ciprofloxacin in the per-drug
+MLP (02), also helps in the multi-label setting.
 
 03 — Wider Backbone Ablation
 ----------------------------
