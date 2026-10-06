@@ -1,0 +1,436 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Train / Validation / Test Protocol &mdash; DRIAMS Federated AMR Analysis 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=f2a433a1"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="01 — Logistic Regression Analysis" href="01-LogisticAnalysis-Aggregated/index.html" />
+    <link rel="prev" title="Data Processing" href="data-processing.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            DRIAMS Federated AMR Analysis
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="introduction.html#motivation">Motivation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="introduction.html#at-a-glance">At a Glance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="introduction.html#end-to-end-pipeline">End-to-End Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="introduction.html#how-the-analyses-fit-together">How the Analyses Fit Together</a></li>
+<li class="toctree-l2"><a class="reference internal" href="introduction.html#suggested-reading-paths">Suggested Reading Paths</a></li>
+<li class="toctree-l2"><a class="reference internal" href="introduction.html#conventions">Conventions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="data-processing.html">Data Processing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="data-processing.html#source-dataset">Source Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data-processing.html#running-the-pipeline">Running the Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data-processing.html#output-layout">Output Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data-processing.html#results">Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data-processing.html#derived-artifacts">Derived Artifacts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data-processing.html#paths-and-environment">Paths and Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data-processing.html#reproduce">Reproduce</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Train / Validation / Test Protocol</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#split-construction">Split Construction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#roles">Roles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#mlp-internal-validation">MLP Internal Validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#metrics">Metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cross-site-variant">Cross-Site Variant</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Analyses</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="01-LogisticAnalysis-Aggregated/index.html">01. Logistic Regression</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="01-LogisticAnalysis-Aggregated/index.html#objective">Objective</a></li>
+<li class="toctree-l2"><a class="reference internal" href="01-LogisticAnalysis-Aggregated/index.html#approaches">Approaches</a></li>
+<li class="toctree-l2"><a class="reference internal" href="01-LogisticAnalysis-Aggregated/index.html#preprocessing">Preprocessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="01-LogisticAnalysis-Aggregated/index.html#train-validation-test-protocol">Train / Validation / Test Protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="01-LogisticAnalysis-Aggregated/index.html#key-findings">Key Findings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="01-LogisticAnalysis-Aggregated/index.html#training-diagnostics">Training Diagnostics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="01-LogisticAnalysis-Aggregated/index.html#notebooks">Notebooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="01-LogisticAnalysis-Aggregated/index.html#cross-site-behaviour">Cross-Site Behaviour</a></li>
+<li class="toctree-l2"><a class="reference internal" href="01-LogisticAnalysis-Aggregated/index.html#references-back">References Back</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="02-MLPClassifier-Aggregated/index.html">02. MLP Classifier</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="02-MLPClassifier-Aggregated/index.html#objective">Objective</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="02-MLPClassifier-Aggregated/architecture.html">MLP Architecture</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="02-MLPClassifier-Aggregated/index.html#approaches">Approaches</a></li>
+<li class="toctree-l2"><a class="reference internal" href="02-MLPClassifier-Aggregated/index.html#preprocessing">Preprocessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="02-MLPClassifier-Aggregated/index.html#training-dynamics">Training Dynamics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="02-MLPClassifier-Aggregated/index.html#key-findings">Key Findings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="02-MLPClassifier-Aggregated/index.html#notebooks">Notebooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="02-MLPClassifier-Aggregated/index.html#cross-site-behaviour">Cross-Site Behaviour</a></li>
+<li class="toctree-l2"><a class="reference internal" href="02-MLPClassifier-Aggregated/index.html#where-this-appears-next">Where This Appears Next</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="03-CrossSite-Classifier/index.html">03. Cross-Site Classifier</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="03-CrossSite-Classifier/results.html">Cross-Site Results</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="03-CrossSite-Classifier/results.html#model-configuration-per-drug">Model Configuration (per drug)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="03-CrossSite-Classifier/results.html#files">Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="03-CrossSite-Classifier/results.html#aggregate-results-mean-balanced-accuracy-across-the-ten-drugs">Aggregate Results (mean Balanced Accuracy across the ten drugs)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="03-CrossSite-Classifier/results.html#interpretation">Interpretation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="03-CrossSite-Classifier/results.html#per-drug-patterns">Per-Drug Patterns</a></li>
+<li class="toctree-l3"><a class="reference internal" href="03-CrossSite-Classifier/results.html#caveats">Caveats</a></li>
+<li class="toctree-l3"><a class="reference internal" href="03-CrossSite-Classifier/results.html#parameter-selection-and-loss-curve-diagnostics">Parameter-Selection and Loss-Curve Diagnostics</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="03-CrossSite-Classifier/loss-curves.html">Loss-Curve and Parameter-Selection Diagnostics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="03-CrossSite-Classifier/loss-curves.html#setup">Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="03-CrossSite-Classifier/loss-curves.html#training-dynamics">Training Dynamics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="03-CrossSite-Classifier/loss-curves.html#parameter-selection-fragility">Parameter-Selection Fragility</a></li>
+<li class="toctree-l3"><a class="reference internal" href="03-CrossSite-Classifier/loss-curves.html#a-validation-does-not-predict-transfer">A-Validation Does Not Predict Transfer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="03-CrossSite-Classifier/loss-curves.html#practical-implication">Practical Implication</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="03-CrossSite-Classifier/index.html#objective">Objective</a></li>
+<li class="toctree-l2"><a class="reference internal" href="03-CrossSite-Classifier/index.html#why-it-matters">Why It Matters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="03-CrossSite-Classifier/index.html#approaches">Approaches</a></li>
+<li class="toctree-l2"><a class="reference internal" href="03-CrossSite-Classifier/index.html#preprocessing">Preprocessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="03-CrossSite-Classifier/index.html#validation-protocol-cross-site-variant">Validation Protocol (cross-site variant)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="03-CrossSite-Classifier/index.html#key-findings">Key Findings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="03-CrossSite-Classifier/index.html#references-back">References Back</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="04-Multi-Label-mlp/index.html">04. Multi-Label MLP</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="04-Multi-Label-mlp/architecture.html">Multi-Label Architecture</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="04-Multi-Label-mlp/architecture.html#shared-backbone-10-independent-heads"><span class="xref std std-term">Shared backbone</span> → 10 Independent Heads</a></li>
+<li class="toctree-l3"><a class="reference internal" href="04-Multi-Label-mlp/architecture.html#label-masking-masked-bce-loss"><span class="xref std std-term">Label masking</span> (<span class="xref std std-term">Masked BCE loss</span>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="04-Multi-Label-mlp/architecture.html#species-stratified-split">Species-Stratified Split</a></li>
+<li class="toctree-l3"><a class="reference internal" href="04-Multi-Label-mlp/architecture.html#training">Training</a></li>
+<li class="toctree-l3"><a class="reference internal" href="04-Multi-Label-mlp/architecture.html#why-it-outperforms-per-drug-binary">Why It Outperforms Per-Drug Binary</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="04-Multi-Label-mlp/experiments.html">Sub-Experiments</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="04-Multi-Label-mlp/experiments.html#base-multi-label-mlp">00 — Base Multi-Label MLP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="04-Multi-Label-mlp/experiments.html#cnn-classifier">01 — CNN Classifier</a></li>
+<li class="toctree-l3"><a class="reference internal" href="04-Multi-Label-mlp/experiments.html#mlp-with-attention">02 — MLP with Attention</a></li>
+<li class="toctree-l3"><a class="reference internal" href="04-Multi-Label-mlp/experiments.html#wider-backbone-ablation">03 — Wider Backbone Ablation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="04-Multi-Label-mlp/experiments.html#class-weight">04 — Class Weight</a></li>
+<li class="toctree-l3"><a class="reference internal" href="04-Multi-Label-mlp/experiments.html#adaptive-class-weight">05 — Adaptive Class Weight</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="04-Multi-Label-mlp/index.html#objective">Objective</a></li>
+<li class="toctree-l2"><a class="reference internal" href="04-Multi-Label-mlp/index.html#why-multi-label">Why Multi-Label</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="04-Multi-Label-mlp/index.html#key-innovation-shared-backbone">Key Innovation: <span class="xref std std-term">Shared backbone</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="04-Multi-Label-mlp/index.html#baseline">Baseline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="04-Multi-Label-mlp/index.html#sub-experiments-6-total">Sub-Experiments (6 total)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="04-Multi-Label-mlp/index.html#references-back">References Back</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="05-RandomForest-Ceftazidime-Ecoli/index.html">05. Random Forest</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="05-RandomForest-Ceftazidime-Ecoli/index.html#objective">Objective</a></li>
+<li class="toctree-l2"><a class="reference internal" href="05-RandomForest-Ceftazidime-Ecoli/index.html#scope">Scope</a></li>
+<li class="toctree-l2"><a class="reference internal" href="05-RandomForest-Ceftazidime-Ecoli/index.html#analysis-steps">Analysis Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="05-RandomForest-Ceftazidime-Ecoli/index.html#key-findings">Key Findings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="05-RandomForest-Ceftazidime-Ecoli/index.html#references-forward">References Forward</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="06a-Ceftazidime-E-coli/index.html"> 06a. Ceftazidime x E. coli</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="06a-Ceftazidime-E-coli/analysis.html">Progressive Analysis Notebooks</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="06a-Ceftazidime-E-coli/analysis.html#cross-site-a-aggregated">06-00: Cross-Site (A) + Aggregated</a></li>
+<li class="toctree-l3"><a class="reference internal" href="06a-Ceftazidime-E-coli/analysis.html#cross-site-d-aggregated">06-01: Cross-Site (D) + Aggregated</a></li>
+<li class="toctree-l3"><a class="reference internal" href="06a-Ceftazidime-E-coli/analysis.html#aggregated-iterative-4-runs">06-02: Aggregated Iterative (4 Runs)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="06a-Ceftazidime-E-coli/federated.html">Federated Ceftazidime × <em>E. coli</em> — Results</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="06a-Ceftazidime-E-coli/federated.html#final-results">Final Results</a></li>
+<li class="toctree-l3"><a class="reference internal" href="06a-Ceftazidime-E-coli/federated.html#strategy-overview">Strategy Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="06a-Ceftazidime-E-coli/federated.html#species-masking-variants">Species Masking Variants</a></li>
+<li class="toctree-l3"><a class="reference internal" href="06a-Ceftazidime-E-coli/federated.html#c-species-masked-federated-learning">06-03c: Species-Masked Federated Learning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="06a-Ceftazidime-E-coli/federated.html#notebooks">Notebooks</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="06a-Ceftazidime-E-coli/index.html#objective">Objective</a></li>
+<li class="toctree-l2"><a class="reference internal" href="06a-Ceftazidime-E-coli/index.html#data">Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="06a-Ceftazidime-E-coli/index.html#files">Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="06a-Ceftazidime-E-coli/index.html#related-analyses">Related Analyses</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="06b-Ceftriaxone-E-coli/index.html">06b. Ceftriaxone x E. coli (Federated)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="06b-Ceftriaxone-E-coli/federated.html">Federated Ceftriaxone × <em>E. coli</em> — Results</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="06b-Ceftriaxone-E-coli/federated.html#final-results">Final Results</a></li>
+<li class="toctree-l3"><a class="reference internal" href="06b-Ceftriaxone-E-coli/federated.html#key-findings">Key Findings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="06b-Ceftriaxone-E-coli/federated.html#notebooks">Notebooks</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="06b-Ceftriaxone-E-coli/mask-diagnostic.html">Mask &amp; Deconfounding Diagnostics — Why Masking Fails</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="06b-Ceftriaxone-E-coli/mask-diagnostic.html#species-mask-diagnostic">Species-Mask Diagnostic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="06b-Ceftriaxone-E-coli/mask-diagnostic.html#site-deconfounding-diagnostics">Site-Deconfounding Diagnostics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="06b-Ceftriaxone-E-coli/mask-diagnostic.html#conclusion">Conclusion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="06b-Ceftriaxone-E-coli/mask-diagnostic.html#files">Files</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="06b-Ceftriaxone-E-coli/index.html#why-ceftriaxone">Why Ceftriaxone</a></li>
+<li class="toctree-l2"><a class="reference internal" href="06b-Ceftriaxone-E-coli/index.html#at-a-glance">At a Glance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="06b-Ceftriaxone-E-coli/index.html#files">Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="06b-Ceftriaxone-E-coli/index.html#related-analyses">Related Analyses</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="07-Dedicated-MLP-Aggregated/index.html">07. Dedicated Per-Drug Models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="07-Dedicated-MLP-Aggregated/results.html">Results and Outputs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="07-Dedicated-MLP-Aggregated/results.html#grid-results">Grid Results</a></li>
+<li class="toctree-l3"><a class="reference internal" href="07-Dedicated-MLP-Aggregated/results.html#rf-checkpoints">RF Checkpoints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="07-Dedicated-MLP-Aggregated/results.html#heatmaps">Heatmaps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="07-Dedicated-MLP-Aggregated/results.html#threshold-selection">Threshold Selection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="07-Dedicated-MLP-Aggregated/results.html#class-weight-ablation">Class Weight Ablation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="07-Dedicated-MLP-Aggregated/integration.html">Integration with Federated Learning (08)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="07-Dedicated-MLP-Aggregated/integration.html#best-params-csv-hyperparameters"><code class="docutils literal notranslate"><span class="pre">best_params.csv</span></code> — Hyperparameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="07-Dedicated-MLP-Aggregated/integration.html#results-balacc-csv-results-auc-csv-pooled-baselines">2. <code class="docutils literal notranslate"><span class="pre">results_balacc.csv</span></code> / <code class="docutils literal notranslate"><span class="pre">results_auc.csv</span></code> — Pooled Baselines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="07-Dedicated-MLP-Aggregated/integration.html#rf-results-pkl-pooled-rf-baseline">3. <code class="docutils literal notranslate"><span class="pre">rf_results.pkl</span></code> — Pooled RF Baseline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="07-Dedicated-MLP-Aggregated/integration.html#data-flow">Data Flow</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="07-Dedicated-MLP-Aggregated/index.html#objective">Objective</a></li>
+<li class="toctree-l2"><a class="reference internal" href="07-Dedicated-MLP-Aggregated/index.html#notebooks">Notebooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="07-Dedicated-MLP-Aggregated/index.html#models">Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="07-Dedicated-MLP-Aggregated/index.html#split">Split</a></li>
+<li class="toctree-l2"><a class="reference internal" href="07-Dedicated-MLP-Aggregated/index.html#preprocessing">Preprocessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="07-Dedicated-MLP-Aggregated/index.html#key-relationships">Key Relationships</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="08-Federated-mlp-lr-rf/index.html">08. Federated MLP / LR / RF</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="08-Federated-mlp-lr-rf/methodology.html">Federated Learning Methodology</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="08-Federated-mlp-lr-rf/methodology.html#flower-simulation-setup">Flower Simulation Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="08-Federated-mlp-lr-rf/methodology.html#common-configuration">Common Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="08-Federated-mlp-lr-rf/methodology.html#strategy-1-fedavg-mlp">Strategy 1: <span class="xref std std-term">FedAvg</span> MLP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="08-Federated-mlp-lr-rf/methodology.html#strategy-2-fedprox-mlp">Strategy 2: <span class="xref std std-term">FedProx</span> MLP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="08-Federated-mlp-lr-rf/methodology.html#strategy-3-fedlr-federated-logistic-regression">Strategy 3: <span class="xref std std-term">FedLR</span> (Federated Logistic Regression)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="08-Federated-mlp-lr-rf/methodology.html#strategy-4-fedrf-tree-collection">Strategy 4: <span class="xref std std-term">FedRF</span> (<span class="xref std std-term">Tree collection</span>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="08-Federated-mlp-lr-rf/methodology.html#cross-site-baselines">Cross-Site Baselines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="08-Federated-mlp-lr-rf/methodology.html#strategy-5-species-masking-optional">Strategy 5: Species Masking (Optional)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="08-Federated-mlp-lr-rf/methodology.html#training-loss-tracking">Training Loss Tracking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="08-Federated-mlp-lr-rf/methodology.html#evaluation">Evaluation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="08-Federated-mlp-lr-rf/drugs.html">Per-Drug Results</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="08-Federated-mlp-lr-rf/drugs.html#run-directory-structure">Run Directory Structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="08-Federated-mlp-lr-rf/drugs.html#final-results-csv-columns">final_results.csv Columns</a></li>
+<li class="toctree-l3"><a class="reference internal" href="08-Federated-mlp-lr-rf/drugs.html#drugs">Drugs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="08-Federated-mlp-lr-rf/drugs.html#retry-notebooks">Retry Notebooks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="08-Federated-mlp-lr-rf/drugs.html#strategy-performance-patterns">Strategy Performance Patterns</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="08-Federated-mlp-lr-rf/aggregated.html">Aggregated Cross-Drug Analysis</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="08-Federated-mlp-lr-rf/aggregated.html#masked-aggregated-analysis">Masked Aggregated Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="08-Federated-mlp-lr-rf/aggregated.html#data-sources">Data Sources</a></li>
+<li class="toctree-l3"><a class="reference internal" href="08-Federated-mlp-lr-rf/aggregated.html#visualisations">Visualisations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="08-Federated-mlp-lr-rf/aggregated.html#output-directory">Output Directory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="08-Federated-mlp-lr-rf/aggregated.html#key-takeaways">Key Takeaways</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="08-Federated-mlp-lr-rf/Species-Masking/index.html">Species Masking</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="08-Federated-mlp-lr-rf/Species-Masking/index.html#objective">Objective</a></li>
+<li class="toctree-l3"><a class="reference internal" href="08-Federated-mlp-lr-rf/Species-Masking/index.html#how-it-works">How It Works</a></li>
+<li class="toctree-l3"><a class="reference internal" href="08-Federated-mlp-lr-rf/Species-Masking/index.html#usage-in-federated-notebooks">Usage in Federated Notebooks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="08-Federated-mlp-lr-rf/Species-Masking/index.html#why-drug-independent">Why Drug-Independent</a></li>
+<li class="toctree-l3"><a class="reference internal" href="08-Federated-mlp-lr-rf/Species-Masking/index.html#output-files">Output Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="08-Federated-mlp-lr-rf/Species-Masking/index.html#caveat">Caveat</a></li>
+<li class="toctree-l3"><a class="reference internal" href="08-Federated-mlp-lr-rf/Species-Masking/index.html#related">Related</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="08-Federated-mlp-lr-rf/index.html#objective">Objective</a></li>
+<li class="toctree-l2"><a class="reference internal" href="08-Federated-mlp-lr-rf/index.html#scope">Scope</a></li>
+<li class="toctree-l2"><a class="reference internal" href="08-Federated-mlp-lr-rf/index.html#directory-structure">Directory Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="08-Federated-mlp-lr-rf/index.html#how-it-all-fits-together">How It All Fits Together</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">DRIAMS Federated AMR Analysis</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Train / Validation / Test Protocol</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/validation-protocol.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="train-validation-test-protocol">
+<h1>Train / Validation / Test Protocol<a class="headerlink" href="#train-validation-test-protocol" title="Link to this heading"></a></h1>
+<p>How the per-drug analyses partition data and which decisions are made on
+each partition. Applies to 01, 02 and the pooled half of 03; the cross-site
+variant is documented in <a class="reference internal" href="03-CrossSite-Classifier/index.html"><span class="doc">03</span></a> and the
+per-site threshold variant of the federated study in
+<a class="reference internal" href="08-Federated-mlp-lr-rf/index.html"><span class="doc">08</span></a>.</p>
+<section id="split-construction">
+<h2>Split Construction<a class="headerlink" href="#split-construction" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Splits are built with <code class="docutils literal notranslate"><span class="pre">maldiamrkit.evaluation.stratified_species_drug_split</span></code>,
+seed 42. Species are kept disjoint across partitions: no species appears
+in more than one of train, validation or test, so the model cannot
+memorise species-specific spectral signatures.</p></li>
+<li><p><strong>01/02 (pooled)</strong>: 70/15/15, produced in two stages. First 15% is held
+out as test; on the remaining 85%, a validation fraction
+<span class="math notranslate nohighlight">\(\frac{0.15}{1-0.15} \approx 17.6\%\)</span> is held out, yielding 15% of
+the full dataset.</p></li>
+<li><p>Preprocessing (<a class="reference internal" href="glossary.html#term-log1p-transform"><span class="xref std std-term">log1p transform</span></a> + <a class="reference internal" href="glossary.html#term-Standardize-to-zero-mean"><span class="xref std std-term">Standardize to zero mean</span></a>)
+is fitted on the training split only and applied to validation and test.</p></li>
+</ul>
+</section>
+<section id="roles">
+<h2>Roles<a class="headerlink" href="#roles" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Operation</p></th>
+<th class="head"><p>Train</p></th>
+<th class="head"><p>Validation</p></th>
+<th class="head"><p>Test</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Split share (01/02)</p></td>
+<td><p>70%</p></td>
+<td><p>15%</p></td>
+<td><p>15%</p></td>
+</tr>
+<tr class="row-odd"><td><p>Preprocessing fit</p></td>
+<td><p>fit</p></td>
+<td><p>apply</p></td>
+<td><p>apply</p></td>
+</tr>
+<tr class="row-even"><td><p>Model fitting</p></td>
+<td><p>yes</p></td>
+<td><p>-</p></td>
+<td><p>-</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="glossary.html#term-L2-regularization"><span class="xref std std-term">C</span></a> search (3-fold GridSearchCV)</p></td>
+<td><p>yes</p></td>
+<td><p>-</p></td>
+<td><p>-</p></td>
+</tr>
+<tr class="row-even"><td><p>PCA fit (01/02 approach C)</p></td>
+<td><p>fit</p></td>
+<td><p>apply</p></td>
+<td><p>apply</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="glossary.html#term-Threshold-Tuning"><span class="xref std std-term">Threshold Tuning</span></a></p></td>
+<td><p>-</p></td>
+<td><p>yes</p></td>
+<td><p>-</p></td>
+</tr>
+<tr class="row-even"><td><p>Final metrics</p></td>
+<td><p>reported</p></td>
+<td><p>reported</p></td>
+<td><p>evaluated once</p></td>
+</tr>
+</tbody>
+</table>
+<p>The test set is never used for any choice: preprocessing state,
+<a class="reference internal" href="glossary.html#term-L2-regularization"><span class="xref std std-term">C</span></a>, PCA components, model configuration and
+decision threshold are all frozen
+before it is scored. The validation split is used to select the decision
+threshold and to report intermediate metrics.</p>
+</section>
+<section id="mlp-internal-validation">
+<h2>MLP Internal Validation<a class="headerlink" href="#mlp-internal-validation" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">MaldiMLPClassifier</span></code> additionally carves <code class="docutils literal notranslate"><span class="pre">val_fraction=0.1</span></code> out of the
+<strong>training</strong> split for <a class="reference internal" href="glossary.html#term-Early-stopping"><span class="xref std std-term">Early stopping</span></a> (patience 10, restoring the
+best-validation weights). This internal split is nested inside train and is
+distinct from the external validation set used for model and threshold
+selection.</p>
+</section>
+<section id="metrics">
+<h2>Metrics<a class="headerlink" href="#metrics" title="Link to this heading"></a></h2>
+<p><a class="reference internal" href="glossary.html#term-Balanced-Accuracy"><span class="xref std std-term">Balanced Accuracy</span></a> (threshold-dependent) is the selection metric;
+<a class="reference internal" href="glossary.html#term-AUC-ROC"><span class="xref std std-term">AUC-ROC</span></a> (threshold-independent) is reported alongside it. See the
+<a class="reference internal" href="glossary.html"><span class="doc">Glossary</span></a>.</p>
+</section>
+<section id="cross-site-variant">
+<h2>Cross-Site Variant<a class="headerlink" href="#cross-site-variant" title="Link to this heading"></a></h2>
+<p>Analysis 03 replaces the pooled split with a domain-shift protocol: train
+on DRIAMS-A (species-stratified 80/20), use A validation for model and
+threshold selection, and test on the complete B/C/D sites and their pooled
+union. See <a class="reference internal" href="03-CrossSite-Classifier/index.html"><span class="doc">03</span></a>.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="data-processing.html" class="btn btn-neutral float-left" title="Data Processing" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="01-LogisticAnalysis-Aggregated/index.html" class="btn btn-neutral float-right" title="01 — Logistic Regression Analysis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
