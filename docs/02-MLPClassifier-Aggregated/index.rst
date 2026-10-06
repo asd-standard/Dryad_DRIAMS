@@ -48,6 +48,12 @@ Preprocessing
 
 Same as 01: :term:`log1p transform` + :term:`Standardize to zero mean`.
 
+Both MLP variants use the same 70/15/15 species-stratified splits and the
+10% internal early-stopping split described in
+:doc:`/validation-protocol`. Hyperparameters are selected on the external
+validation split, and the decision threshold is tuned on the same split by
+:term:`Threshold Tuning`.
+
 Training Dynamics
 -----------------
 

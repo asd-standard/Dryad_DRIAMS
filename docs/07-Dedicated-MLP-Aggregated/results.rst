@@ -28,6 +28,16 @@ Model × drug heatmaps provide an at-a-glance comparison of all three
 model families across all drugs for both :term:`Balanced Accuracy` and
 :term:`AUC-ROC`.
 
+Threshold Selection
+-------------------
+
+Decision thresholds are selected differently per model family: LR and RF
+tune the threshold with 3-fold cross-validated predictions within the
+training split (``cross_val_predict``), while the MLP tunes it on the
+external validation split. The per-site worst-case threshold protocol used
+by the federated clients is documented in
+:doc:`08 </08-Federated-mlp-lr-rf/methodology>`.
+
 Class Weight Ablation
 ---------------------
 

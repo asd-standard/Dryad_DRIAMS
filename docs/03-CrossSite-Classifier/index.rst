@@ -47,6 +47,22 @@ Preprocessing
 - No information from B/C/D leaks into preprocessing
 - Split: :term:`species-stratified split` 80/20 on A; B/C/D used as-is
 
+Validation Protocol (cross-site variant)
+----------------------------------------
+
+- **Train**: DRIAMS-A, species-stratified 80/20; preprocessing fitted on
+  the A training split only.
+- **Validation (A-val)**: the held-out 20% of A, used for model selection
+  and :term:`Threshold Tuning`.
+- **Test**: the complete B, C and D sites plus their pooled union B+C+D,
+  scored once. The threshold selected on A-val is frozen and reused
+  unchanged on every target site.
+
+Validation and test therefore come from different domains: A-val
+performance does not predict cross-site transfer (correlation 0.59–0.64;
+see :doc:`loss-curves`). See :doc:`/validation-protocol` for the shared
+definitions.
+
 Key Findings
 ------------
 

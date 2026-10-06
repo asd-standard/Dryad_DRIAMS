@@ -11,6 +11,7 @@ to federated learning with Flower, covering 10 drugs and multiple bacterial spec
 
    Introduction <introduction>
    Data Processing <data-processing>
+   Train / Validation / Test Protocol <validation-protocol>
 
 .. toctree::
    :maxdepth: 2

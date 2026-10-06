@@ -11,9 +11,15 @@ Glossary
       as the linear baseline.
 
    L2 regularization
-      Penalises large coefficient values in logistic regression.
-      Controlled by the ``C`` parameter (inverse regularisation strength).
-      Prevents overfitting and improves cross-site generalisation.
+      Quadratic penalty on the model coefficients, added to the training
+      loss. In scikit-learn's :term:`LogisticRegression` it takes the form
+      :math:`\frac{1}{2C}\|w\|_2^2` (the intercept is not penalised). It
+      shrinks coefficients towards zero and stabilises the fit when features
+      are correlated, as with the 6000 spectral bins. It is controlled by
+      ``C``, the *inverse* regularisation strength: small values correspond
+      to a strong penalty. In 01, ``C`` is searched over 5e-5 to 1e-3, i.e.
+      strongly regularised models. Prevents overfitting and improves
+      cross-site generalisation.
 
    default threshold
       Hard classification boundary at 0.5. A sample is predicted resistant
@@ -21,10 +27,15 @@ Glossary
       consistently improves balanced accuracy.
 
    Threshold Tuning
-      Optimising the decision threshold via cross-validation to maximise
-      worst-site :term:`Balanced Accuracy`. Evaluated over a grid of thresholds
-      (typically 5%–95%) and selecting the one with highest minimum
-      per-site performance.
+      Optimising the decision threshold that converts predicted
+      probabilities into class labels. A grid of thresholds (typically
+      5%–95%) is swept over held-out predictions — a validation split, or
+      cross-validated predictions within the training set — and the value
+      maximising :term:`Balanced Accuracy` is selected. The threshold is
+      then frozen and applied to the test set. It changes the decision rule
+      only, not the model, so :term:`AUC-ROC` is unaffected. Which held-out
+      predictions are used is analysis-specific and documented in each
+      analysis page; see also :doc:`validation-protocol`.
 
    PCA
       Principal Component Analysis. Linear dimensionality reduction that
@@ -181,9 +192,13 @@ Glossary
       linear baseline for :term:`multi-label classification`.
 
    Class weight
-      Inverse-frequency weighting applied to the loss function. Rare classes
-      (typically resistant samples, ~20% of data) receive higher weight,
-      penalising their misclassification more heavily.
+      Per-class weighting applied to the loss function. With scikit-learn's
+      ``class_weight='balanced'``, class :math:`c` receives weight
+      :math:`w_c = \frac{n_\text{samples}}{n_\text{classes} \cdot n_c}`, so
+      rare classes (typically the resistant samples, ~20% of data) contribute
+      more to the loss and their misclassification is penalised more heavily.
+      Used by the logistic regression baselines (01, 03) to counteract the
+      susceptible/resistant imbalance.
 
    Random Forest
       Ensemble of decision trees, each trained on a bootstrap sample with

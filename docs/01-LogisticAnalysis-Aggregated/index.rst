@@ -15,22 +15,29 @@ compared.
 Approaches
 ----------
 
-Three variants are evaluated:
+Three variants are evaluated, all with solver ``lbfgs`` and
+``max_iter=5000``:
 
 **A) Raw LR**
-   Vanilla :term:`LogisticRegression` (scikit-learn) with no regularisation
-   and :term:`default threshold` of 0.5. Run on Ciprofloxacin only.
+   :term:`LogisticRegression` with ``penalty=None`` (no regularisation) and
+   the :term:`default threshold` of 0.5, with no tuning. Run on
+   Ciprofloxacin only.
 
 **B) L2 LR + Threshold Tuning**
-   :term:`LogisticRegression` with ``penalty='l2'`` and
-   ``class_weight='balanced'``; ``C`` selected by 3-fold
-   :term:`GridSearchCV` over 15 values (5e-5 to 1e-3), followed by
-   :term:`Threshold Tuning` on the held-out validation split.
+   :term:`LogisticRegression` with ``penalty='l2'`` (see
+   :term:`L2 regularization`) and ``class_weight='balanced'`` (see
+   :term:`Class weight`). ``C``, the *inverse* regularisation strength, is
+   selected by 3-fold :term:`GridSearchCV` over 15 values (5e-5 to 1e-3,
+   scoring :term:`Balanced Accuracy`) on the **training set only**; the CV
+   score uses the default 0.5 threshold. The decision threshold is then
+   tuned on the held-out validation split over 91 values (0.05 to 0.95) by
+   :term:`Threshold Tuning`.
 
 **C) PCA + L2 LR + Threshold Tuning**
-   :term:`Dimensionality reduction` via :term:`PCA` (retaining 94% variance)
-   followed by the same L2 LR and :term:`Threshold Tuning` as B.
-   Evaluates whether denoising spectra improves generalisation.
+   :term:`Dimensionality reduction` via :term:`PCA` (retaining 94% variance,
+   fitted on the training set) followed by the same L2 LR and
+   :term:`Threshold Tuning` as B. Evaluates whether denoising spectra
+   improves generalisation.
 
 Preprocessing
 -------------
@@ -38,13 +45,21 @@ Preprocessing
 - :term:`log1p transform` (stabilise variance)
 - :term:`Standardize to zero mean` (fit on train only)
 
-Train/Test Split
-----------------
+Train / Validation / Test Protocol
+----------------------------------
 
-- **Species-stratified** 70/15/15 — :term:`species-stratified split`
-- Ensures no species appears in both train and test, forcing the model
-  to generalise across species rather than memorising species-specific
+- **Species-stratified** 70/15/15 (:term:`species-stratified split`, seed
+  42): no species appears in more than one partition, forcing the model to
+  generalise across species rather than memorising species-specific
   spectral features.
+- **Train**: preprocessing fitted, model fitted, ``C`` selected by 3-fold
+  :term:`GridSearchCV`, PCA basis fitted (approach C).
+- **Validation**: decision threshold tuned over 91 values (0.05–0.95) by
+  :term:`Threshold Tuning`; no model parameters are re-fitted.
+- **Test**: scored once with every choice frozen.
+
+See :doc:`/validation-protocol` for the shared protocol, including the MLP
+internal validation split.
 
 Key Findings
 ------------
