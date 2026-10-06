@@ -85,6 +85,17 @@ Notebooks
 - ``01-01-LR-Diagnostics.ipynb`` — convergence, threshold sweep, C-sweep
 - Outputs: ``results_lr_aggregated/`` and ``results_lr_diagnostics/``
 
+Cross-Site Behaviour
+--------------------
+
+Trained on DRIAMS-A and tested on B/C/D (analysis 03), L2 LR reaches a mean
+:term:`Balanced Accuracy` of 0.641 on B+C+D (PCA+L2 0.643) — on par with, or
+slightly better than, the regularised MLP (0.634). The decision threshold is
+tuned once on A validation and reused on all target sites. PCA has a mixed
+effect, helping Vancomycin and Ciprofloxacin but hurting Ceftazidime. See
+:doc:`03 </03-CrossSite-Classifier/index>` and
+:doc:`03 loss curves </03-CrossSite-Classifier/loss-curves>`.
+
 References Back
 ---------------
 

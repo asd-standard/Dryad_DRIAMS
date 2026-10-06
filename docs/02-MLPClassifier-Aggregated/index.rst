@@ -87,6 +87,22 @@ Notebooks
 - ``02-01-Loss-Curves.ipynb`` — best-config reruns with per-epoch logging
 - Outputs: ``results_mlp_aggregated/``
 
+Cross-Site Behaviour
+--------------------
+
+The pooled models above are the centralised upper bound. When the same MLP
+architecture is trained on a single site (DRIAMS-A, species-stratified 80/20)
+and tested on B/C/D (analysis 03), mean :term:`Balanced Accuracy` drops from
+0.818 on A validation to 0.634 on B+C+D — a loss of 15–19 points shared with
+the linear baseline. Cross-site, the MLP does **not** beat
+:term:`LogisticRegression` (0.641/0.643 for L2/PCA+L2 vs 0.634 for the
+regularised MLP), and the attention variant is worst (0.608) and unstable
+(Amikacin A-val 0.500, i.e. no learning). A-only loss curves (03-01) show
+systematic overfitting (val−train gaps up to 0.19 at the best epoch) and
+confirm that validation on A does not predict cross-site transfer. See
+:doc:`03 </03-CrossSite-Classifier/index>` and
+:doc:`03 loss curves </03-CrossSite-Classifier/loss-curves>`.
+
 Where This Appears Next
 -----------------------
 

@@ -10,6 +10,7 @@ Basel-Land), C (Canton Aarau), D (Viollier).
    :caption: Sections
 
    results
+   loss-curves
 
 Objective
 ---------
@@ -50,9 +51,18 @@ Key Findings
 ------------
 
 - Significant drop in performance compared to :term:`Aggregated (pooled) training` (01/02):
-  training on a single site's data limits generalisation
-- :term:`MLP` handles :term:`Domain shift` better than :term:`LogisticRegression`
-- Site D (Viollier, private lab) is consistently the hardest target
+  mean :term:`Balanced Accuracy` on the ten common drugs falls from 0.807 on
+  A validation to 0.632 on B+C+D — a 15–19 point loss depending on the model
+- :term:`LogisticRegression` transfers as well as, or better than, the
+  :term:`MLP`: B+C+D means are 0.641 (L2), 0.643 (PCA+L2), 0.634 (regularised
+  MLP) and 0.608 (attention MLP); more complex models do not generalise better
+- Site difficulty is not driven by dataset size: B is the smallest site yet
+  the easiest target (0.692), while D (Viollier, private lab) is the largest
+  and the hardest (0.601); C is intermediate (0.615)
+- Per-drug transfer spans from Amoxicillin-Clavulanic acid (0.737, gap 0.083)
+  to Piperacillin-Tazobactam (0.536) and Amikacin (0.537), near chance
+- Validation on A does not predict cross-site transfer (correlation 0.59–0.64);
+  see :doc:`loss-curves`
 - :term:`Cross-site evaluation` establishes the **lower bound** that
   :term:`Federated learning` (08) aims to beat by incorporating data from
   all sites
