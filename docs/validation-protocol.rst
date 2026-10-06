@@ -43,7 +43,7 @@ Roles
      - yes
      - \-
      - \-
-   * - ``C`` search (3-fold GridSearchCV)
+   * - :term:`C <L2 regularization>` search (3-fold GridSearchCV)
      - yes
      - \-
      - \-
@@ -60,8 +60,9 @@ Roles
      - reported
      - evaluated once
 
-The test set is never used for any choice: preprocessing state, ``C``, PCA
-components, model configuration and decision threshold are all frozen
+The test set is never used for any choice: preprocessing state,
+:term:`C <L2 regularization>`, PCA components, model configuration and
+decision threshold are all frozen
 before it is scored. The validation split is used to select the decision
 threshold and to report intermediate metrics.
 

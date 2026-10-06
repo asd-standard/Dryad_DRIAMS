@@ -288,7 +288,7 @@ Glossary
       centralized-vs-federated comparisons.
 
    best_params.csv
-      CSV file produced by 07 containing the optimal ``C`` for
+      CSV file produced by 07 containing the optimal :term:`C <L2 regularization>` for
       :term:`LogisticRegression` and ``lr``/``dropout`` for
       :term:`MLP` per drug. Consumed directly by the federated notebooks
       in 08 to set client hyperparameters.

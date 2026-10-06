@@ -37,18 +37,23 @@ Notebooks
 Models
 ------
 
-+-------+-------------------------------------------------------+-----------------+
-| Model | Hyperparameter Search                                 | Output          |
-+=======+=======================================================+=================+
-| LR    | :term:`L2 regularization`, ``GridSearchCV(C)``,       | Per-drug C,     |
-|       | :term:`Threshold Tuning`                              | threshold       |
-+-------+-------------------------------------------------------+-----------------+
-| RF    | :term:`GridSearchCV`\ (n_estimators, max_depth,       | Per-drug params,|
-|       | min_samples_leaf, class_weight), :term:`Threshold Tuning` | threshold   |
-+-------+-------------------------------------------------------+-----------------+
-| MLP   | 8×8 :term:`GridSearchCV` lr×dropout, internal val,    | Per-drug lr,    |
-|       | :term:`Early stopping` (patience=10)                  | dropout         |
-+-------+-------------------------------------------------------+-----------------+
+.. list-table::
+   :header-rows: 1
+
+   * - Model
+     - Hyperparameter Search
+     - Output
+   * - LR
+     - :term:`L2 regularization`, ``GridSearchCV(C)``, :term:`Threshold Tuning`
+     - Per-drug :term:`C <L2 regularization>`, threshold
+   * - RF
+     - :term:`GridSearchCV` (n_estimators, max_depth, min_samples_leaf,
+       class_weight), :term:`Threshold Tuning`
+     - Per-drug params, threshold
+   * - MLP
+     - 8×8 :term:`GridSearchCV` lr×dropout, internal val,
+       :term:`Early stopping` (patience=10)
+     - Per-drug lr, dropout
 
 Split
 -----

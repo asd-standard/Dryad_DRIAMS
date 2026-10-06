@@ -69,7 +69,7 @@ Retry Notebooks
    FedLR, and FedRF results from CSVs — only FedProx is re-trained.
 
 **retry_lr.ipynb**
-   Re-runs only Federated LR with new ``C``, ``max_iter``, and
+   Re-runs only Federated LR with new :term:`C <L2 regularization>`, ``max_iter``, and
    ``rounds``. Same in-place merge pattern.
 
 Both utilities save time: no need to re-run FedAvg (40 rounds × 4

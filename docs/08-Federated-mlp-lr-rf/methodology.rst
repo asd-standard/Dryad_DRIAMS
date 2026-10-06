@@ -80,7 +80,7 @@ Strategy 3: :term:`FedLR` (Federated Logistic Regression)
 Federated training of a scikit-learn :term:`LogisticRegression` model.
 
 - **Solver**: SAGA (supports warm-start and sparse gradients)
-- **L2 regularisation**: ``C`` from 07's :term:`best_params.csv`
+- **L2 regularisation**: :term:`C <L2 regularization>` from 07's :term:`best_params.csv`
 - **Class weight**: Balanced
 - **Rounds**: 40 (same as :term:`FedAvg`)
 - **Client training**: 1 ``max_iter`` per round (``warm_start=True``)
