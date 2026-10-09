@@ -58,6 +58,8 @@ Files
 - ``.../aggregated_lr_val_tuned.csv`` — corrected aggregated LR baseline: best
   ``C``, validation-tuned threshold and Balanced Accuracy / AUC for the
   validation and test splits
+- ``.../multilabel_results_testtuned_backup.csv`` — pre-correction export with
+  test-tuned aggregated LR thresholds, kept for provenance
 - ``.../Final-Comparison-Bal-Acc.txt``, ``.../best_params_04.json``
 - ``.../multilabel_grid_cs.csv`` / ``multilabel_grid_agg.csv`` — full 6×6 grids
 - ``.../history_crosssite.csv`` / ``history_aggregated.csv`` — per-epoch
@@ -240,8 +242,8 @@ Aggregated: Trained on A+B+C+D (04-00)
      - **0.850**
 
 The LR columns come from the corrected validation-tuned export
-(``aggregated_lr_val_tuned.csv``); the original 04-00 export tuned these
-thresholds on the test set and is optimistically biased (see `Caveats`_).
+(``aggregated_lr_val_tuned.csv``, now also merged into
+``multilabel_results.csv`` and ``Final-Comparison-Bal-Acc.txt``).
 
 Pooling the four sites lifts the shared MLP from 0.635 to 0.775 macro
 Balanced Accuracy (+0.139), the same gap measured for the per-drug models in
@@ -351,13 +353,15 @@ Caveats
 - Results come from a **single seed** (42); no confidence intervals are
   available and per-drug differences below ~0.02–0.03 should not be
   over-interpreted.
-- The original 04-00 export (``multilabel_results.csv``, ``AGG_LR_*`` columns)
-  tuned the aggregated LR thresholds **directly on the test set** — the only
-  such case in 01–04 — so its macro mean (0.792) is optimistically biased; the
-  per-drug inflation reaches +0.053 (Amikacin). The corrected validation-tuned
-  baseline is exported as ``aggregated_lr_val_tuned.csv`` and is what this page
-  reports. All other results (both MLP runs, the CNN) tune thresholds on
-  validation.
+- The aggregated LR baseline of the original 04-00 run tuned its thresholds
+  **directly on the test set** (the only such case in 01–04), making its macro
+  mean 0.792 optimistically biased (up to +0.053 on Amikacin). This was
+  corrected on 2026-10-09: the 04-00 notebook now tunes aggregated LR
+  thresholds on the validation split, ``multilabel_results.csv`` and
+  ``Final-Comparison-Bal-Acc.txt`` carry the corrected values (macro mean
+  0.781), and the standalone re-run is ``aggregated_lr_val_tuned.csv``. The
+  pre-correction export is preserved as
+  ``multilabel_results_testtuned_backup.csv``.
 - Reported test metrics use the **best-validation-loss checkpoint**, not the
   epoch with the highest validation Balanced Accuracy; for the cross-site MLP
   the curve maximum (0.776) occurs at the final epoch while the checkpoint
