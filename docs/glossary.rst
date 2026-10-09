@@ -206,6 +206,13 @@ Glossary
       predictions across all trees. Robust, interpretable, and handles
       tabular data well.
 
+   OOB error
+      Out-of-bag error: the fraction of training samples misclassified by the
+      trees that did not see them in their bootstrap sample (``oob_score`` in
+      scikit-learn's :term:`Random Forest`). A free internal estimate of
+      generalisation that requires no validation split, at the cost of being
+      noisy with few trees.
+
    n_estimators
       Number of trees in a :term:`Random Forest`. More trees reduce variance
       at the cost of memory and inference time. Typical values: 100–500.
