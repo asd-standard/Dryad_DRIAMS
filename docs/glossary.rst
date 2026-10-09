@@ -181,10 +181,10 @@ Glossary
       to handle partial label matrices with missing entries.
 
    aggregated_multilabel_data.npz
-      Cached multi-label matrix built by 04-00 from the per-drug CSVs:
-      ``X_all`` (26642 × 6000 spectra), ``Y_all`` (26642 × 10 labels,
-      NaN = untested), ``sp_all`` (species). Reused by the other 04
-      sub-experiments.
+      Cached multi-label matrix built by the 04 data loader from the per-drug
+      CSVs: ``X_all`` (26781 × 6000 spectra), ``Y_all`` (26781 × 10 labels,
+      NaN = untested), ``sp_all`` (species). Reused by the 04-01 CNN run
+      (``aggregated_multilabel_data_cnn_v2.npz``).
 
    OneVsRest
       Decomposes a multi-label problem into N independent binary classifiers.

@@ -189,7 +189,7 @@ Derived Artifacts
      - 08 federated notebooks
 
 The multi-label cache concatenates all four sites into ``X_all``
-(26,642 × 6000), ``Y_all`` (26,642 × 10, ``NaN`` for untested drugs),
+(26,781 × 6000), ``Y_all`` (26,781 × 10, ``NaN`` for untested drugs),
 and ``sp_all`` (species), deduplicating spectra that appear in several
 per-drug CSVs. Species masks are described in
 :doc:`08 </08-Federated-mlp-lr-rf/Species-Masking/index>`.

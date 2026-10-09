@@ -20,7 +20,7 @@ to federated learning with Flower, covering 10 drugs and multiple bacterial spec
    01. Logistic Regression <01-LogisticAnalysis-Aggregated/index>
    02. MLP Classifier <02-MLPClassifier-Aggregated/index>
    03. Cross-Site Classifier <03-CrossSite-Classifier/index>
-   04. Multi-Label MLP <04-Multi-Label-mlp/index>
+   04. Multi-Label Classifiers <04-Multi-Label-mlp/index>
    05. Random Forest <05-RandomForest-Ceftazidime-Ecoli/index>
     06a. Ceftazidime x E. coli <06a-Ceftazidime-E-coli/index>
    06b. Ceftriaxone x E. coli (Federated) <06b-Ceftriaxone-E-coli/index>
