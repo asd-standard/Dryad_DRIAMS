@@ -46,6 +46,11 @@ Configurable: set ``DRUGS_TO_ANALYZE`` to select drugs; drugs without
 results are silently skipped. Set ``TARGET_RUN`` to pin a specific run
 (``None`` = latest).
 
+The summaries on this page were regenerated on 2026-10-10 from the latest run
+of each drug, including Ceftriaxone ``07-Run`` (2026-09-21). The aggregator
+skips ``fedprox_mu*_train_loss_per_round.csv`` files and resolves its
+``BASE`` path from local candidates so it also runs outside Colab.
+
 Visualisations
 --------------
 
@@ -76,6 +81,20 @@ Visualisations
    Pivot tables: :term:`Balanced Accuracy` and :term:`AUC-ROC` (rows = drugs,
    columns = methods). Saved as CSV.
 
+.. figure:: /_static/08-Federated-mlp-lr-rf/08_strategy_ranking.svg
+   :alt: Strategy ranking by mean All-site Balanced Accuracy across the six drugs
+   :width: 100%
+
+   Strategy ranking by mean All-site Balanced Accuracy (± SD across the six
+   drugs), including the pooled baselines from 07.
+
+.. figure:: /_static/08-Federated-mlp-lr-rf/08_centralized_vs_fl.svg
+   :alt: Pooled MLP versus the best federated strategy per drug
+   :width: 100%
+
+   Pooled MLP versus the best federated strategy per drug, gap annotated
+   (positive = pooled ahead).
+
 Output Directory
 ----------------
 
@@ -90,12 +109,20 @@ Results are saved to ``aggregated_results/`` (created automatically):
 Key Takeaways
 -------------
 
-- **Federated learning closes 60–80% of the gap** between
-  :term:`Cross-site evaluation` and :term:`Aggregated (pooled) training`
-  performance
-- :term:`FedAvg` MLP is the most reliable strategy across all 6 drugs
-- :term:`FedProx` helps most when site sizes are imbalanced
-- :term:`FedRF` with 5 rounds achieves competitive results, suggesting
-  :term:`Tree collection` is a viable federated strategy for tabular data
-- The centralized-vs-federated gap varies by drug (larger for drugs
-  where site :term:`DRIAMS`-D has disproportionately many samples)
+- **Federated learning closes 60–94% of the cross-site → pooled gap**
+  (Ceftazidime is not measurable: its 08 runs lack cross-site baselines).
+- **Best-FL vs pooled MLP gap**: 0.008 (Ceftazidime), 0.012 (Gentamicin),
+  0.014 (Amoxicillin-Clavulanic acid), 0.027 (Ciprofloxacin), 0.037
+  (Piperacillin-Tazobactam), 0.061 (Ceftriaxone); the best strategy is
+  usually :term:`FedAvg` LR.
+- **FedAvg LR and FedAvg MLP are tied on average** — mean All-site Balanced
+  Accuracy 0.729 ± 0.049 vs 0.728 ± 0.054 across the six drugs — behind the
+  pooled MLP (0.759 ± 0.051) and close to the centralized MLP (0.744 ± 0.074).
+- **FedProx needs stabilisation** before it can be ranked: its tuned-μ runs
+  peak in the first rounds and then decay (see :doc:`drugs`).
+- **FedRF** at 5 rounds averages 0.675 ± 0.053 — ahead of cross-site RF
+  (0.623 ± 0.057) and within ~0.03 of the centralized RF (0.705 ± 0.068) —
+  confirming :term:`Tree collection` as a viable federated strategy.
+- The centralized-vs-federated gap varies by drug and is largest for
+  Ceftriaxone (0.061) and Piperacillin-Tazobactam (0.037), where site
+  :term:`DRIAMS`-D dominates the sample count.
