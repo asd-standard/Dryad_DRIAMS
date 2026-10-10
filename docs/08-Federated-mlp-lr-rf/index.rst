@@ -12,6 +12,7 @@ using :term:`Flower (flwr)`.
    drugs
    aggregated
    Species-Masking/index
+   umap-diagnostic
 
 Objective
 ---------

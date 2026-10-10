@@ -223,6 +223,11 @@ The practical implication is that MALDI-TOF AMR models are site-specific, and
 cross-site generalisation is best handled by :term:`Federated learning` (each
 site trains locally) rather than by deconfounding the raw spectra.
 
+The 08 UMAP diagnostics
+(:doc:`/08-Federated-mlp-lr-rf/umap-diagnostic`) quantify this result: site
+separability measured by classifier probes is essentially unchanged after
+zeroing the species masks (unmasked, majority and union), on all four sites.
+
 Files
 -----
 

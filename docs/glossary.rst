@@ -48,6 +48,19 @@ Glossary
       input data into fewer dimensions while preserving relevant structure.
       In MALDI-TOF analysis, tested as a denoising step before classification.
 
+   UMAP
+      Uniform Manifold Approximation and Projection — a non-linear
+      dimensionality-reduction method. Used in the 08 UMAP diagnostics to
+      visualise the pooled spectra in two dimensions (n_neighbors 20,
+      min_dist 0.25, seed 42). The embedding is a visualisation tool:
+      neighbourhood relations are preserved, global distances are not.
+
+   D-lift
+      Diagnostic ratio used in the 08 UMAP analyses: the share of site-D
+      spectra in a cluster divided by D's overall share of the data. Values
+      above 1 mark clusters over-represented by site D; 1.0 means the cluster
+      matches the global D share exactly.
+
    log1p transform
       :math:`\log(1 + x)` applied element-wise to MALDI-TOF intensity values.
       Stabilises heavy-tailed distributions and brings dynamic range into a

@@ -118,6 +118,9 @@ Related
 -------
 
 - :term:`Species masking` — glossary entry with full strategy descriptions
+- :doc:`UMAP diagnostics </08-Federated-mlp-lr-rf/umap-diagnostic>` — where the
+  species/site signals live in the pooled spectra and how separable the sites
+  are (the quantitative counterpart of the masking caveat below)
 - :doc:`06b </06b-Ceftriaxone-E-coli/federated>` — first use of species
   masking in the Ceftriaxone federated experiment (06-03c notebook)
 - :doc:`/08-Federated-mlp-lr-rf/methodology` — 08 methodology, including Strategy 5:
