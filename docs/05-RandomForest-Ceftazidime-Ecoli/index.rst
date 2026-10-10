@@ -7,9 +7,9 @@ model family and the :term:`Feature importance` machinery reused in 07 and 08.
 
 .. note::
 
-   All numbers on this page come from the local October 2026 re-run of the
-   notebook (see `Provenance`_); the June 2026 exports are archived in
-   ``results_rf_2026-06-13/``.
+   All numbers on this page come from local October 2026 runs of the notebook
+   and its seeded cross-site extension (see `Provenance`_); the June 2026
+   exports are archived in ``results_rf_2026-06-13/``.
 
 
 Objective
@@ -83,10 +83,14 @@ class_weight 'balanced'** with cross-validated Balanced Accuracy **0.6049**.
 The 25% holdout was then scored once: **BalAcc 0.6152 / AUC 0.7805**
 (:term:`OOB error` 0.0987).
 
-**Cross-site evaluation** — fit on Site A only (1,255 spectra, 120 resistant)
-with the tuned configuration, preprocessing fitted on A, and score B/C/D
-separately. Thresholds are left at the :term:`default threshold` of 0.5; no
-:term:`Threshold Tuning` is performed.
+**Cross-site evaluation** — the main notebook fits on all of Site A (1,255
+spectra, 120 resistant) with the tuned configuration, preprocessing fitted on
+A, and scores B/C/D separately at the :term:`default threshold` of 0.5. Its
+"A (train)" row is an in-sample reference and is labelled as such. The seeded
+extension ``05-01-CrossSite-Seeded.ipynb`` splits A 80/20 into train/holdout
+per seed, fits on the A-train slice only, and additionally tunes the threshold
+by 3-fold cross-validated predictions inside that slice
+(:term:`Threshold Tuning`), frozen for every target.
 
 **Pooled multi-seed evaluation** — five independent label-stratified 75/25
 splits of the pooled data (seeds 42, 123, 456, 789, 1011); the transform and
@@ -110,57 +114,80 @@ trees and ``class_weight='balanced'`` at the top.
    Mean 3-fold CV Balanced Accuracy (± SD across combinations) for each
    parameter level; the dashed line is the best score (0.6049).
 
-**No cross-site transfer.** Trained on A, the model predicts *every* B/C/D
-spectrum as susceptible at the 0.5 threshold, which pins Balanced Accuracy at
-exactly 0.500: sensitivity 0, specificity 1.
+**Cross-site evaluation (seeded, held-out A).** The main notebook also prints
+an "A (train)" row (BalAcc 0.999); that is training-set memorisation and is
+explicitly labelled as such. The clean protocol — implemented in
+``05-01-CrossSite-Seeded.ipynb`` — splits A 80/20 into a train slice and a
+held-out A test slice for five seeds, fits the tuned RF on the A-train slice
+only, and scores the A holdout plus B/C/D. Two thresholds are reported: the
+default 0.5 and a threshold tuned by cross-validated predictions inside
+A-train (frozen for every target).
 
-.. figure:: /_static/05-RandomForest-Ceftazidime-Ecoli/05_cross_site_eval.svg
-   :alt: Cross-site Balanced Accuracy and AUC for the Random Forest trained on DRIAMS-A
+.. figure:: /_static/05-RandomForest-Ceftazidime-Ecoli/05_cross_site_seeded.svg
+   :alt: Seeded cross-site Balanced Accuracy and AUC, and the pooled threshold effect
    :width: 100%
 
-   Cross-site scores per site, with sample counts; A is scored in-sample as a
-   reference and is not evidence of generalisation.
+   Left: seeded cross-site evaluation (train on an 80% slice of A, mean ± SD
+   over five seeds) for the A holdout, B, C, D and their union. Right: the
+   pooled 75/25 runs at the default and tuned thresholds.
 
-.. figure:: /_static/05-RandomForest-Ceftazidime-Ecoli/05_cross_site_confusion.svg
-   :alt: Cross-site confusion matrices for DRIAMS-B, C and D
+.. figure:: /_static/05-RandomForest-Ceftazidime-Ecoli/05_seeded_confusion.svg
+   :alt: Seed-42 cross-site confusion matrices for DRIAMS-B, C and D
    :width: 100%
 
-   Confusion matrices on B/C/D: zero resistant predictions everywhere.
+   Seed-42 model at the 0.5 threshold: zero resistant predictions on B/C/D.
 
-.. list-table:: Cross-site results (train A)
+.. list-table:: Seeded cross-site — train on 80% of A (mean ± SD over 5 seeds)
    :header-rows: 1
 
-   * - Site
-     - n
-     - BalAcc
+   * - Target
+     - n per seed
+     - BalAcc @0.5
+     - BalAcc @tuned
      - AUC
-   * - DRIAMS-A (train)
-     - 1255
-     - 0.999
-     - 1.000
+   * - A holdout
+     - 251
+     - 0.570 ± 0.017
+     - **0.744 ± 0.037**
+     - **0.809 ± 0.052**
    * - DRIAMS-B
      - 213
-     - 0.500
-     - 0.599
+     - 0.500 ± 0.000
+     - 0.553 ± 0.016
+     - 0.589 ± 0.020
    * - DRIAMS-C
      - 908
-     - 0.500
-     - 0.553
+     - 0.500 ± 0.000
+     - 0.499 ± 0.029
+     - 0.505 ± 0.034
    * - DRIAMS-D
      - 1987
-     - 0.500
-     - 0.645
+     - 0.500 ± 0.000
+     - 0.591 ± 0.022
+     - 0.629 ± 0.014
+   * - B+C+D
+     - 3108
+     - 0.500 ± 0.000
+     - 0.557 ± 0.020
+     - 0.597 ± 0.019
 
-The AUCs stay above chance — the ranking carries some signal, strongest on D
-(0.645) — but it does not survive the 0.5 decision threshold. The pattern
-matches the :term:`Cross-site evaluation` findings of 03 and 04: the model
-fits Site A almost perfectly (in-sample BalAcc 0.999) and transfers poorly,
-with :term:`Domain shift` dominating.
+On held-out A spectra the tuned model reaches Balanced Accuracy 0.744 and
+AUC 0.809 — genuine within-site generalisation, and proof that the 0.999
+"train" row is memorisation. On B/C/D the same model stays far behind:
+threshold tuning removes the all-susceptible collapse (0.500 → 0.55–0.59), but
+the underlying ranking barely transfers (AUC 0.505–0.629; C is at chance). The
+cross-site failure is therefore a genuine :term:`Domain shift` effect, not an
+artifact of in-sample scoring or of the 0.5 threshold. The threshold tuned on
+A (0.29–0.35) does not transfer uniformly either: on C it ends slightly below
+chance (0.499).
 
-**Pooled multi-seed: ranking signal, threshold-limited.** On pooled splits
-the RF reaches **BalAcc 0.6162 ± 0.0198** and **AUC 0.7449 ± 0.0281** across
-five seeds. The gap between AUC and Balanced Accuracy is the missing
-threshold tuning: resistant spectra are ranked well but rarely exceed 0.5.
+**Pooled multi-seed: the 0.5 threshold, not weak ranking.** On pooled splits
+the RF reaches **BalAcc 0.6162 ± 0.0198** at the default 0.5 threshold and
+**AUC 0.7449 ± 0.0281** across five seeds. Re-scoring the same five splits
+with thresholds tuned by cross-validated predictions (mean threshold ≈ 0.35)
+raises Balanced Accuracy to **0.6788 ± 0.0238**. The 0.5 rule suppresses
+resistant calls (seed 42: 65 predicted vs 121 true resistant); the pooled 0.62
+is a decision-threshold artifact, not evidence of weak learning.
 
 .. figure:: /_static/05-RandomForest-Ceftazidime-Ecoli/05_multi_seed_eval.svg
    :alt: Pooled multi-seed Balanced Accuracy and AUC with per-seed values
@@ -173,36 +200,45 @@ threshold tuning: resistant spectra are ranked well but rarely exceed 0.5.
    :header-rows: 1
 
    * - Seed
-     - BalAcc
+     - BalAcc @0.5
+     - BalAcc @tuned
      - AUC
      - OOB error
    * - 42 (tuning holdout)
      - 0.615
+     - 0.700
      - 0.781
      - 0.099
    * - 123
      - 0.654
+     - 0.688
      - 0.764
      - 0.104
    * - 456
      - 0.602
+     - 0.702
      - 0.743
      - 0.107
    * - 789
      - 0.599
+     - 0.639
      - 0.697
      - 0.105
    * - 1011
      - 0.611
+     - 0.665
      - 0.739
      - 0.103
    * - **Mean ± SD**
      - **0.616 ± 0.020**
+     - **0.679 ± 0.024**
      - **0.745 ± 0.028**
      - —
 
 Seed 42 is also the 25% tuning holdout of the grid search (same split,
-preprocessing and model seed, by construction).
+preprocessing and model seed, by construction). Tuned-threshold values come
+from ``05-01-CrossSite-Seeded.ipynb``; the @0.5 and AUC columns reproduce the
+main notebook's report exactly.
 
 **Feature importance.** The final RF put most impurity importance on a few
 narrow regions of the spectrum: ~11.78 kDa, ~10.47 kDa, ~6.81 kDa,
@@ -269,15 +305,22 @@ Interpretation
 - **Third model family.** The RF pipeline (tuning, cross-site, multi-seed,
   importance) works and is reused for the per-drug models of 07 and the
   federated RF of 08.
-- **The cross-site story is unchanged.** As in 03/04, a model that fits Site A
-  almost perfectly fails on B/C/D; here the failure is total at the 0.5
-  threshold (all-susceptible), with only weak ranking signal (AUC 0.55–0.645).
-- **Threshold tuning is the missing piece.** Pooled AUC 0.745 shows the RF
-  ranks resistant spectra usefully, but without :term:`Threshold Tuning` this
-  cannot convert into Balanced Accuracy. For comparison, the per-drug RF of
-  07 (all species, thresholds tuned by cross-validated predictions) reaches
-  0.686 / 0.759 on Ceftazidime — a different scope, but it illustrates what
-  tuning adds.
+- **Within-site skill is real; cross-site transfer is not.** With a held-out
+  slice of A, the tuned RF reaches 0.744 Balanced Accuracy / 0.809 AUC on
+  unseen A spectra, but only 0.50–0.63 AUC on B/C/D even after threshold
+  tuning. The domain shift documented in 03/04 is therefore genuine, not an
+  artifact of in-sample scoring or of the 0.5 threshold.
+- **The pooled 0.62 is a threshold artifact.** The same five pooled splits
+  reach 0.679 Balanced Accuracy once thresholds are tuned by cross-validated
+  predictions, on top of AUC 0.745. For comparison, the per-drug RF of 07
+  (all species, tuned thresholds) reaches 0.686 / 0.759 on Ceftazidime — a
+  different scope, but nearly identical performance.
+- **The remaining ceiling is the task, not the tuning.** Only 482 resistant
+  spectra exist (24 in a typical A holdout, 121 in a pooled test split),
+  clinical S/R labels carry noise, and resistance is an indirect spectral
+  phenotype. The hyperparameter surface is flat (all CV means within
+  ~0.51–0.60), so no grid search converts the data into a stronger signal:
+  ~0.68 Balanced Accuracy / 0.75 AUC is what this model family extracts.
 - **Spectral regions.** The importance peaks are narrow and clustered
   (adjacent bins), consistent with a few informative peaks rather than a
   distributed signature.
@@ -285,20 +328,25 @@ Interpretation
 Caveats
 -------
 
-- **No threshold tuning anywhere** — cross-site predictions collapse to
-  all-susceptible, so cross-site BalAcc is uninformative at exactly 0.500;
-  the AUCs (0.55–0.645) are the meaningful cross-site numbers.
+- **Threshold conventions differ by experiment.** The main notebook reports
+  the default 0.5 threshold; the seeded notebook adds cross-validated
+  thresholds. A threshold tuned on A does not transfer uniformly to B/C/D
+  (C ends at 0.499).
+- **The A holdout is small** — 251 spectra with 24 resistant per seed — so
+  seed-to-seed variation on A is wide (AUC 0.75–0.88); read the five-seed
+  aggregate, not individual seeds.
 - **Hyperparameters were selected on pooled A+B+C+D**, i.e. on data that
-  include the cross-site test sites. The model fit itself is clean (A only),
-  but model selection saw B/C/D, so cross-site numbers carry selection
-  optimism. The grid is near-flat, which limits the practical effect.
+  include the cross-site test sites. The model fits themselves are clean
+  (A-train or pooled-train only), but model selection saw B/C/D, so
+  cross-site numbers carry selection optimism. The grid is near-flat, which
+  limits the practical effect.
 - **Splits are label-stratified, not site-stratified** (single species, so
   species stratification is moot). Site B contributes only 213 spectra, and
-  site composition varies across the five pooled splits.
+  site composition varies across the splits.
 - **Single drug–pathogen pair** with 482 resistant spectra overall; B/C/D
   resistant counts are 45 / 139 / 178, so per-site metrics are noisy.
-- **In-sample A scores (0.999 / 1.000)** reflect memorisation and are not
-  generalisation evidence.
+- **The main notebook's "A (train)" row (0.999 / 1.000) is in-sample** and
+  explicitly labelled as such; it is not generalisation evidence.
 - **Feature importance is impurity-based**, computed by a model trained on
   all pooled data, and correlated bins share/steal importance; treat the m/z
   regions as hypotheses, not mechanisms.
@@ -315,17 +363,21 @@ from the committed pipeline: the grid search selected those parameters at the
 time, while the current notebook adds log1p+standardize (commit ``ec38c13``)
 and, on a local re-run, selects 500 trees. The earlier multi-seed metrics
 (BalAcc 0.543 ± 0.008) matched neither the committed code nor its stated
-parameters, so they were not used here. All numbers on this page come from a
-clean local run on 2026-10-09; the notebook's feature-importance layout bug
-(shared x-axis squashing the top-30 panel) was fixed during this pass.
+parameters, so they were not used here. All numbers on this page come from
+clean local runs on 2026-10-09 (main notebook) and 2026-10-10 (seeded
+cross-site extension); the notebook's feature-importance layout bug (shared
+x-axis squashing the top-30 panel) was fixed during this pass.
 
 Notebooks and Files
 -------------------
 
-- ``05-RandomForest-Ceftazidime-Ecoli.ipynb`` — the analysis
-- ``recover_multi_seed_metrics.py`` — reproduces the pooled multi-seed loop
-  and documents the June-vs-current discrepancy
-- ``results_rf/`` — current outputs (``report.md`` + five figures)
+- ``05-RandomForest-Ceftazidime-Ecoli.ipynb`` — main analysis
+- ``05-01-CrossSite-Seeded.ipynb`` — seeded cross-site evaluation with a
+  held-out A slice and cross-validated thresholds
+- ``recover_multi_seed_metrics.py`` — pooled multi-seed reproduction and
+  June-vs-current discrepancy check
+- ``results_rf/`` — current outputs (``report.md``, ``cross_site_seeded_metrics.csv``,
+  ``pooled_threshold_metrics.csv`` and six figures)
 - ``results_rf_2026-06-13/`` — archived June exports
 
 References Back
