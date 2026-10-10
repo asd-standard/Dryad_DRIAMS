@@ -57,7 +57,7 @@ Visualisations
 1. **Heatmap Grid (per drug)**
    :term:`Balanced Accuracy` and :term:`AUC-ROC` heatmaps, one per drug. Rows
    are strategies; columns are sites + All. Centralized and Pooled baselines
-   from 07 are included.
+   from 07 are included. Both grids are embedded on the :doc:`drugs` page.
 
 2. **Strategy Ranking**
    Horizontal bar chart ranking strategies by mean All-Site
@@ -69,7 +69,7 @@ Visualisations
    FL strategy. Pooled baselines from 07 shown as horizontal reference
    lines. :term:`FedAvg` MLP is the primary line (solid orange);
    :term:`FedProx` variants are dashed; :term:`FedLR` and :term:`FedRF`
-   have distinct styles.
+   have distinct styles. Embedded on the :doc:`drugs` page.
 
 4. **Centralized vs. Federated Gap**
    Bar chart comparing Pooled :term:`MLP` vs. Best FL method per drug, with

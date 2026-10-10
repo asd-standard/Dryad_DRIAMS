@@ -137,6 +137,13 @@ Piperacillin-Tazobactam their ``01-Run``.
    Per-drug Balanced Accuracy heatmaps (one panel per drug; strategies as
    rows, sites + All as columns), including the pooled baselines from 07.
 
+.. figure:: /_static/08-Federated-mlp-lr-rf/08_heatmap_grid_auc.svg
+   :alt: Per-drug AUC-ROC heatmaps for every strategy and site
+   :width: 100%
+
+   Per-drug AUC-ROC heatmaps — the same layout and pooled baselines as the
+   Balanced Accuracy grid above (strategies as rows, sites + All as columns).
+
 FedProx is omitted from the table above: its tuned-μ variants are unstable on
 most latest runs (see `Strategy Performance Patterns`_), and Ceftazidime's
 runs do not include cross-site baselines.
@@ -155,6 +162,19 @@ Retry Notebooks
 
 Both utilities save time: no need to re-run FedAvg (40 rounds × 4
 clients) just to test one new FedProx configuration.
+
+Convergence
+-----------
+
+.. figure:: /_static/08-Federated-mlp-lr-rf/08_convergence_grid.svg
+   :alt: Per-drug convergence grids of per-round All-site Balanced Accuracy per strategy
+   :width: 100%
+
+   Per-drug convergence grids: per-round All-site Balanced Accuracy for each
+   federated strategy (one panel per drug), with the pooled baselines from 07
+   as horizontal reference lines. :term:`FedAvg` MLP is the primary line,
+   :term:`FedProx` variants are dashed, :term:`FedLR` and :term:`FedRF` have
+   distinct styles.
 
 Strategy Performance Patterns
 -------------------------------
@@ -179,8 +199,9 @@ Common trends across the latest runs of the 6 drugs:
 - **FedProx is unstable at tuned μ.** The μ=0.1/0.3/0.35/0.01 runs peak at
   rounds 2–8 and then decay (e.g., Ceftriaxone reports 0.679 at r3 but ends
   at 0.623); only the μ=0.5 runs (Amoxicillin-Clavulanic acid, Ceftazidime)
-  are stable. Treat FedProx numbers from these runs as early transients until
-  the strategy is stabilised, not as converged performance.
+  are stable — the early peaks and decay are visible in the convergence
+  grids above. Treat FedProx numbers from these runs as early transients
+  until the strategy is stabilised, not as converged performance.
 - **FedRF remains surprisingly competitive** at 5 rounds: Amoxicillin-
   Clavulanic acid 0.765, Ciprofloxacin 0.696, Piperacillin-Tazobactam 0.669,
   Ceftazidime 0.666; weakest on Ceftriaxone (0.610). :term:`Tree collection`
