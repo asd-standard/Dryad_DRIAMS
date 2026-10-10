@@ -10,6 +10,7 @@ across 4 hospital sites.
    :maxdepth: 1
    :caption: Sections
 
+   analysis
    federated
    mask-diagnostic
 

@@ -19,6 +19,8 @@ training set closes the gap with :term:`Aggregated (pooled) training`.
    Result files for 06-00/06-01 are not part of this documentation; their
    cross-site vs. aggregated question is covered quantitatively by the
    federated baselines on :doc:`federated` and by the pooled models below.
+   The Ceftriaxone non-federated baselines and a side-by-side comparison are
+   on :doc:`06b analysis </06b-Ceftriaxone-E-coli/analysis>`.
 
 06-02: Aggregated Iterative (4 Runs)
 -------------------------------------
