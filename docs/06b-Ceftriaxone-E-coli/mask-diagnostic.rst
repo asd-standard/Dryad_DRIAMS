@@ -151,6 +151,15 @@ measures the site-RF OOB drop (pooled site RF, OOB = 1.000):
 Even zeroing 2,000 of 6,000 bins leaves site classification at ~96–99.6%.
 The site signal is **redundant across the spectrum**, exactly like species.
 
+.. figure:: /_static/06b-Ceftriaxone-E-coli/06b_diag_site_mask_drop_vs_k.svg
+   :alt: Site-RF out-of-bag drop after zeroing the top-K site bins, per RF configuration
+   :width: 100%
+
+   Site-RF out-of-bag accuracy drop when the top-K site-predictive bins are
+   zeroed, for the baseline and concentrated (``mf_0.2`` / ``mf_0.5``)
+   species/site RF configurations. Even K = 2,000 (one third of the
+   spectrum) leaves classification near ceiling.
+
 LDA projection
 ~~~~~~~~~~~~~~
 
@@ -160,6 +169,15 @@ site-discriminative directions. LDA itself classifies site at **0.0993**
 site-RF OOB at 1.0. Because per-site ``log1p+standardize`` already zeroes each
 site's mean, the surviving site signal is **non-linear** — invisible to linear
 methods.
+
+.. figure:: /_static/06b-Ceftriaxone-E-coli/06b_diag_site_deconfound.svg
+   :alt: Site-RF out-of-bag and resistance Balanced Accuracy versus number of LDA directions removed
+   :width: 100%
+
+   LDA site-deconfounding trade-off: site-RF out-of-bag accuracy (left axis)
+   stays at 1.000 for every number of projected-out directions (k = 0–3),
+   while resistance Balanced Accuracy (right axis) is unchanged — removing
+   the linear site directions removes no site signal.
 
 Adversarial site-invariance
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -6,13 +6,16 @@ Federated Ceftazidime × *E. coli* — Results
 Extends the non-federated Ceftazidime analysis
 (:doc:`analysis`) to a federation setting.
 
-This is the Ceftazidime counterpart of the Ceftriaxone federated experiment
-documented in :doc:`06b </06b-Ceftriaxone-E-coli/federated>`.
+All numbers on this page come from the latest species-masked ``06-03c`` run
+(``Results/06-03-c-Reulsts/results/``, 2026-07-20), whose data-driven mask
+selection picked ``majority``; a second run of the same pipeline is used as a
+robustness check below. The Ceftriaxone counterpart lives in
+:doc:`06b </06b-Ceftriaxone-E-coli/federated>`.
 
 Final Results
 -------------
 
-.. list-table::
+.. list-table:: Final Results — Ceftazidime × *E. coli* 30-round federated run
    :header-rows: 1
 
    * - Method
@@ -20,51 +23,149 @@ Final Results
      - AUC
      - Peak
    * - Centralized MLP (unmasked)
-     - —
-     - —
-     - —
+     - 0.615
+     - 0.733
+     - \-
    * - Centralized MLP (union)
-     - —
-     - —
-     - —
+     - 0.625
+     - 0.721
+     - \-
    * - Centralized MLP (majority)
-     - —
-     - —
-     - —
+     - 0.616
+     - 0.726
+     - \-
    * - Centralized MLP (persite)
-     - —
-     - —
-     - —
+     - 0.655
+     - 0.723
+     - \-
    * - Centralized RF (unmasked)
-     - —
-     - —
-     - —
-   * - **FL FedAvg MLP**
-     - —
-     - —
-     - —
-   * - **FL FedProx**
-     - —
-     - —
-     - —
+     - 0.626
+     - 0.728
+     - \-
+   * - **FL FedAvg MLP (majority)**
+     - 0.641
+     - 0.692
+     - r7
+   * - **FL FedProx μ=0.1 (majority)**
+     - 0.691
+     - 0.720
+     - r16
    * - FL FedAvg LR
-     - —
-     - —
-     - —
+     - 0.651
+     - 0.700
+     - r30
    * - FL FedRF (Trees)
-     - —
-     - —
-     - —
+     - 0.500
+     - 0.702
+     - r2
    * - Cross-Site MLP
-     - —
-     - —
-     - —
+     - 0.552
+     - 0.583
+     - \-
    * - Cross-Site RF
-     - —
-     - —
-     - —
+     - 0.500
+     - 0.678
+     - \-
 
-Run the ``06-03a/b/c`` notebooks to populate results.
+BalAcc and AUC are the pooled four-site ("All") values; "Peak" is the round
+at which the federated strategy scored best.
+
+.. figure:: /_static/06a-Ceftazidime-E-coli/06a_federated_convergence.svg
+   :alt: Per-round pooled Balanced Accuracy for the mask comparison and the final federated methods
+   :width: 100%
+
+   Left: FedAvg MLP under the three species masks — the round-by-round mask
+   comparison used for mask selection. Right: the final methods under the
+   winning ``majority`` mask, with the unmasked centralized MLP as reference.
+
+Key Findings
+------------
+
+FedProx Leads, and Federated Beats Centralized
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+FedProx μ=0.1 reaches BalAcc 0.691 (AUC 0.720, peak round 16) — +0.050 over
+FedAvg MLP (0.641) and +0.036 over the best centralized variant (persite,
+0.655; unmasked 0.615). FedAvg LR is competitive (0.651) and still climbing
+at round 30, while FedAvg MLP peaks early (round 7) and drifts.
+
+This is the opposite ordering from Ceftriaxone (06b), where the centralized
+MLP stayed ahead of every federated strategy. On the smaller Ceftazidime ×
+*E. coli* cohort, local per-site training plus aggregation is the strongest
+approach available: all three main federated strategies clear the unmasked
+centralized MLP.
+
+The gains concentrate on the weakest sites: FedProx lifts Site B to 0.753
+(centralized unmasked: 0.641) and FedAvg lifts Site D to 0.695 (0.545), while
+Site C remains the bottleneck (0.529–0.627 across all methods).
+
+Mask Choice and Its Limits
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+``06-03c`` selects the mask with the highest worst-site improvement of the
+FedAvg MLP over unmasked; here the winner was ``majority``. The figure below
+shows the mask effect per site for the centralized MLP: masking helps Sites C
+and D but costs Sites A and B, so the worst-site criterion is trading one
+site against another — and it is sensitive to run noise (the second run
+picked ``none``, see below).
+
+.. figure:: /_static/06a-Ceftazidime-E-coli/06a_federated_mask_delta.svg
+   :alt: Per-site Balanced Accuracy change of each species mask relative to no masking
+   :width: 100%
+
+   Effect of the three species masks on the centralized MLP, per site
+   (masked minus unmasked Balanced Accuracy). Site C/D improve; Site A/B
+   degrade.
+
+FedRF Threshold Collapse
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+FedRF matches the MLP strategies on ranking (AUC 0.702) but its Balanced
+Accuracy is pinned at exactly 0.500 on every site: at the 0.5 decision
+threshold all predictions land in one class, exactly as in the Ceftriaxone
+run. Tree accumulation works (the ensemble grows each round); the failure is
+in threshold calibration, not learning.
+
+Cross-Site as Lower Bound
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Training on Site A alone and testing on B/C/D gives BalAcc 0.552
+(AUC 0.583). FedProx improves on that by **+0.139 BalAcc** — the value of
+collaboration without sharing raw spectra, consistent with 03's cross-site
+findings.
+
+Per-Site Heatmaps
+-----------------
+
+.. figure:: /_static/06a-Ceftazidime-E-coli/06a_federated_heatmap_balacc.svg
+   :alt: Per-method per-site Balanced Accuracy heatmap for the Ceftazidime federated run
+   :width: 100%
+
+   Pooled Balanced Accuracy per method (rows) and site (columns); the All
+   column is the pooled four-site value.
+
+.. figure:: /_static/06a-Ceftazidime-E-coli/06a_federated_heatmap_auc.svg
+   :alt: Per-method per-site AUC heatmap for the Ceftazidime federated run
+   :width: 100%
+
+   Same layout for AUC-ROC.
+
+Robustness: A Second ``06-03c`` Run
+-----------------------------------
+
+An earlier run of the same pipeline
+(``Results/06-03-c-Reulsts/01_Results/``, 2026-07-20 04:55) selected the
+``none`` mask and lands at FedProx 0.700/0.748, FedAvg MLP 0.678/0.725,
+FedAvg LR 0.675/0.731, FedRF 0.500/0.724, centralized unmasked MLP
+0.659/0.773 and cross-site MLP 0.553/0.551.
+
+The two runs agree on the essentials: FedProx is the best federated strategy
+and beats the best centralized variant by a similar margin (+0.036 and +0.038
+BalAcc); every non-FedRF federated strategy clears the unmasked centralized
+MLP; FedRF collapses to 0.500 BalAcc; and the cross-site baseline sits far
+below both. They disagree on the mask winner (``majority`` vs ``none``) and
+on absolute levels by ~0.01–0.05, which is the same order as the federated
+gains — mask selection should be read as weak evidence.
 
 Strategy Overview
 -----------------
@@ -83,7 +184,8 @@ Species Masking Variants
 ------------------------
 
 The four centralized baseline variants above are produced by
-``06-03c`` via a 4-phase pipeline (see `06-03c: Species-Masked Federated Learning`_).
+``06-03c`` via a 4-phase pipeline (see `06-03c: Species-Masked Federated
+Learning`_).
 
 ``none``
    Full training set, no species filtering — the true upper bound.
@@ -201,3 +303,13 @@ Notebooks
   (all species): 4-phase pipeline with data-driven mask selection. Produces
   the centralized MLP (none/union/majority/persite) baselines.
 - ``retry_fedprox.ipynb`` — :term:`FedProx` μ retry utility
+
+Files
+-----
+
+- ``Results/06-03-c-Reulsts/results/`` — final run (numbers on this page):
+  ``final_results.csv``, per-round CSVs, ``convergence.pdf``,
+  ``heatmap_balacc.pdf``, ``heatmap_auc.pdf``, ``mask_delta.pdf``
+- ``Results/06-03-c-Reulsts/01_Results/results/`` — earlier robustness run
+- ``Results/02-Run/results/`` — basic (E. coli-only) FL run
+- ``Results/06-02-Runs/`` — non-federated iterative runs (see :doc:`analysis`)

@@ -65,6 +65,15 @@ Final Results
      - 0.753
      - \-
 
+.. figure:: /_static/06b-Ceftriaxone-E-coli/06b_federated_convergence.svg
+   :alt: Per-round pooled Balanced Accuracy for the Ceftriaxone federated strategies
+   :width: 100%
+
+   Per-round pooled Balanced Accuracy. Left: FedAvg MLP under the three
+   species masks (the phase-3 mask comparison). Right: the four federated
+   strategies under the winning ``none`` mask, with the unmasked centralized
+   MLP as the dotted reference.
+
 Key Findings
 ------------
 
@@ -108,6 +117,15 @@ the federated models approach their performance.
 
 These mask variants were computed by ``06-03c`` via per-site species RF
 classifiers — see `06-03c: How It Works`_ for the full pipeline.
+
+.. figure:: /_static/06b-Ceftriaxone-E-coli/06b_federated_mask_delta.svg
+   :alt: Per-site Balanced Accuracy change of each species mask relative to no masking
+   :width: 100%
+
+   Effect of the three species masks on the centralized MLP, per site
+   (masked minus unmasked Balanced Accuracy). Masking helps Site B only;
+   Sites A, C and D are neutral or degrade — consistent with the
+   FedAvg-based selection keeping ``none``.
 
 06-03c: How It Works
 ~~~~~~~~~~~~~~~~~~~~
@@ -186,6 +204,22 @@ Training on DRIAMS-A alone and testing on B/C/D yields BalAcc 0.608
 at all. Federated learning recovers most of this gap (0.745 vs. 0.608,
 a 14-point improvement), demonstrating the value of collaborative
 model training without data centralization.
+
+Per-Site Heatmaps
+-----------------
+
+.. figure:: /_static/06b-Ceftriaxone-E-coli/06b_federated_heatmap_balacc.svg
+   :alt: Per-method per-site Balanced Accuracy heatmap for the Ceftriaxone federated run
+   :width: 100%
+
+   Pooled Balanced Accuracy per method (rows) and site (columns); the All
+   column is the pooled four-site value.
+
+.. figure:: /_static/06b-Ceftriaxone-E-coli/06b_federated_heatmap_auc.svg
+   :alt: Per-method per-site AUC heatmap for the Ceftriaxone federated run
+   :width: 100%
+
+   Same layout for AUC-ROC.
 
 Notebooks
 ---------

@@ -13,6 +13,13 @@ Ceftriaxone × *E. coli* lives in
    analysis
    federated
 
+Key Result
+----------
+
+FedProx μ=0.1 reaches pooled Balanced Accuracy **0.691**, ahead of every
+centralized baseline (best masked variant 0.655; unmasked 0.615) and well
+above the cross-site baseline (0.552) — see :doc:`federated`.
+
 Objective
 ---------
 
