@@ -126,3 +126,7 @@ Key Takeaways
 - The centralized-vs-federated gap varies by drug and is largest for
   Ceftriaxone (0.061) and Piperacillin-Tazobactam (0.037), where site
   :term:`DRIAMS`-D dominates the sample count.
+- **Site D is not dragging the federation down**: the
+  :doc:`site-d-ablation` (Ceftriaxone, Ciprofloxacin, Ceftazidime) shows that
+  removing D from training does not improve A/B/C, while D itself scores above
+  the cross-site baseline even when it is never trained on.

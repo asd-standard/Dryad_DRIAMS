@@ -211,4 +211,5 @@ Common trends across the latest runs of the 6 drugs:
   and the centralized-vs-federated gap is largest for drugs where
   :term:`DRIAMS`-D dominates the sample count.
 
-See :doc:`aggregated` for cross-drug comparisons.
+See :doc:`aggregated` for cross-drug comparisons, and :doc:`site-d-ablation`
+for the leave-D-out ablation (does dropping site D help the other sites?).

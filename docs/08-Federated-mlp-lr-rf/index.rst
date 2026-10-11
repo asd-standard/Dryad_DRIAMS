@@ -13,6 +13,7 @@ using :term:`Flower (flwr)`.
    aggregated
    Species-Masking/index
    umap-diagnostic
+   site-d-ablation
 
 Objective
 ---------

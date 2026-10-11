@@ -373,3 +373,5 @@ Related
 - :doc:`06b mask diagnostics </06b-Ceftriaxone-E-coli/mask-diagnostic>` — the
   06-03c/03d experiments showing that masking does not remove species/site signal
 - :doc:`drugs` and :doc:`aggregated` — the federated results used in the join
+- :doc:`site-d-ablation` — the leave-D-out experiment that tests this site
+  structure at the model level
