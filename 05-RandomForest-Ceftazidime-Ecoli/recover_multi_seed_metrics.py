@@ -40,6 +40,8 @@ from maldideepkit.base.data import apply_input_transform, fit_input_transform
 SEEDS = [42, 123, 456, 789, 1011]
 DRUG = "Ceftazidime"
 SPECIES = "Escherichia coli"
+# Configuration of the June exports being reproduced (100 trees, depth 10,
+# leaf 10); the current notebook's tuned winner uses 500 trees.
 BEST_PARAMS = dict(
     n_estimators=100, max_depth=10, min_samples_leaf=10, class_weight="balanced"
 )
@@ -54,6 +56,7 @@ OUT_DIR = HERE / "results_rf"
 OUT_NAME = ("multi_seed_metrics.csv" if args.mode == "legacy"
             else "multi_seed_metrics_current_notebook.csv")
 
+# Probe the known data roots: external disk first, then the recovered copy.
 CANDIDATES = [
     Path("/media/asd/8f69beed-e984-445f-b8b3-abbb6a1a4b3f/Dryad-DataSet/Processed"),
     Path("/mnt/sda-home/asd/Projects/Flower/DataSet/Dryad-DataSet/Processed"),
@@ -82,6 +85,8 @@ print(f"pooled: {X_pooled.shape[0]} x {X_pooled.shape[1]}  R={int(y_pooled.sum()
 # ---------------------------------------------------------------------------
 # Five pooled 75/25 splits; seed 42 == the section-3 tuning holdout
 # ---------------------------------------------------------------------------
+# seed 42 doubles as the tuning holdout: GridSearchCV(refit=True) refits the
+# winner with random_state=42, i.e. the same fit as this split.
 rows = []
 for seed in SEEDS:
     X_tr_raw, X_te_raw, y_tr, y_te = train_test_split(

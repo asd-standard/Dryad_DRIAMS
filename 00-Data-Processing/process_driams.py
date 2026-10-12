@@ -1,10 +1,14 @@
 #!/usr/bin/env python3
 """Process DRIAMS binned_6000 data into per-drug ML-ready CSV files.
 
-Uses maldiamrkit for loading + pandas/numpy for filtering and saving.
-Outputs go to Dryad-DataSet/Processed/Proc_{SITE}/{drug}/ with:
-  - data.csv   : feature matrix (N x 6000) + label column
+Uses pandas/numpy for filtering and saving. Outputs go to
+Dryad-DataSet/Processed/Proc_{SITE}/{drug}/ with:
+  - data.csv   : feature matrix (N x 6000) + code/species/label columns
   - summary.csv: per-drug statistics
+
+and a global_summary.csv at the Processed root.
+
+Run:  python process_driams.py
 """
 
 import os
@@ -41,6 +45,9 @@ SITES = {
     },
 }
 
+# Inclusion thresholds: a drug-site pair is only exported when it has enough of
+# both classes for a meaningful Balanced Accuracy (R >= 10) and enough data to
+# estimate the majority class reliably (S >= 500).
 MIN_S = 500      # minimum susceptible count per drug
 MIN_R = 10       # minimum resistant count (need at least some to classify)
 
@@ -50,7 +57,21 @@ NON_DRUG_COLS = {"code", "species", "genus", "combined_code", "laboratory_specie
 # ── Helpers ────────────────────────────────────────────────────────────────
 
 def load_binned_spectra(codes, binned_dir):
-    """Load binned spectra for given codes from the binned directory."""
+    """Load binned spectra for the given sample codes.
+
+    Parameters
+    ----------
+    codes : iterable of str
+        Sample codes; each maps to ``<binned_dir>/<code>.txt``.
+    binned_dir : Path
+        Directory of the raw binned spectrum text files.
+
+    Returns
+    -------
+    dict
+        ``{code: ndarray}`` for the codes whose file exists; missing files are
+        counted and reported once.
+    """
     spectra = {}
     missing = 0
     for code in tqdm(codes, desc="  Loading spectra", leave=False):
@@ -66,7 +87,20 @@ def load_binned_spectra(codes, binned_dir):
 
 
 def process_site(site_name, paths):
-    """Process one DRIAMS site, saving per-drug data."""
+    """Process one DRIAMS site and write per-drug CSVs.
+
+    Parameters
+    ----------
+    site_name : str
+        e.g. ``"DRIAMS-A"``.
+    paths : dict
+        ``{"binned": Path, "meta": Path}`` for this site.
+
+    Returns
+    -------
+    list of dict
+        One report row per exported drug (also written to ``summary.csv``).
+    """
     print(f"\n{'='*70}")
     print(f"  Processing {site_name}")
     print(f"{'='*70}")
@@ -94,6 +128,7 @@ def process_site(site_name, paths):
         r_mask = vals == "R"
         s_count = s_mask.sum()
         r_count = r_mask.sum()
+        # Keep only S/R labels; intermediate or missing calls are dropped.
         if s_count >= MIN_S and r_count >= MIN_R:
             drug_info[drug] = {
                 "s_count": s_count,
@@ -113,6 +148,7 @@ def process_site(site_name, paths):
         all_codes_needed.update(meta_matched.loc[info["indices"], "code"])
     all_codes_needed = sorted(all_codes_needed)
 
+    # Load each spectrum once, even though drugs share most sample codes.
     print(f"  Loading {len(all_codes_needed)} unique spectra...")
     spectra_map = load_binned_spectra(all_codes_needed, binned_dir)
 
@@ -128,6 +164,7 @@ def process_site(site_name, paths):
     report = []
 
     for drug, info in tqdm(drug_info.items(), desc="  Saving drugs"):
+        # Sanitise the drug name so it can be used as a folder name.
         drug_dir = out_base / drug.replace("/", "_").replace(" ", "_")
         drug_dir.mkdir(parents=True, exist_ok=True)
 
@@ -174,6 +211,7 @@ def process_site(site_name, paths):
 # ── Main ───────────────────────────────────────────────────────────────────
 
 def main():
+    """Process every configured site and write the global summary."""
     OUTPUT.mkdir(exist_ok=True)
     print(f"Output root: {OUTPUT}")
     print(f"Filter: S >= {MIN_S}, R >= {MIN_R}")

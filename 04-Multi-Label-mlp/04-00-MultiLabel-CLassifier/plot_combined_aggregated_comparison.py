@@ -18,6 +18,8 @@ the test set.
 Writes:
 - ``01-results_multilabel/aggregated_lr_mlp_cnn.pdf`` (next to the results)
 - ``docs/_static/04-Multi-Label-mlp/04_aggregated_lr_mlp_cnn.svg`` (for Sphinx)
+
+Run:  python plot_combined_aggregated_comparison.py
 """
 
 from pathlib import Path
@@ -44,6 +46,7 @@ CNN_CSV = (
 PDF_OUT = HERE / "01-results_multilabel" / "aggregated_lr_mlp_cnn.pdf"
 SVG_OUT = ANALYSIS_ROOT / "docs" / "_static" / "04-Multi-Label-mlp" / "04_aggregated_lr_mlp_cnn.svg"
 
+# Left-join the three exports on Drug; one_to_one guards accidental duplicates.
 lr = pd.read_csv(LR_CSV)[["Drug", "Test_BalAcc"]].rename(columns={"Test_BalAcc": "LR_BalAcc"})
 ml = pd.read_csv(MLP_CSV)
 cnn = pd.read_csv(CNN_CSV)
@@ -52,6 +55,7 @@ df = lr.merge(ml[["Drug", "AGG_MLP_BalAcc"]], on="Drug", how="left",
     cnn[["Drug", "CNN_Shared_BalAcc"]], on="Drug", how="left", validate="one_to_one"
 )
 
+# (label, column, colour) triples; means are added to the legend at plot time.
 series = [
     ("OneVsRest LR", "LR_BalAcc", "#aec7e8"),
     ("Shared MLP", "AGG_MLP_BalAcc", "#ff7f0e"),
@@ -76,6 +80,7 @@ ax.grid(True, ls="--", lw=0.5, color="gray", alpha=0.7)
 ax.legend(fontsize=9)
 fig.tight_layout()
 
+# Two artefacts: the PDF stays next to the results, the SVG feeds Sphinx.
 PDF_OUT.parent.mkdir(parents=True, exist_ok=True)
 SVG_OUT.parent.mkdir(parents=True, exist_ok=True)
 fig.savefig(PDF_OUT, bbox_inches="tight")

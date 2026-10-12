@@ -1,6 +1,7 @@
 # ── SAVE CELL for 07-01 ── Copy-paste this into 07-01 after the LR+MLP loop ──
-# This saves per-drug preprocessed data + LR results + MLP results
-# so 07-02 can skip data loading and LR training.
+# This saves per-drug preprocessed data + LR results + MLP results so 07-02 can
+# skip data loading and LR training. Requires 07-01's namespace: DRUGS_10,
+# all_results, OUT_DIR, SEED, load_drug_data and the stratified split helper.
 
 import pickle
 
@@ -11,13 +12,15 @@ for drug in DRUGS_10:
     if drug not in all_results: continue
     safe_name = drug.replace(" ", "_").replace("-", "_")
     
-    # Re-load and re-split to capture raw data (since the loop variables are overwritten)
+    # Re-load and re-split to capture the raw arrays: the training loop
+    # overwrote X/y with the last drug's values.
     X, y, species = load_drug_data(drug)
     idx = np.arange(len(y)).reshape(-1, 1)
     idx_trval, idx_test, _, _ = stratified_species_drug_split(
         idx, y, species=species, test_size=0.15, random_state=SEED)
     idx_trval = idx_trval.flatten().astype(int)
     idx_test = idx_test.flatten().astype(int)
+    # The second split carves the 15% val out of the 85% train+val remainder.
     val_frac = 0.15 / 0.85
     idx_train, idx_val, _, _ = stratified_species_drug_split(
         idx_trval.reshape(-1, 1), y[idx_trval], species=species[idx_trval],
