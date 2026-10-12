@@ -1,0 +1,22 @@
+# Python 3.12 recommended.
+# The results in this repository were produced with this stack; no hard pins
+# are enforced, but see the analysis pages for version-sensitivity notes.
+
+# Core scientific stack
+numpy
+pandas
+scikit-learn
+matplotlib
+seaborn
+tqdm
+
+# Deep learning and federated learning
+torch
+flwr
+
+# MALDI-TOF toolkit (Ettore Rocchi)
+maldideepkit
+maldiamrkit
+
+# Notebook environment
+jupyterlab

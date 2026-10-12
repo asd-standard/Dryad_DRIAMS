@@ -4,7 +4,7 @@ import sys
 sys.path.insert(0, os.path.abspath("."))
 
 project = "DRIAMS Federated AMR Analysis"
-copyright = "2025"
+copyright = "2026, Andrea Silvestri (CC BY 4.0)"
 author = ""
 release = "1.0"
 

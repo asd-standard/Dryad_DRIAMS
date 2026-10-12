@@ -1,0 +1,84 @@
+cff-version: 1.2.0
+message: "If you use this software or its results, please cite it as below."
+title: "DRIAMS — Federated AMR Prediction from MALDI-TOF Spectra"
+abstract: >-
+  Analysis code for antimicrobial resistance prediction from MALDI-TOF mass
+  spectra on the DRIAMS dataset: pooled logistic-regression, MLP and
+  random-forest baselines, cross-site generalisation, multi-label
+  classification and 1D CNN variants, and federated learning with Flower
+  across four Swiss hospitals.
+authors:
+  - family-names: Silvestri
+    given-names: Andrea
+    alias: asd-standard
+    website: "https://github.com/asd-standard"
+  - family-names: Rocchi
+    given-names: Ettore
+    alias: EttoreRocchi
+    website: "https://github.com/EttoreRocchi"
+repository-code: "https://github.com/asd-standard/Dryad_DRIAMS"
+url: "https://asd-standard.github.io/Dryad_DRIAMS/"
+license: CC-BY-4.0
+date-released: "2026-10-12"
+keywords:
+  - antimicrobial resistance
+  - MALDI-TOF mass spectrometry
+  - machine learning
+  - federated learning
+  - DRIAMS
+references:
+  - type: article
+    title: >-
+      Direct antimicrobial resistance prediction from clinical MALDI-TOF mass
+      spectra using machine learning
+    authors:
+      - family-names: Weis
+        given-names: Caroline
+      - family-names: Cuénod
+        given-names: Aline
+      - family-names: Rieck
+        given-names: Bastian
+      - family-names: Dubuis
+        given-names: O.
+      - family-names: Graf
+        given-names: S.
+      - family-names: Lang
+        given-names: C.
+      - family-names: Oberle
+        given-names: M.
+      - family-names: Brackmann
+        given-names: M.
+      - family-names: Søgaard
+        given-names: K. K.
+      - family-names: Osthoff
+        given-names: M.
+      - family-names: Borgwardt
+        given-names: Karsten
+      - family-names: Egli
+        given-names: Adrian
+    journal: "Nature Medicine"
+    volume: 28
+    issue: 1
+    start: 164
+    end: 174
+    year: 2022
+    doi: "10.1038/s41591-021-01619-9"
+  - type: dataset
+    title: >-
+      DRIAMS: Database of Resistance Information on Antimicrobials and
+      MALDI-TOF Mass Spectra
+    authors:
+      - family-names: Weis
+        given-names: Caroline
+      - family-names: Cuénod
+        given-names: Aline
+      - family-names: Rieck
+        given-names: Bastian
+      - family-names: Borgwardt
+        given-names: Karsten
+      - family-names: Egli
+        given-names: Adrian
+    year: 2025
+    publisher:
+      name: Dryad
+    doi: "10.5061/dryad.bzkh1899q"
