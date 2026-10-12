@@ -7,11 +7,12 @@ site (~39 % of the pooled spectra) and has the weakest per-site
 page reports the **leave-D-out pilot**: three drugs re-run with clients A/B/C
 only, everything else matched to the archived with-D runs.
 
-**Result in one line:** removing D does *not* improve the other sites — A and C
-are essentially unchanged, B gets worse in all three drugs, and D itself scores
-*above* the cross-site baseline even when it is never trained on. D is not
-dragging the federation down; it benefits from participating, and the weakness
-of a single-site model on D is a transfer cost, not D poisoning the model.
+**Result in one line:** removing D does *not* improve the other sites —
+aggregate performance is essentially unchanged, A/C are flat, and the apparent
+B decline does not survive a round-selection robustness check. D itself is the
+site that loses most from exclusion, and even unseen it remains in the
+cross-site baseline's range. D is not dragging the federation down; its
+per-site weakness is a transfer cost, not D poisoning the model.
 
 Design
 ------
@@ -45,8 +46,9 @@ tuned μ in the with-D runs) and the cross-site arm is not re-run. Site D stays
 
 Because the splits are computed per site with a fixed seed, the A/B/C (and D)
 test sets are identical to the archived runs — every per-site Δ below is a
-paired comparison on the same test data, and the only difference is which
-clients participate in training.
+paired comparison on the same test data. Client-local training (data, seeds,
+hyperparameters) is unchanged; the no-D arm differs only in **which clients
+participate in aggregation**.
 
 Results
 -------
@@ -88,8 +90,72 @@ Does D hurt the other sites?
    :width: 100%
 
    FedAvg (MLP) per-site Balanced Accuracy, with-D run versus no-D arm (Δ
-   annotated). A edges up in two of three drugs and C is flat, but **B falls in
-   every drug** — the opposite of "D drags everyone down".
+   annotated at each run's selected peak round). A edges up in two of three
+   drugs and C is flat; B's point estimates fall in all three drugs, but that
+   pattern is not robust (see below).
+
+Robustness: peak vs final round
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The per-site numbers above are taken at each run's peak round (highest All-site
+Balanced Accuracy, the 08 convention). That selection is itself round-sensitive
+— the Ceftriaxone with-D FedAvg peaks at round 39, the no-D arm at round 14 —
+so the comparison is repeated at the **final round** of each run:
+
+.. list-table:: FedAvg (MLP) Δ at the final round (no-D − with-D)
+   :header-rows: 1
+
+   * - Drug
+     - ΔA
+     - ΔB
+     - ΔC
+     - ΔD (unseen)
+     - ΔAll
+   * - Ceftriaxone
+     - −0.003
+     - −0.117
+     - −0.009
+     - −0.087
+     - −0.023
+   * - Ciprofloxacin
+     - +0.020
+     - −0.012
+     - −0.019
+     - −0.024
+     - −0.001
+   * - Ceftazidime
+     - +0.012
+     - +0.006
+     - +0.010
+     - −0.028
+     - −0.002
+   * - **Mean**
+     - **+0.010**
+     - **−0.041**
+     - **−0.006**
+     - **−0.046**
+     - **−0.009**
+
+Two things become clear. First, **D is the only site with a stable sign**: the
+unseen model is behind the trained one in all six drug × round comparisons.
+Second, **B's direction is not stable** — it flips to +0.006 for Ceftazidime,
+and its largest effect (Ceftriaxone, −0.117) comes with the smallest test set.
+Site B holds only 94–199 test spectra, and its round-to-round swings (±0.15)
+dwarf every arm difference:
+
+.. figure:: /_static/08-Federated-mlp-lr-rf/08_nod_B_trajectories.svg
+   :alt: Site B per-round Balanced Accuracy for both arms, per drug
+   :width: 100%
+
+   Site B per-round Balanced Accuracy for both arms (dotted lines: each arm's
+   selected peak round). The apparent arm difference is within the training
+   noise of this small site.
+
+An exploratory species-mix check (cosine similarity of the per-site species
+shares) hints at why B *might* feel D's absence: of the three drugs, only
+Ceftriaxone has B's composition closest to D's (B↔D 0.89, versus B↔A 0.67 and
+B↔C 0.85); for Ciprofloxacin and Ceftazidime the closest site is A. With three
+single-seed runs this is a hypothesis, not evidence.
 
 Site D as an unseen site
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -127,10 +193,10 @@ Site D as an unseen site
    :width: 100%
 
    Site D when it is trained, when it is only evaluated (no-D arm), and under
-   the archived cross-site baselines (A→D). The unseen federated model is
-   consistently **better than single-site transfer** and only 0.01–0.06 below
-   training with D — D benefits from being in the federation, but multi-site
-   training transfers to it even without D's data.
+   the archived cross-site baselines (A→D). Training with D is ahead of the
+   unseen model at both selection rules (by 0.01–0.09); the comparison with the
+   cross-site baseline is round-dependent — above it at the selected peak round
+   in all three drugs, mixed at the final round.
 
 Secondary strategies
 ~~~~~~~~~~~~~~~~~~~~
@@ -177,17 +243,25 @@ Secondary strategies
 - **Centralized RF and FedRF** decline nearly everywhere. For FedRF this is
   partly mechanical: the no-D ensemble grows with 3 clients instead of 4
   (200 × 3 vs 200 × 4 trees per round), so its drop is not evidence about D.
+- All values here use the peak-round convention; the same selection sensitivity
+  applies, so read the means as descriptive.
 
 Reading
 -------
 
 - **No evidence that D hurts the federation.** If D's client updates were
-  degrading the global model, removing them should lift A/B/C. Instead the
-  deltas are small, B drops consistently, and the pooled (Centralized) arm
-  agrees with the federated one.
-- **D benefits from participation.** Trained on D: 0.63–0.67; unseen: 0.61–0.64;
-  single-site A→D transfer: 0.54–0.58. Excluding D costs D the most and buys
-  the other sites nothing.
+  degrading the global model, removing them should lift A/B/C. Instead
+  aggregate performance on the shared test pool is unchanged (mean ΔAll
+  ≈ −0.01) and no per-site shift is robust to round selection; the pooled
+  (Centralized) arm agrees on A and C.
+- **D benefits from participation.** Excluding D costs D under both selection
+  rules (trained ahead by 0.02–0.09); unseen, D stays in the cross-site
+  baseline's range (above it at the selected peak round in all three drugs,
+  mixed at the final round).
+- **The B question stays open.** B's point estimates decline in all three drugs
+  under FedAvg MLP, but the sign flips with round selection, its test sets hold
+  94–199 spectra, and the pooled arm flips sign across drugs. Treat it as a
+  candidate for seed replication, not a conclusion.
 - This matches the :doc:`umap-diagnostic` conclusion: site D is not an isolated
   geometric island, and its weakness in per-site metrics reflects
   cross-site transfer difficulty — not a site that should be dropped from a
@@ -197,8 +271,14 @@ Caveats
 -------
 
 - **Single seed per arm.** No run-to-run variance estimate; deltas of this size
-  cannot be separated from seed noise. B's decline is consistent across the
-  three drugs but still a single-seed observation.
+  cannot be separated from seed noise.
+- **Test-set sizes differ per site** (A 469–810, B 94–199, C 276–377,
+  D 662–982 spectra): one spectrum moves B's Balanced Accuracy by ≈0.01, so
+  B's deltas are a handful of spectra.
+- **Peak-round selection.** Per-site values follow the 08 convention (each
+  run's best All-site round), but the arms can peak at different rounds
+  (Ceftriaxone FedAvg: r39 vs r14). The robustness table gives the final-round
+  view.
 - **Weight shift.** :term:`FedAvg` aggregates clients proportional to sample
   count. Removing D changes the shares (A 33 % → 52 %, C 18 % → 28 %,
   B 9 % → 14 %), so the arm tests "D's presence and its weight" jointly.
@@ -219,8 +299,8 @@ Files and Notebooks
   generated from ``Drugs/{Drug}/federated.ipynb`` (``TRAIN_SITES = ["A","B","C"]``,
   archived tuning loaded verbatim, checkpointing disabled, ``AllABC`` metric
   added). See ``Site-D-Ablation/README.md``.
-- ``Site-D-Ablation/compare_noD.ipynb`` — builds the comparison tables and the
-  two figures above from the archived runs and the no-D results
+- ``Site-D-Ablation/compare_noD.ipynb`` — builds the comparison tables
+  (peak-round and final-round), the transfer table, and the three figures above
   (``Site-D-Ablation/comparison_results/``, local-only).
 - Executed copies are archived as ``results/notebook.ipynb`` inside each no-D
   run folder (local-only).

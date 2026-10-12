@@ -128,5 +128,5 @@ Key Takeaways
   :term:`DRIAMS`-D dominates the sample count.
 - **Site D is not dragging the federation down**: the
   :doc:`site-d-ablation` (Ceftriaxone, Ciprofloxacin, Ceftazidime) shows that
-  removing D from training does not improve A/B/C, while D itself scores above
-  the cross-site baseline even when it is never trained on.
+  removing D from training leaves aggregate performance essentially unchanged
+  (mean Δ ≤ 0.02), while D itself is the site that loses most from exclusion.
