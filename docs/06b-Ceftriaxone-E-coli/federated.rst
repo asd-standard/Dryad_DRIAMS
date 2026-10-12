@@ -9,6 +9,15 @@ These results were produced by :notebook:`06-03c-Species-Masked-Ceftriaxone-Fede
 counterpart lives in
 :doc:`06a </06a-Ceftazidime-E-coli/federated>`. 
 
+.. note::
+
+   **Provenance — protocol fix pending re-run.** These numbers were produced
+   before the September 2026 FedProx correction: the client penalty summed
+   per-tensor ``norm(2)`` distances instead of their squares, the masked
+   pipeline ran 30 rounds with mu=0.1, and the RF decision threshold was
+   untuned. The notebooks now use the canonical squared penalty, run 50
+   rounds with mu in {0.5, 1.0}, and tune the RF threshold (06-03d); the
+   Federated tables and figures will be refreshed after the next run.
 
 Final Results
 -------------

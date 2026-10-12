@@ -113,7 +113,10 @@ This page documents the two base experiments, **04-00** (shared MLP) and
 contains follow-up explorations — :term:`sigmoid-gated attention` on the
 512-dim layer (04-02), wider backbones (04-03), class weighting (04-04 and
 04-05) and a deprecated loss-curve diagnostic (04-06) — which are not part of
-this documentation.
+this documentation. Those follow-up notebooks were revised in October 2026 to
+prefer the corrected 26,781-sample aggregated cache (with a warning when only
+the legacy 26,642-sample cache is present); their earlier results were
+produced with the legacy cache.
 
 Notebooks
 ---------
