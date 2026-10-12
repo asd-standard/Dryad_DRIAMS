@@ -155,7 +155,7 @@ Glossary
    binned_6000
       DRIAMS spectra stage after the published preprocessing pipeline:
       intensities binned along the m/z axis with 3 Da width, producing
-      6000 features per spectrum. The input to ``process_driams.py``.
+      6000 features per spectrum. The input to :script:`process_driams.py <00-Data-Processing/process_driams.py>`.
 
    spectra code
       Unique identifier linking a metadata row to its ``{code}.txt``
@@ -168,7 +168,7 @@ Glossary
       ``I`` and untested entries are dropped.
 
    Proc_DRIAMS
-      Output tree of ``process_driams.py``:
+      Output tree of :script:`process_driams.py <00-Data-Processing/process_driams.py>`:
       ``Proc_DRIAMS-{A,B,C,D}/{drug}/data.csv`` plus a ``summary.csv``
       per site and a global ``global_summary.csv``.
 

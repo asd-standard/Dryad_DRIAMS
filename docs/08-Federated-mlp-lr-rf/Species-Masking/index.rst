@@ -18,7 +18,7 @@ zeroing out bins that predict bacterial species.
 How It Works
 ------------
 
-The notebook ``compute_masks.ipynb`` runs two phases:
+The notebook :notebook:`compute_masks.ipynb <08-Federated-mlp-lr-rf/Species-Masking/compute_masks.ipynb>` runs two phases:
 
 **Phase 1 — Per-site RF species classifiers**
    Data from **all 6 drugs** is pooled per site and deduplicated (a sample
@@ -58,8 +58,8 @@ Masks are saved as ``.npy`` files to ``shared_masks/`` along with
 Usage in Federated Notebooks
 ----------------------------
 
-After running ``compute_masks.ipynb`` once, each drug's
-``federated.ipynb`` can apply masks via two config variables:
+After running :notebook:`compute_masks.ipynb <08-Federated-mlp-lr-rf/Species-Masking/compute_masks.ipynb>` once, each drug's
+:sourcedir:`federated.ipynb <08-Federated-mlp-lr-rf/Drugs>` can apply masks via two config variables:
 
 .. code-block:: python
 
@@ -75,7 +75,7 @@ Why Drug-Independent
 
 Species labels are identical across all drug CSVs — a sample's species
 is the same regardless of which drug resistance is being tested.
-``compute_masks.ipynb`` pools all 6 drugs per site and deduplicates
+:notebook:`compute_masks.ipynb <08-Federated-mlp-lr-rf/Species-Masking/compute_masks.ipynb>` pools all 6 drugs per site and deduplicates
 identical spectra, giving the species RF the maximum possible training
 signal. The resulting masks are intrinsic to the MALDI-TOF instrument
 + bacterial ecology of each site, not to any specific drug. Run once,

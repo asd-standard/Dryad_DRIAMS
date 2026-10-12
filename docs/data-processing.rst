@@ -3,7 +3,7 @@ Data Processing
 
 How the raw :term:`DRIAMS` archives become the per-drug, ML-ready CSV
 files consumed by every analysis (01–08). This page covers dataset
-provenance, the local ``process_driams.py`` pipeline, and the derived
+provenance, the local :script:`process_driams.py <00-Data-Processing/process_driams.py>` pipeline, and the derived
 artifacts shared between notebooks. The script and the long-form
 documentation with complete per-drug statistics live in
 ``00-Data-Processing/`` of this repository.
@@ -176,7 +176,7 @@ Derived Artifacts
      - Built by
      - Consumed by
    * - ``Proc_DRIAMS-*/{drug}/data.csv``
-     - ``process_driams.py``
+     - :script:`process_driams.py <00-Data-Processing/process_driams.py>`
      - 01, 02, 03, 05, 06a, 06b, 07, 08
    * - :term:`aggregated_multilabel_data.npz`
      - 04-00
@@ -185,7 +185,7 @@ Derived Artifacts
      - 07
      - 08 (federated hyperparameters and pooled baselines)
    * - ``shared_masks/*.npy``, ``rf_species_models/*.joblib``
-     - 08 ``compute_masks.ipynb``
+     - 08 :notebook:`compute_masks.ipynb <08-Federated-mlp-lr-rf/Species-Masking/compute_masks.ipynb>`
      - 08 federated notebooks
 
 The multi-label cache concatenates all four sites into ``X_all``
@@ -205,7 +205,7 @@ Paths and Environment
 ---------------------
 
 - Notebooks define their data root per file (a local path and a Colab
-  Google Drive path); ``process_driams.py`` defines ``DRYAD``/``OUTPUT``
+  Google Drive path); :script:`process_driams.py <00-Data-Processing/process_driams.py>` defines ``DRYAD``/``OUTPUT``
   constants. ``global_summary.csv`` records the absolute ``output_path``
   used when the data was generated, so the CSVs are
   location-independent but those summary paths may need updating after

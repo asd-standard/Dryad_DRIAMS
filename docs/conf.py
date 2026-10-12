@@ -13,7 +13,16 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.viewcode",
     "sphinx.ext.intersphinx",
+    "sphinx.ext.extlinks",
 ]
+
+# Source links: :notebook:`label <repo/relative/path>` opens the file on GitHub.
+_GITHUB = "https://github.com/asd-standard/Dryad_DRIAMS"
+extlinks = {
+    "notebook": (f"{_GITHUB}/blob/main/%s", "%s"),
+    "script": (f"{_GITHUB}/blob/main/%s", "%s"),
+    "sourcedir": (f"{_GITHUB}/tree/main/%s", "%s"),
+}
 
 templates_path = ["_templates"]
 exclude_patterns = ["_build", "_static"]

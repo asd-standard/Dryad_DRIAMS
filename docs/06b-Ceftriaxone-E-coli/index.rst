@@ -38,11 +38,11 @@ Key Result            FedAvg/FedProx within ~1.6% of centralized MLP
 Files
 -----
 
-- ``06-03a-Ceftriaxone-E-coli-Federated.ipynb`` — Main federated notebook
-- ``06-03b-Ceftriaxone-E-coli-Federated.ipynb`` — Federated variant B
-- ``06-03b-Re-Run-lr-Ceftriaxone-E-coli-Fed.ipynb`` — Federated LR re-run
-- ``06-03c-Species-Masked-Ceftriaxone-Federated.ipynb`` — Species masking variants
-- ``retry_fedprox.ipynb`` — :term:`FedProx` μ retry utility
+- :notebook:`06-03a-Ceftriaxone-E-coli-Federated.ipynb <06b-Ceftriaxone-E-coli/06-03a-Ceftriaxone-E-coli-Federated.ipynb>` — Main federated notebook
+- :notebook:`06-03b-Ceftriaxone-E-coli-Federated.ipynb <06b-Ceftriaxone-E-coli/06-03b-Ceftriaxone-E-coli-Federated.ipynb>` — Federated variant B
+- :notebook:`06-03b-Re-Run-lr-Ceftriaxone-E-coli-Fed.ipynb <06b-Ceftriaxone-E-coli/06-03b-Re-Run-lr-Ceftriaxone-E-coli-Fed.ipynb>` — Federated LR re-run
+- :notebook:`06-03c-Species-Masked-Ceftriaxone-Federated.ipynb <06b-Ceftriaxone-E-coli/06-03c-Species-Masked-Ceftriaxone-Federated.ipynb>` — Species masking variants
+- :notebook:`retry_fedprox.ipynb <06b-Ceftriaxone-E-coli/retry_fedprox.ipynb>` — :term:`FedProx` μ retry utility
 - ``results/`` — Run outputs (CSVs, PDFs)
 
 Related Analyses

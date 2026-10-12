@@ -11,6 +11,7 @@ hyperparameters reused by the :term:`Federated learning` study (08).
    :caption: Sections
 
    results
+   loss-curves
    integration
 
 Objective
@@ -29,10 +30,11 @@ all 10 drugs on pooled data, establishing:
 Notebooks
 ---------
 
-- ``07-Dedicated-MLP-Aggregated.ipynb`` — Main: LR + RF + MLP for 10 drugs
-- ``07-01-Dedicated-LR-MLP-Aggregated.ipynb`` — LR + MLP only (no RF)
-- ``07-02-Dedicated-MLP-ClassWeight.ipynb`` — MLP with class weight
-- ``07-03-Dedicated-RF-Fast.ipynb`` — Faster RF variant
+- :notebook:`07-Dedicated-MLP-Aggregated.ipynb <07-Dedicated-MLP-Aggregated/07-Dedicated-MLP-Aggregated.ipynb>` — Main: LR + RF + MLP for 10 drugs
+- :notebook:`07-01-Dedicated-LR-MLP-Aggregated.ipynb <07-Dedicated-MLP-Aggregated/07-01-Dedicated-LR-MLP-Aggregated.ipynb>` — LR + MLP only (no RF)
+- :notebook:`07-02-Dedicated-MLP-ClassWeight.ipynb <07-Dedicated-MLP-Aggregated/07-02-Dedicated-MLP-ClassWeight.ipynb>` — MLP with class weight
+- :notebook:`07-02a-Prep-ClassWeight-Inputs.ipynb <07-Dedicated-MLP-Aggregated/07-02a-Prep-ClassWeight-Inputs.ipynb>` — rebuilds 07-02's input caches without MLP training
+- :notebook:`07-03-Dedicated-RF-Fast.ipynb <07-Dedicated-MLP-Aggregated/07-03-Dedicated-RF-Fast.ipynb>` — Faster RF variant
 
 Models
 ------
@@ -64,6 +66,27 @@ Preprocessing
 -------------
 
 :term:`log1p transform` + :term:`Standardize to zero mean` (fit on train only).
+
+Key Findings
+------------
+
+- Mean test performance across the ten drugs on :term:`Aggregated (pooled) training`:
+  :term:`LogisticRegression` 0.788 BalAcc / 0.862 AUC, :term:`MLP` 0.784 / 0.848,
+  :term:`Random Forest` 0.761 / 0.843.
+- LR and MLP are effectively tied, with the per-drug wins split: the MLP leads
+  on Ciprofloxacin (+0.017), Amoxicillin-Clavulanic acid (+0.008),
+  Piperacillin-Tazobactam (+0.009) and Amikacin (+0.010 BalAcc); LR leads on
+  Gentamicin, Imipenem, Ceftazidime and Vancomycin.
+- RF is below the two on average but remains close in AUC; it is the best model
+  on Vancomycin Balanced Accuracy (0.897) and the weakest on Amikacin
+  (0.606 BalAcc / 0.729 AUC), where the few resistant samples make the
+  threshold fragile.
+- Best-resolved drugs: Imipenem (0.89 BalAcc / 0.96 AUC), Cefepime
+  (0.84 / 0.90) and Amoxicillin-Clavulanic acid (0.82 / 0.89); the hardest are
+  Ceftazidime (0.70 / 0.78), Ciprofloxacin (0.72 / 0.80) and Amikacin
+  (0.72 / 0.84).
+- These pooled numbers are the **centralised upper bound** for the federated
+  study (08); the federated models aim to recover them without pooling raw data.
 
 Key Relationships
 -----------------

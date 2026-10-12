@@ -2,17 +2,17 @@ Aggregated Cross-Drug Analysis
 =================================
 
 
-The ``aggregated_analysis.ipynb`` notebook loads per-drug
+The :notebook:`aggregated_analysis.ipynb <08-Federated-mlp-lr-rf/Agg-Analysis/aggregated_analysis.ipynb>` notebook loads per-drug
 ``final_results.csv`` files from all available drugs and produces
 cross-drug comparisons, strategy rankings, and :term:`Federated learning`
-gap analyses. The ``masked_aggregated_analysis.ipynb`` variant does the
+gap analyses. The :notebook:`masked_aggregated_analysis.ipynb <08-Federated-mlp-lr-rf/Agg-Analysis/masked_aggregated_analysis.ipynb>` variant does the
 same for runs with :term:`Species masking` enabled, adding mask-specific
 delta charts.
 
 Masked Aggregated Analysis
 --------------------------
 
-``masked_aggregated_analysis.ipynb`` is a configurable variant that
+:notebook:`masked_aggregated_analysis.ipynb <08-Federated-mlp-lr-rf/Agg-Analysis/masked_aggregated_analysis.ipynb>` is a configurable variant that
 loads per-drug runs filtered by ``MASK_STRATEGY`` (read from each run's
 ``best_params_used.txt``). It produces the same visualisations as the
 main notebook plus:

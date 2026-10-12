@@ -1,8 +1,9 @@
 Cross-Site Results
 ==================
 
-Results are generated as heatmaps showing :term:`Balanced Accuracy` and :term:`AUC-ROC`
-for each model × target site combination.
+Results are summarised as Balanced Accuracy heatmaps (per drug × target
+site) and as tabular summaries; :term:`AUC-ROC` is reported in the summary
+files and in the best-per-drug chart.
 
 Model Configuration (per drug)
 ------------------------------
@@ -62,6 +63,29 @@ Aggregate Results (mean Balanced Accuracy across the ten drugs)
      - 0.608
      - +0.154
 
+Per-Drug Heatmaps
+-----------------
+
+.. figure:: /_static/03-CrossSite-Classifier/lr_cross_site_heatmap.svg
+   :alt: LR cross-site Balanced Accuracy heatmaps for L2 and PCA+L2
+   :width: 100%
+
+   LR Balanced Accuracy per drug (rows) and target (columns): L2 (left)
+   and PCA+L2 (right).
+
+.. figure:: /_static/03-CrossSite-Classifier/mlp_cross_site_heatmap.svg
+   :alt: MLP cross-site Balanced Accuracy heatmaps for regularised and attention models
+   :width: 100%
+
+   MLP Balanced Accuracy per drug and target: regularised (left) and
+   attention (right).
+
+In both figures the columns are A-val, the three target sites B/C/D and their
+pooled union B+C+D; cell values are :term:`Balanced Accuracy`. The heatmaps
+make two patterns visible: the systematic A-val → cross-site drop, and the
+drugs that sit at or below chance on specific targets (Piperacillin-Tazobactam
+and Amikacin almost everywhere, Gentamicin on C, Cefepime on C/D).
+
 Interpretation
 --------------
 
@@ -111,6 +135,8 @@ Caveats
 Parameter-Selection and Loss-Curve Diagnostics
 ----------------------------------------------
 
-See :doc:`loss-curves` for the 03-01 reruns with :term:`best_params.csv`
-hyperparameters: overfitting gaps, early-stopping behaviour, and the evidence
-that A validation does not predict cross-site transfer.
+See :doc:`loss-curves` for the per-epoch histories of the 03 models
+(regularised and attention), the parameter-selection fragility analysis and
+the evidence that A validation does not predict cross-site transfer. The loss
+curves for 07's hyperparameters on A are documented in
+:doc:`07 </07-Dedicated-MLP-Aggregated/loss-curves>`.

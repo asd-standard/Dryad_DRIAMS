@@ -86,7 +86,7 @@ Federated training of a scikit-learn :term:`LogisticRegression` model.
 - **Client training**: 1 ``max_iter`` per round (``warm_start=True``)
 - **Checkpoints**: Per-client + global coefficients saved as ``.npz`` files
 
-The retry notebook (``retry_lr.ipynb``) allows increasing ``max_iter``
+The retry notebook (:sourcedir:`retry_lr.ipynb <08-Federated-mlp-lr-rf/Drugs>`) allows increasing ``max_iter``
 and ``RETRY_ROUNDS`` for better convergence with fewer, higher-quality
 local steps.
 
@@ -134,8 +134,8 @@ Strategy 5: Species Masking (Optional)
 --------------------------------------
 
 Activated by ``USE_SPECIES_MASKING = True`` and ``MASK_STRATEGY`` in each
-drug's ``federated.ipynb``. Masks are precomputed once by
-``Species-Masking/compute_masks.ipynb`` and reused across all 6 drugs.
+drug's :sourcedir:`federated.ipynb <08-Federated-mlp-lr-rf/Drugs>`. Masks are precomputed once by
+:notebook:`Species-Masking/compute_masks.ipynb <08-Federated-mlp-lr-rf/Species-Masking/compute_masks.ipynb>` and reused across all 6 drugs.
 
 **How it works:**
   Data from all 6 drugs is pooled per site and deduplicated. Per-site
@@ -166,7 +166,7 @@ drug's ``federated.ipynb``. Masks are precomputed once by
   cannot exploit locally. Masking ensures a fair centralized-vs-federated
   comparison by removing cross-site species leakage.
 
-See :term:`Species masking` and ``Species-Masking/compute_masks.ipynb``.
+See :term:`Species masking` and :notebook:`Species-Masking/compute_masks.ipynb <08-Federated-mlp-lr-rf/Species-Masking/compute_masks.ipynb>`.
 
 Training Loss Tracking
 ----------------------

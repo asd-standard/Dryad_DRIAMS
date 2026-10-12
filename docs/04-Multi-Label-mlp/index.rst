@@ -118,11 +118,11 @@ this documentation.
 Notebooks
 ---------
 
-- ``04-00-MultiLabel-CLassifier/04-MultiLabel-Classifier.ipynb`` — shared
+- :notebook:`04-00-MultiLabel-CLassifier/04-MultiLabel-Classifier.ipynb <04-Multi-Label-mlp/04-00-MultiLabel-CLassifier/04-MultiLabel-Classifier.ipynb>` — shared
   MLP (cross-site and aggregated), LR baseline, grid searches
-- ``04-00-MultiLabel-CLassifier/04-00b-Aggregated-LR-ValTuned.ipynb`` —
+- :notebook:`04-00-MultiLabel-CLassifier/04-00b-Aggregated-LR-ValTuned.ipynb <04-Multi-Label-mlp/04-00-MultiLabel-CLassifier/04-00b-Aggregated-LR-ValTuned.ipynb>` —
   standalone corrected aggregated LR baseline (validation-tuned thresholds)
-- ``04-01-MultiLabel-Cnn-Classifier/04-01-MultiLabel-Cnn-Classifier.ipynb`` —
+- :notebook:`04-01-MultiLabel-Cnn-Classifier/04-01-MultiLabel-Cnn-Classifier.ipynb <04-Multi-Label-mlp/04-01-MultiLabel-Cnn-Classifier/04-01-MultiLabel-Cnn-Classifier.ipynb>` —
   shared CNN (aggregated)
 - Outputs: ``04-00-MultiLabel-CLassifier/01-results_multilabel/`` and
   ``04-01-MultiLabel-Cnn-Classifier/results_multilabel_cnn/``

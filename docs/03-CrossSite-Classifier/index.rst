@@ -59,29 +59,44 @@ Validation Protocol (cross-site variant)
   unchanged on every target site.
 
 Validation and test therefore come from different domains: A-val
-performance does not predict cross-site transfer (correlation 0.59–0.64;
-see :doc:`loss-curves`). See :doc:`/validation-protocol` for the shared
-definitions.
+performance does not predict cross-site transfer (correlation 0.59–0.68
+across the diagnostics; see :doc:`loss-curves`). See
+:doc:`/validation-protocol` for the shared definitions.
 
 Key Findings
 ------------
 
-- Significant drop in performance compared to :term:`Aggregated (pooled) training` (01/02):
-  mean :term:`Balanced Accuracy` on the ten common drugs falls from 0.807 on
-  A validation to 0.632 on B+C+D — a 15–19 point loss depending on the model
-- :term:`LogisticRegression` transfers as well as, or better than, the
-  :term:`MLP`: B+C+D means are 0.641 (L2), 0.643 (PCA+L2), 0.634 (regularised
-  MLP) and 0.608 (attention MLP); more complex models do not generalise better
-- Site difficulty is not driven by dataset size: B is the smallest site yet
-  the easiest target (0.692), while D (Viollier, private lab) is the largest
-  and the hardest (0.601); C is intermediate (0.615)
-- Per-drug transfer spans from Amoxicillin-Clavulanic acid (0.737, gap 0.083)
-  to Piperacillin-Tazobactam (0.536) and Amikacin (0.537), near chance
-- Validation on A does not predict cross-site transfer (correlation 0.59–0.64);
-  see :doc:`loss-curves`
-- :term:`Cross-site evaluation` establishes the **lower bound** that
-  :term:`Federated learning` (08) aims to beat by incorporating data from
-  all sites
+**Cross-site degradation.** Performance drops sharply compared to
+:term:`Aggregated (pooled) training` (01/02): mean :term:`Balanced Accuracy`
+on the ten common drugs falls from 0.807 on A validation to 0.632 on B+C+D —
+a 15–19 point loss depending on the model.
+
+**Model families.** :term:`LogisticRegression` transfers as well as, or
+better than, the :term:`MLP`: B+C+D means are 0.641 (L2), 0.643 (PCA+L2),
+0.634 (regularised MLP) and 0.608 (attention MLP); more complex models do not
+generalise better.
+
+**Site difficulty.** Site difficulty is not driven by dataset size: B is the
+smallest site yet the easiest target (0.692), while D (Viollier, private lab)
+is the largest and the hardest (0.601); C is intermediate (0.615).
+
+**Per-drug transfer.** Transfer spans from Amoxicillin-Clavulanic acid
+(0.737, gap 0.083) to Piperacillin-Tazobactam (0.536) and Amikacin (0.537),
+near chance. The chart below shows the best approach per drug.
+
+.. figure:: /_static/03-CrossSite-Classifier/cross_site_best_per_drug.svg
+   :alt: Best approach per drug: A validation Balanced Accuracy, cross-site test Balanced Accuracy and AUC
+   :width: 100%
+
+   Best-performing approach per drug: A-validation Balanced Accuracy, test
+   Balanced Accuracy on B+C+D, and test AUC on B+C+D.
+
+**Validation does not predict transfer.** A-val performance does not predict
+cross-site transfer (correlation 0.59–0.68); see :doc:`loss-curves`.
+
+**Lower bound for federation.** :term:`Cross-site evaluation` establishes the
+**lower bound** that :term:`Federated learning` (08) aims to beat by
+incorporating data from all sites.
 
 References Back
 ---------------

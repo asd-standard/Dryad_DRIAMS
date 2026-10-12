@@ -25,15 +25,15 @@ Design
      - with-D mirror
      - Rounds
    * - Ceftriaxone
-     - ``Site-D-Ablation/Ceftriaxone/federated_noD.ipynb``
+     - :notebook:`Site-D-Ablation/Ceftriaxone/federated_noD.ipynb <08-Federated-mlp-lr-rf/Site-D-Ablation/Ceftriaxone/federated_noD.ipynb>`
      - ``07-Run``
      - 50
    * - Ciprofloxacin
-     - ``Site-D-Ablation/Ciprofloxacin/federated_noD.ipynb``
+     - :notebook:`Site-D-Ablation/Ciprofloxacin/federated_noD.ipynb <08-Federated-mlp-lr-rf/Site-D-Ablation/Ciprofloxacin/federated_noD.ipynb>`
      - ``04-Run``
      - 50
    * - Ceftazidime
-     - ``Site-D-Ablation/Ceftazidime/federated_noD.ipynb``
+     - :notebook:`Site-D-Ablation/Ceftazidime/federated_noD.ipynb <08-Federated-mlp-lr-rf/Site-D-Ablation/Ceftazidime/federated_noD.ipynb>`
      - ``03-Run``
      - 30
 
@@ -295,11 +295,11 @@ Caveats
 Files and Notebooks
 -------------------
 
-- ``Site-D-Ablation/{Drug}/federated_noD.ipynb`` — the no-D run for each drug,
-  generated from ``Drugs/{Drug}/federated.ipynb`` (``TRAIN_SITES = ["A","B","C"]``,
+- :sourcedir:`Site-D-Ablation/{Drug}/federated_noD.ipynb <08-Federated-mlp-lr-rf/Site-D-Ablation>` — the no-D run for each drug,
+  generated from :sourcedir:`Drugs/{Drug}/federated.ipynb <08-Federated-mlp-lr-rf/Drugs>` (``TRAIN_SITES = ["A","B","C"]``,
   archived tuning loaded verbatim, checkpointing disabled, ``AllABC`` metric
   added). See ``Site-D-Ablation/README.md``.
-- ``Site-D-Ablation/compare_noD.ipynb`` — builds the comparison tables
+- :notebook:`Site-D-Ablation/compare_noD.ipynb <08-Federated-mlp-lr-rf/Site-D-Ablation/compare_noD.ipynb>` — builds the comparison tables
   (peak-round and final-round), the transfer table, and the three figures above
   (``Site-D-Ablation/comparison_results/``, local-only).
 - Executed copies are archived as ``results/notebook.ipynb`` inside each no-D

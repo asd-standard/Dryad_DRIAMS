@@ -296,13 +296,13 @@ registered on the strategy to collect the mean training loss across clients.
 Notebooks
 ---------
 
-- ``06-03a-Ceftazidime-E-coli-Federated.ipynb`` — Basic FL (E. coli only):
+- :notebook:`06-03a-Ceftazidime-E-coli-Federated.ipynb <06a-Ceftazidime-E-coli/06-03a-Ceftazidime-E-coli-Federated.ipynb>` — Basic FL (E. coli only):
   FedAvg + FedProx + FedLR + FedRF
-- ``06-03b-Ceftazidime-E-coli-Federated.ipynb`` — FL variant B
-- ``06-03c-Species-Masked-Ceftazidime-Federated.ipynb`` — Species-masked FL
+- :notebook:`06-03b-Ceftazidime-E-coli-Federated.ipynb <06a-Ceftazidime-E-coli/06-03b-Ceftazidime-E-coli-Federated.ipynb>` — FL variant B
+- :notebook:`06-03c-Species-Masked-Ceftazidime-Federated.ipynb <06a-Ceftazidime-E-coli/06-03c-Species-Masked-Ceftazidime-Federated.ipynb>` — Species-masked FL
   (all species): 4-phase pipeline with data-driven mask selection. Produces
   the centralized MLP (none/union/majority/persite) baselines.
-- ``retry_fedprox.ipynb`` — :term:`FedProx` μ retry utility
+- :notebook:`retry_fedprox.ipynb <06a-Ceftazidime-E-coli/retry_fedprox.ipynb>` — :term:`FedProx` μ retry utility
 
 Files
 -----

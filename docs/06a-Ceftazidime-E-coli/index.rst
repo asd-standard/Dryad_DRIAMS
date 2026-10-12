@@ -44,17 +44,17 @@ Files
 -----
 
 Non-federated:
-  - ``06-00-Ceftazidime-E-coli.ipynb`` — Cross-site (train A) + Aggregated
-  - ``06-01-Ceftazidime-E-coli.ipynb`` — Cross-site (train D, largest site)
-  - ``06-02-Ceftazidime-E-coli-Aggregated-Iterative.ipynb`` — 4 sequential
+  - :notebook:`06-00-Ceftazidime-E-coli.ipynb <06a-Ceftazidime-E-coli/06-00-Ceftazidime-E-coli.ipynb>` — Cross-site (train A) + Aggregated
+  - :notebook:`06-01-Ceftazidime-E-coli.ipynb <06a-Ceftazidime-E-coli/06-01-Ceftazidime-E-coli.ipynb>` — Cross-site (train D, largest site)
+  - :notebook:`06-02-Ceftazidime-E-coli-Aggregated-Iterative.ipynb <06a-Ceftazidime-E-coli/06-02-Ceftazidime-E-coli-Aggregated-Iterative.ipynb>` — 4 sequential
     runs with warm-start
 
 Federated:
-  - ``06-03a-Ceftazidime-E-coli-Federated.ipynb`` — Main FL notebook
-  - ``06-03b-Ceftazidime-E-coli-Federated.ipynb`` — FL variant B
-  - ``06-03c-Species-Masked-Ceftazidime-Federated.ipynb`` — Species masking
+  - :notebook:`06-03a-Ceftazidime-E-coli-Federated.ipynb <06a-Ceftazidime-E-coli/06-03a-Ceftazidime-E-coli-Federated.ipynb>` — Main FL notebook
+  - :notebook:`06-03b-Ceftazidime-E-coli-Federated.ipynb <06a-Ceftazidime-E-coli/06-03b-Ceftazidime-E-coli-Federated.ipynb>` — FL variant B
+  - :notebook:`06-03c-Species-Masked-Ceftazidime-Federated.ipynb <06a-Ceftazidime-E-coli/06-03c-Species-Masked-Ceftazidime-Federated.ipynb>` — Species masking
     variants for centralized baselines
-  - ``retry_fedprox.ipynb`` — :term:`FedProx` μ retry utility
+  - :notebook:`retry_fedprox.ipynb <06a-Ceftazidime-E-coli/retry_fedprox.ipynb>` — :term:`FedProx` μ retry utility
 
 Related Analyses
 ----------------

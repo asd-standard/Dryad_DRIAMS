@@ -3,14 +3,14 @@ Integration with Federated Learning (08)
 
 07 produces three artefacts consumed by the federated notebooks in 08.
 
-``best_params.csv`` — Hyperparameters
---------------------------------------
+1. Hyperparameters
+---------------------------------------
 
 Each drug has an entry in ``07-01-results_dedicated_lr_mlp/best_params.csv``
 with the format::
 
    Drug              LR            MLP
-   Ciprofloxacin     C=0.000457    lr=7.8e-05 drop=0.8
+   Ciprofloxacin     C=4.57e-04    lr=7.8e-05 drop=0.8
    Gentamicin        ...           ...
 
 The federated notebooks (08) read this file to set:

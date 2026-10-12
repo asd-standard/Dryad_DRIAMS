@@ -357,8 +357,8 @@ Caveats
 Files and Notebooks
 -------------------
 
-- ``UMAP-Diagnostic-Interactive.ipynb`` — this analysis (produces the
-  interactive HTMLs and the static figures); ``UMAP-Diagnostic.ipynb`` is the
+- :notebook:`UMAP-Diagnostic-Interactive.ipynb <08-Federated-mlp-lr-rf/Species-Masking/UMAP-Diagnostic-Interactive.ipynb>` — this analysis (produces the
+  interactive HTMLs and the static figures); :notebook:`UMAP-Diagnostic.ipynb <08-Federated-mlp-lr-rf/Species-Masking/UMAP-Diagnostic.ipynb>` is the
   earlier static predecessor.
 - ``UMAP-Diagnostic-Interactive/results/`` — cluster-composition CSVs
   (global, site-D, per drug), ``site_separability.csv``,

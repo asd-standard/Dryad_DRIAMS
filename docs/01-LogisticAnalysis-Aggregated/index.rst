@@ -64,18 +64,51 @@ internal validation split.
 Key Findings
 ------------
 
-- On Ciprofloxacin — the only drug where raw LR was evaluated — L2
-  regularisation with class weighting improves test performance
-  substantially: BalAcc 0.72 vs 0.63 and AUC 0.80 vs 0.72.
-- :term:`PCA` does not help: it slightly reduces test performance on all
-  three drugs (up to 0.008 BalAcc and 0.005 AUC versus L2-only), so the full
-  6000-bin spectrum is retained.
-- With ``class_weight='balanced'``, the optimal threshold sits near 0.5
-  (0.47 / 0.50 / 0.39 for Ciprofloxacin / Amoxicillin-Clavulanic acid /
-  Gentamicin) and :term:`Threshold Tuning` changes validation
-  :term:`Balanced Accuracy` by at most 0.005 — the :term:`default threshold`
-  is adequate for LR.
-- Serves as the **linear baseline** for all subsequent models.
+**Raw vs L2 regularisation.** On Ciprofloxacin — the only drug where raw LR
+was evaluated — the raw model (no penalty, no class weighting) reaches test
+BalAcc 0.634 / AUC 0.719, while L2 regularisation with
+``class_weight='balanced'`` and a tuned threshold reaches **0.721 / 0.798**
+(+0.087 BalAcc, +0.079 AUC). The ROC curves show that the gain is in the
+ranking itself, not just in the decision cutoff.
+
+.. figure:: /_static/01-LogisticAnalysis-Aggregated/lr_cip_roc.svg
+   :alt: ROC curves for raw LR, L2 LR and PCA+L2 LR on Ciprofloxacin
+   :width: 100%
+
+   ROC curves on the Ciprofloxacin test set: raw LR, L2 LR (tuned) and
+   PCA+L2 LR (tuned). L2 lifts the threshold-independent ranking from
+   AUC 0.719 to 0.798.
+
+**PCA.** :term:`PCA` retains 94% of the variance but does not help: versus
+L2-only it changes test performance by -0.008 BalAcc / -0.004 AUC on
+Ciprofloxacin, -0.002 / -0.004 on Amoxicillin-Clavulanic acid and ~0.000 on
+Gentamicin, so the full 6000-bin spectrum is retained. The train/test gaps
+in the comparison chart also confirm that the L2 model generalises better
+than the raw one.
+
+.. figure:: /_static/01-LogisticAnalysis-Aggregated/lr_cip_comparison.svg
+   :alt: Train and test Balanced Accuracy and test AUC for the three LR variants on Ciprofloxacin
+   :width: 100%
+
+   Ciprofloxacin comparison of the three LR variants: train and test
+   Balanced Accuracy and test AUC, with train-test gaps annotated.
+
+**Threshold tuning.** With ``class_weight='balanced'`` the optimal threshold
+sits near 0.5 (0.47 / 0.50 / 0.39 for Ciprofloxacin /
+Amoxicillin-Clavulanic acid / Gentamicin) and :term:`Threshold Tuning`
+changes validation :term:`Balanced Accuracy` by at most 0.005, so the
+:term:`default threshold` is adequate for LR. See the threshold sweep in
+`Training Diagnostics`_.
+
+**Linear baseline.** Serves as the **linear baseline** for all subsequent
+models: the MLP (02), the per-drug models (07) and the federated LR (08).
+
+.. figure:: /_static/01-LogisticAnalysis-Aggregated/lr_three_drug_summary.svg
+   :alt: Test Balanced Accuracy and AUC for the LR variants across the three drugs
+   :width: 100%
+
+   Test Balanced Accuracy and AUC for the LR variants across the three
+   drugs.
 
 Training Diagnostics
 --------------------
@@ -84,7 +117,7 @@ Logistic regression is convex: the log-loss as a function of the
 coefficients has a single global optimum and no local minima. Unlike a
 neural network, there is therefore no epoch-wise loss curve to inspect;
 the diagnostics below examine the optimiser trajectory, the threshold
-sensitivity and the L2 strength (see ``01-01-LR-Diagnostics.ipynb`` and
+sensitivity and the L2 strength (see :notebook:`01-01-LR-Diagnostics.ipynb <01-LogisticAnalysis-Aggregated/01-01-LR-Diagnostics.ipynb>` and
 :doc:`/validation-protocol`).
 
 Convergence
@@ -148,9 +181,9 @@ of ``C`` is not critical.
 Notebooks
 ---------
 
-- ``01-LogisticAnalysis-Aggregated.ipynb`` — main analysis (A/B/C, figures,
+- :notebook:`01-LogisticAnalysis-Aggregated.ipynb <01-LogisticAnalysis-Aggregated/01-LogisticAnalysis-Aggregated.ipynb>` — main analysis (A/B/C, figures,
   summary CSV)
-- ``01-01-LR-Diagnostics.ipynb`` — convergence, threshold sweep, C-sweep
+- :notebook:`01-01-LR-Diagnostics.ipynb <01-LogisticAnalysis-Aggregated/01-01-LR-Diagnostics.ipynb>` — convergence, threshold sweep, C-sweep
 - Outputs: ``results_lr_aggregated/`` and ``results_lr_diagnostics/``
 
 References Back

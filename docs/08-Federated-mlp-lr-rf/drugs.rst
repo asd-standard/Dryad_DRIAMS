@@ -151,12 +151,12 @@ runs do not include cross-site baselines.
 Retry Notebooks
 ---------------
 
-**retry_fedprox.ipynb**
+:sourcedir:`retry_fedprox.ipynb <08-Federated-mlp-lr-rf/Drugs>`
    Re-runs only FedProx with a new μ value, then merges results
    in-place into a target run directory. Reloads existing FedAvg,
    FedLR, and FedRF results from CSVs — only FedProx is re-trained.
 
-**retry_lr.ipynb**
+:sourcedir:`retry_lr.ipynb <08-Federated-mlp-lr-rf/Drugs>`
    Re-runs only Federated LR with new :term:`C <L2 regularization>`, ``max_iter``, and
    ``rounds``. Same in-place merge pattern.
 

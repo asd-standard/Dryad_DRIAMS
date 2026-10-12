@@ -38,7 +38,7 @@ At a Glance
      - :term:`Flower (flwr)` with :term:`FedAvg`, :term:`FedProx`,
        :term:`FedLR`, :term:`FedRF`
    * - Data preparation
-     - :doc:`data-processing` — ``process_driams.py`` → per-drug ``data.csv``
+     - :doc:`data-processing` — :script:`process_driams.py <00-Data-Processing/process_driams.py>` → per-drug ``data.csv``
 
 End-to-End Pipeline
 -------------------

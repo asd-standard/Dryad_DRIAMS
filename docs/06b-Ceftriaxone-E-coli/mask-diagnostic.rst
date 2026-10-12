@@ -24,7 +24,7 @@ that removes more species signal?
 Method
 ~~~~~~
 
-``06-03c-Phase1-Mask-Diagnostic.ipynb`` reuses the exact 06-03c data pipeline
+:notebook:`06-03c-Phase1-Mask-Diagnostic.ipynb <06b-Ceftriaxone-E-coli/06-03c-Phase1-Mask-Diagnostic.ipynb>` reuses the exact 06-03c data pipeline
 (same species-stratified split, downsampling, preprocessing, seed) and sweeps
 the per-site species RF over three configurations:
 
@@ -126,7 +126,7 @@ approaches were tried, and all three failed.
 Site mask (drop vs K)
 ~~~~~~~~~~~~~~~~~~~~~
 
-``06-03d-Phase1-SiteMask-Diagnostic.ipynb`` zeroes the top-K site bins and
+:notebook:`06-03d-Phase1-SiteMask-Diagnostic.ipynb <06b-Ceftriaxone-E-coli/06-03d-Phase1-SiteMask-Diagnostic.ipynb>` zeroes the top-K site bins and
 measures the site-RF OOB drop (pooled site RF, OOB = 1.000):
 
 .. list-table:: Site masking-drop vs K
@@ -163,7 +163,7 @@ The site signal is **redundant across the spectrum**, exactly like species.
 LDA projection
 ~~~~~~~~~~~~~~
 
-``06-03d-SiteDeconfound-Diagnostic.ipynb`` projects out the linear
+:notebook:`06-03d-SiteDeconfound-Diagnostic.ipynb <06b-Ceftriaxone-E-coli/06-03d-SiteDeconfound-Diagnostic.ipynb>` projects out the linear
 site-discriminative directions. LDA itself classifies site at **0.0993**
 (well below the 0.25 chance), and projecting out its directions leaves the
 site-RF OOB at 1.0. Because per-site ``log1p+standardize`` already zeroes each
@@ -182,7 +182,7 @@ methods.
 Adversarial site-invariance
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-``06-03d-AdversarialSite-Diagnostic.ipynb`` trains a resistance MLP with a
+:notebook:`06-03d-AdversarialSite-Diagnostic.ipynb <06b-Ceftriaxone-E-coli/06-03d-AdversarialSite-Diagnostic.ipynb>` trains a resistance MLP with a
 gradient-reversal site head (DANN). The site-probe accuracy *rose* with the
 reversal weight (0.66 → 0.72) instead of falling toward 0.25, and resistance
 (~0.76 centralised, ~0.55 cross-site) stayed flat. The features cannot be made
@@ -231,8 +231,8 @@ zeroing the species masks (unmasked, majority and union), on all four sites.
 Files
 -----
 
-* ``06-03c-Phase1-Mask-Diagnostic.ipynb`` — species-mask diagnostic
-* ``06-03d-Phase1-SiteMask-Diagnostic.ipynb`` — site-mask drop-vs-K diagnostic
-* ``06-03d-SiteDeconfound-Diagnostic.ipynb`` — LDA site-deconfounding diagnostic
-* ``06-03d-AdversarialSite-Diagnostic.ipynb`` — adversarial site-invariance diagnostic
+* :notebook:`06-03c-Phase1-Mask-Diagnostic.ipynb <06b-Ceftriaxone-E-coli/06-03c-Phase1-Mask-Diagnostic.ipynb>` — species-mask diagnostic
+* :notebook:`06-03d-Phase1-SiteMask-Diagnostic.ipynb <06b-Ceftriaxone-E-coli/06-03d-Phase1-SiteMask-Diagnostic.ipynb>` — site-mask drop-vs-K diagnostic
+* :notebook:`06-03d-SiteDeconfound-Diagnostic.ipynb <06b-Ceftriaxone-E-coli/06-03d-SiteDeconfound-Diagnostic.ipynb>` — LDA site-deconfounding diagnostic
+* :notebook:`06-03d-AdversarialSite-Diagnostic.ipynb <06b-Ceftriaxone-E-coli/06-03d-AdversarialSite-Diagnostic.ipynb>` — adversarial site-invariance diagnostic
 * outputs: ``mask_diagnostic.csv``, ``site_mask_drop_vs_k.csv``, ``site_deconfound_diagnostic.csv``, ``adversarial_site_diagnostic.csv`` (+ PDFs)

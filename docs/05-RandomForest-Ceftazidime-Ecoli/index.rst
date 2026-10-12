@@ -87,7 +87,7 @@ The 25% holdout was then scored once: **BalAcc 0.6152 / AUC 0.7805**
 spectra, 120 resistant) with the tuned configuration, preprocessing fitted on
 A, and scores B/C/D separately at the :term:`default threshold` of 0.5. Its
 "A (train)" row is an in-sample reference and is labelled as such. The seeded
-extension ``05-01-CrossSite-Seeded.ipynb`` splits A 80/20 into train/holdout
+extension :notebook:`05-01-CrossSite-Seeded.ipynb <05-RandomForest-Ceftazidime-Ecoli/05-01-CrossSite-Seeded.ipynb>` splits A 80/20 into train/holdout
 per seed, fits on the A-train slice only, and additionally tunes the threshold
 by 3-fold cross-validated predictions inside that slice
 (:term:`Threshold Tuning`), frozen for every target.
@@ -117,7 +117,7 @@ trees and ``class_weight='balanced'`` at the top.
 **Cross-site evaluation (seeded, held-out A).** The main notebook also prints
 an "A (train)" row (BalAcc 0.999); that is training-set memorisation and is
 explicitly labelled as such. The clean protocol — implemented in
-``05-01-CrossSite-Seeded.ipynb`` — splits A 80/20 into a train slice and a
+:notebook:`05-01-CrossSite-Seeded.ipynb <05-RandomForest-Ceftazidime-Ecoli/05-01-CrossSite-Seeded.ipynb>` — splits A 80/20 into a train slice and a
 held-out A test slice for five seeds, fits the tuned RF on the A-train slice
 only, and scores the A holdout plus B/C/D. Two thresholds are reported: the
 default 0.5 and a threshold tuned by cross-validated predictions inside
@@ -237,7 +237,7 @@ is a decision-threshold artifact, not evidence of weak learning.
 
 Seed 42 is also the 25% tuning holdout of the grid search (same split,
 preprocessing and model seed, by construction). Tuned-threshold values come
-from ``05-01-CrossSite-Seeded.ipynb``; the @0.5 and AUC columns reproduce the
+from :notebook:`05-01-CrossSite-Seeded.ipynb <05-RandomForest-Ceftazidime-Ecoli/05-01-CrossSite-Seeded.ipynb>`; the @0.5 and AUC columns reproduce the
 main notebook's report exactly.
 
 **Feature importance.** The final RF put most impurity importance on a few
@@ -371,10 +371,10 @@ x-axis squashing the top-30 panel) was fixed during this pass.
 Notebooks and Files
 -------------------
 
-- ``05-RandomForest-Ceftazidime-Ecoli.ipynb`` — main analysis
-- ``05-01-CrossSite-Seeded.ipynb`` — seeded cross-site evaluation with a
+- :notebook:`05-RandomForest-Ceftazidime-Ecoli.ipynb <05-RandomForest-Ceftazidime-Ecoli/05-RandomForest-Ceftazidime-Ecoli.ipynb>` — main analysis
+- :notebook:`05-01-CrossSite-Seeded.ipynb <05-RandomForest-Ceftazidime-Ecoli/05-01-CrossSite-Seeded.ipynb>` — seeded cross-site evaluation with a
   held-out A slice and cross-validated thresholds
-- ``recover_multi_seed_metrics.py`` — pooled multi-seed reproduction and
+- :script:`recover_multi_seed_metrics.py <05-RandomForest-Ceftazidime-Ecoli/recover_multi_seed_metrics.py>` — pooled multi-seed reproduction and
   June-vs-current discrepancy check
 - ``results_rf/`` — current outputs (``report.md``, ``cross_site_seeded_metrics.csv``,
   ``pooled_threshold_metrics.csv`` and six figures)

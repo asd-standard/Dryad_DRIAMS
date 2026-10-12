@@ -4,7 +4,7 @@ Federated Ceftriaxone × *E. coli* — Results
 :term:`Flower (flwr)`-based :term:`Federated learning` across 4
 :term:`DRIAMS` sites (A/B/C/D), 30 rounds, 4 strategies.
 
-These results were produced by ``06-03c-Species-Masked-Ceftriaxone-Federated.ipynb``
+These results were produced by :notebook:`06-03c-Species-Masked-Ceftriaxone-Federated.ipynb <06b-Ceftriaxone-E-coli/06-03c-Species-Masked-Ceftriaxone-Federated.ipynb>`
 — see `06-03c: How It Works`_ for the 4-phase pipeline. The Ceftazidime
 counterpart lives in
 :doc:`06a </06a-Ceftazidime-E-coli/federated>`. 
@@ -130,7 +130,7 @@ classifiers — see `06-03c: How It Works`_ for the full pipeline.
 06-03c: How It Works
 ~~~~~~~~~~~~~~~~~~~~
 
-The results on this page come from ``06-03c-Species-Masked-Ceftriaxone-Federated.ipynb``,
+The results on this page come from :notebook:`06-03c-Species-Masked-Ceftriaxone-Federated.ipynb <06b-Ceftriaxone-E-coli/06-03c-Species-Masked-Ceftriaxone-Federated.ipynb>`,
 a 4-phase notebook that works on **all species** (not just *E. coli*):
 
 1. **Per-site species RF classifiers** — Identifies the top 500 m/z bins
@@ -224,12 +224,12 @@ Per-Site Heatmaps
 Notebooks
 ---------
 
-- ``06-03a-Ceftriaxone-E-coli-Federated.ipynb`` — Basic FL (E. coli only):
+- :notebook:`06-03a-Ceftriaxone-E-coli-Federated.ipynb <06b-Ceftriaxone-E-coli/06-03a-Ceftriaxone-E-coli-Federated.ipynb>` — Basic FL (E. coli only):
   FedAvg + FedProx + FedLR + FedRF
-- ``06-03b-Ceftriaxone-E-coli-Federated.ipynb`` — FL variant B
-- ``06-03c-Species-Masked-Ceftriaxone-Federated.ipynb`` — **Ran to produce**
+- :notebook:`06-03b-Ceftriaxone-E-coli-Federated.ipynb <06b-Ceftriaxone-E-coli/06-03b-Ceftriaxone-E-coli-Federated.ipynb>` — FL variant B
+- :notebook:`06-03c-Species-Masked-Ceftriaxone-Federated.ipynb <06b-Ceftriaxone-E-coli/06-03c-Species-Masked-Ceftriaxone-Federated.ipynb>` — **Ran to produce**
   these results: 4-phase pipeline with per-site species RF, data-driven
   mask selection, and full FL pipeline. Produces the centralized MLP
   (none/union/majority/persite) baselines and ``mask_delta.pdf``.
-- ``06-03b-Re-Run-lr-Ceftriaxone-E-coli-Fed.ipynb`` — FedLR re-run
-- ``retry_fedprox.ipynb`` — :term:`FedProx` μ retry utility
+- :notebook:`06-03b-Re-Run-lr-Ceftriaxone-E-coli-Fed.ipynb <06b-Ceftriaxone-E-coli/06-03b-Re-Run-lr-Ceftriaxone-E-coli-Fed.ipynb>` — FedLR re-run
+- :notebook:`retry_fedprox.ipynb <06b-Ceftriaxone-E-coli/retry_fedprox.ipynb>` — :term:`FedProx` μ retry utility
