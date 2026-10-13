@@ -19,7 +19,7 @@ poisoning the model.
 Design
 ------
 
-.. list-table:: Ablation runs (all six strategies re-run, no other changes)
+.. list-table:: Ablation runs (FedProx and cross-site skipped; everything else matched)
    :header-rows: 1
 
    * - Drug
@@ -159,10 +159,14 @@ Ceftriaxone has B's composition closest to D's (B↔D 0.89, versus B↔A 0.67 an
 B↔C 0.85); for Ciprofloxacin and Ceftazidime the closest site is A. The
 Gentamicin follow-up below settles this question: B's decline was noise.
 
-Site D as an unseen site
-~~~~~~~~~~~~~~~~~~~~~~~~
+Site D as an unseen site (evaluated but never trained on)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. list-table:: Site D Balanced Accuracy — trained vs unseen vs cross-site
+"Unseen" here means site D appears in every evaluation round of the no-D arm
+but never contributes to training, so its scores measure how well the
+federated model transfers to a hospital site it has never learned from.
+
+.. list-table:: Site D Balanced Accuracy — trained vs unseen (evaluated only) vs cross-site
    :header-rows: 1
 
    * - Drug
@@ -200,8 +204,8 @@ Site D as an unseen site
    cross-site baseline is round-dependent — above it at the selected peak round
    in all three drugs, mixed at the final round.
 
-Secondary strategies
-~~~~~~~~~~~~~~~~~~~~
+Secondary strategies (Centralized MLP/RF, FedLR, FedRF)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. list-table:: Mean Δ across the three drugs (no-D − with-D)
    :header-rows: 1
