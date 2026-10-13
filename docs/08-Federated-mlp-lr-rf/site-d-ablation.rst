@@ -4,15 +4,17 @@ Site-D Ablation — Training without DRIAMS-D
 Do the federated models get dragged down by DRIAMS-D? Site D is the largest
 site (~39 % of the pooled spectra) and has the weakest per-site
 :term:`Balanced Accuracy` in five of the six drugs (see :doc:`drugs`). This
-page reports the **leave-D-out pilot**: three drugs re-run with clients A/B/C
-only, everything else matched to the archived with-D runs.
+page reports the **leave-D-out pilot** (three drugs) plus a **seed-replicated
+follow-up on Gentamicin** that quantifies the noise floor and tests whether
+D's aggregation weight is the mechanism.
 
 **Result in one line:** removing D does *not* improve the other sites —
-aggregate performance is essentially unchanged, A/C are flat, and the apparent
-B decline does not survive a round-selection robustness check. D itself is the
-site that loses most from exclusion, and even unseen it remains in the
-cross-site baseline's range. D is not dragging the federation down; its
-per-site weakness is a transfer cost, not D poisoning the model.
+aggregate performance is essentially unchanged, and every per-site effect
+except D's own sits within a ±0.01–0.04 noise floor (measured with seed
+replicates on Gentamicin). D itself is the site that loses most from
+exclusion, and its aggregation weight is not the mechanism. D is not dragging
+the federation down; its per-site weakness is a transfer cost, not D
+poisoning the model.
 
 Design
 ------
@@ -25,15 +27,15 @@ Design
      - with-D mirror
      - Rounds
    * - Ceftriaxone
-     - :notebook:`Site-D-Ablation/Ceftriaxone/federated_noD.ipynb <08-Federated-mlp-lr-rf/Site-D-Ablation/Ceftriaxone/federated_noD.ipynb>`
+     - ``Site-D-Ablation/Ceftriaxone/federated_noD.ipynb``
      - ``07-Run``
      - 50
    * - Ciprofloxacin
-     - :notebook:`Site-D-Ablation/Ciprofloxacin/federated_noD.ipynb <08-Federated-mlp-lr-rf/Site-D-Ablation/Ciprofloxacin/federated_noD.ipynb>`
+     - ``Site-D-Ablation/Ciprofloxacin/federated_noD.ipynb``
      - ``04-Run``
      - 50
    * - Ceftazidime
-     - :notebook:`Site-D-Ablation/Ceftazidime/federated_noD.ipynb <08-Federated-mlp-lr-rf/Site-D-Ablation/Ceftazidime/federated_noD.ipynb>`
+     - ``Site-D-Ablation/Ceftazidime/federated_noD.ipynb``
      - ``03-Run``
      - 30
 
@@ -154,8 +156,8 @@ dwarf every arm difference:
 An exploratory species-mix check (cosine similarity of the per-site species
 shares) hints at why B *might* feel D's absence: of the three drugs, only
 Ceftriaxone has B's composition closest to D's (B↔D 0.89, versus B↔A 0.67 and
-B↔C 0.85); for Ciprofloxacin and Ceftazidime the closest site is A. With three
-single-seed runs this is a hypothesis, not evidence.
+B↔C 0.85); for Ciprofloxacin and Ceftazidime the closest site is A. The
+Gentamicin follow-up below settles this question: B's decline was noise.
 
 Site D as an unseen site
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -246,22 +248,148 @@ Secondary strategies
 - All values here use the peak-round convention; the same selection sensitivity
   applies, so read the means as descriptive.
 
+Follow-up: seed noise and weight control (Gentamicin)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The pilot is single-seed, so its deltas cannot be separated from run-to-run
+noise, and the no-D arm changes two things at once — D's *data* and its share
+of the :term:`FedAvg` aggregation. Both questions are addressed on a fourth
+drug, Gentamicin (mirror ``01-Run``, 40 rounds), with all runs under one code
+path:
+
+.. list-table:: Follow-up arms (local runs; identical code, seeds varied)
+   :header-rows: 1
+
+   * - Arm
+     - Clients
+     - Aggregation weights
+     - Seeds
+   * - ``withD``
+     - A/B/C/D
+     - sample-proportional (Flower default)
+     - 42, 43, 44
+   * - ``noD``
+     - A/B/C
+     - sample-proportional
+     - 42, 43, 44
+   * - ``weight``
+     - A/B/C/D
+     - **uniform** (every client equal)
+     - 42, 43
+
+The ``weight`` arm keeps D's data but cancels its weight dominance: on
+Gentamicin, D contributes ≈ 48 % of the training spectra (A 14 %, B 12 %,
+C 26 % after downsampling), so uniform weights cut D's share to 25 % and
+roughly double B's and C's. Uniform weighting is implemented by returning a
+constant ``num_examples`` from each MLP/LR client — the value Flower's
+``FedAvg`` uses as the aggregation weight — and each run logs its round-1
+weights (``[1, 1, 1, 1]`` in the weight arm) as evidence the intervention
+worked.
+
+**Noise floor.** Per-site Balanced Accuracy across seeds:
+
+.. list-table:: FedAvg (MLP) per-site Balanced Accuracy, mean ± SD across seeds
+   :header-rows: 1
+
+   * - Arm
+     - A
+     - B
+     - C
+     - D
+   * - ``withD`` (3 seeds)
+     - 0.770 ± 0.018
+     - 0.711 ± 0.031
+     - 0.832 ± 0.029
+     - 0.635 ± 0.020
+   * - ``noD`` (3 seeds)
+     - 0.803 ± 0.027
+     - 0.729 ± 0.009
+     - 0.821 ± 0.008
+     - 0.593 ± 0.011
+   * - ``weight`` (2 seeds)
+     - 0.763 ± 0.100
+     - 0.659 ± 0.046
+     - 0.771 ± 0.085
+     - 0.594 ± 0.033
+
+.. figure:: /_static/08-Federated-mlp-lr-rf/08_nod_gent_followup_arms.svg
+   :alt: Gentamicin per-site Balanced Accuracy across seeds for the three arms
+   :width: 100%
+
+   Per-site Balanced Accuracy across seeds (dots = runs, lines = arm means).
+
+Paired per-site deltas (each no-D seed against the same-seed with-D run):
+
+.. list-table:: Paired per-site deltas (mean ± SD over seeds)
+   :header-rows: 1
+
+   * - Contrast
+     - ΔA
+     - ΔB
+     - ΔC
+     - ΔD
+   * - no-D − with-D
+     - +0.033 ± 0.044
+     - +0.018 ± 0.034
+     - −0.011 ± 0.035
+     - **−0.042 ± 0.011**
+   * - uniform − with-D
+     - −0.006 ± 0.075
+     - **−0.055 ± 0.003**
+     - −0.054 ± 0.046
+     - −0.035 ± 0.056
+
+.. figure:: /_static/08-Federated-mlp-lr-rf/08_nod_gent_followup_deltas.svg
+   :alt: Gentamicin per-seed paired deltas with mean and SD
+   :width: 100%
+
+   Per-seed paired deltas (dots) with mean ± SD, against the zero line.
+
+**What the follow-up shows.**
+
+- **The pilot's small deltas are at the noise scale.** Paired-delta SDs on
+  Gentamicin are ±0.011 (D) to ±0.044 (A), and within-arm SDs reach 0.031, so
+  the pilot's per-site deltas of ≈ 0.02–0.06 cannot be resolved with a
+  single seed.
+- **B's decline does not replicate.** Without D, B is slightly *up* on
+  Gentamicin (+0.018 ± 0.034): the pilot's "B falls in all three drugs" was
+  seed noise.
+- **D's benefit from participation replicates tightly** (−0.042 ± 0.011,
+  negative in all three seed pairs). This is the one per-site effect that
+  survives both repetition and the noise floor.
+- **D's weight share is not the mechanism.** Uniform weights do not improve
+  any site: B drops consistently (−0.055 ± 0.003), C drops (−0.054), A is
+  unchanged within a large spread (±0.075), and one of the two uniform runs
+  collapsed overall (All-site BalAcc 0.630 vs 0.72–0.76 in every other run).
+  Taking weight away from D destabilizes rather than helps.
+- **Controls validate the intervention.** ``uniform − withD`` is exactly
+  **0.000** for Centralized MLP/RF and FedRF (weights never reach those
+  methods), and FedLR moves by ≤ 0.02 — the flag only affected the MLP and LR
+  aggregation, as intended.
+
+One model-class exception: the **pooled RF** improves without D on all four
+sites (ΔB +0.094 ± 0.011, ΔC +0.063 ± 0.008, ΔA +0.034, ΔD +0.021). Unlike the
+MLP, pooled tree models on Gentamicin appear to be *hurt* by D's data — with a
+single drug this is a hypothesis, not a conclusion.
+
 Reading
 -------
 
 - **No evidence that D hurts the federation.** If D's client updates were
   degrading the global model, removing them should lift A/B/C. Instead
   aggregate performance on the shared test pool is unchanged (mean ΔAll
-  ≈ −0.01) and no per-site shift is robust to round selection; the pooled
-  (Centralized) arm agrees on A and C.
+  ≈ −0.01), and the Gentamicin follow-up puts the per-site noise floor at
+  ±0.01–0.04 — most pilot deltas sit inside it. The pooled (Centralized) arm
+  agrees on A and C.
 - **D benefits from participation.** Excluding D costs D under both selection
-  rules (trained ahead by 0.02–0.09); unseen, D stays in the cross-site
-  baseline's range (above it at the selected peak round in all three drugs,
-  mixed at the final round).
-- **The B question stays open.** B's point estimates decline in all three drugs
-  under FedAvg MLP, but the sign flips with round selection, its test sets hold
-  94–199 spectra, and the pooled arm flips sign across drugs. Treat it as a
-  candidate for seed replication, not a conclusion.
+  rules (trained ahead by 0.02–0.09), and the Gentamicin replicates confirm it
+  tightly (−0.042 ± 0.011). Unseen, D stays in the cross-site baseline's range
+  (above it at the selected peak round in all three drugs, mixed at the final
+  round).
+- **B's decline was noise.** On Gentamicin, B is slightly *up* without D, and
+  the weight-controlled arm shows that rebalancing away from D makes B
+  *worse*, not better. There is no mechanism by which D's weight share should
+  be reduced.
 - This matches the :doc:`umap-diagnostic` conclusion: site D is not an isolated
   geometric island, and its weakness in per-site metrics reflects
   cross-site transfer difficulty — not a site that should be dropped from a
@@ -270,40 +398,50 @@ Reading
 Caveats
 -------
 
-- **Single seed per arm.** No run-to-run variance estimate; deltas of this size
-  cannot be separated from seed noise.
+- **Single seed per arm (pilot).** The Gentamicin follow-up quantifies the
+  run-to-run noise: paired-delta SDs of ±0.011–0.044, within which most of the
+  pilot's per-site deltas sit.
+- **The weight arm has 2 seeds and one unstable run.** Its direction (no
+  improvement) is consistent, but its magnitudes are indicative only.
 - **Test-set sizes differ per site** (A 469–810, B 94–199, C 276–377,
-  D 662–982 spectra): one spectrum moves B's Balanced Accuracy by ≈0.01, so
-  B's deltas are a handful of spectra.
+  D 662–982 spectra in the pilot): one spectrum moves B's Balanced Accuracy by
+  ≈0.01, so B's deltas are a handful of spectra.
 - **Peak-round selection.** Per-site values follow the 08 convention (each
   run's best All-site round), but the arms can peak at different rounds
   (Ceftriaxone FedAvg: r39 vs r14). The robustness table gives the final-round
-  view.
+  view, and the follow-up shows the effect is within seed noise.
 - **Weight shift.** :term:`FedAvg` aggregates clients proportional to sample
-  count. Removing D changes the shares (A 33 % → 52 %, C 18 % → 28 %,
-  B 9 % → 14 %), so the arm tests "D's presence and its weight" jointly.
+  count; the no-D arm therefore tests "D's presence and its weight" jointly.
+  The follow-up's uniform-weight arm separates the two: the weight share is
+  not the driver.
 - **Thresholds and hyperparameters were reused** from the with-D runs
   (worst-site-optimal with D present). This is deliberate — it isolates the
   training effect — but threshold-dependent Balanced Accuracy could shift with
   A/B/C-only tuning.
-- **FedRF is not an equal comparison**: fewer clients means a smaller global
-  ensemble for the same rounds.
-- **Three of six drugs** (pilot). The positive Ciprofloxacin centralized deltas
-  and negative Ceftriaxone ones show the heterogeneity; treat means as
-  descriptive only.
+- **FedRF is not an equal comparison** in the no-D arm: fewer clients means a
+  smaller global ensemble for the same rounds.
+- **Drug coverage.** The pilot covers three of six drugs; Gentamicin is the
+  fourth via the follow-up. The positive Ciprofloxacin centralized deltas and
+  negative Ceftriaxone ones show the heterogeneity; treat means as descriptive
+  only.
 
 Files and Notebooks
 -------------------
 
-- :sourcedir:`Site-D-Ablation/{Drug}/federated_noD.ipynb <08-Federated-mlp-lr-rf/Site-D-Ablation>` — the no-D run for each drug,
-  generated from :sourcedir:`Drugs/{Drug}/federated.ipynb <08-Federated-mlp-lr-rf/Drugs>` (``TRAIN_SITES = ["A","B","C"]``,
-  archived tuning loaded verbatim, checkpointing disabled, ``AllABC`` metric
-  added). See ``Site-D-Ablation/README.md``.
-- :notebook:`Site-D-Ablation/compare_noD.ipynb <08-Federated-mlp-lr-rf/Site-D-Ablation/compare_noD.ipynb>` — builds the comparison tables
-  (peak-round and final-round), the transfer table, and the three figures above
+- ``Site-D-Ablation/{Drug}/federated_noD.ipynb`` — the no-D run for each pilot
+  drug, generated from ``Drugs/{Drug}/federated.ipynb`` (``TRAIN_SITES =
+  ["A","B","C"]``, archived tuning loaded verbatim, checkpointing disabled,
+  ``AllABC`` metric added). See ``Site-D-Ablation/README.md``.
+- ``Site-D-Ablation/compare_noD.ipynb`` — builds the pilot comparison tables
+  (peak-round and final-round), the transfer table, and the pilot figures
   (``Site-D-Ablation/comparison_results/``, local-only).
-- Executed copies are archived as ``results/notebook.ipynb`` inside each no-D
-  run folder (local-only).
+- ``Site-D-Ablation/Gentamicin/`` — the follow-up templates
+  (``federated_withD.ipynb``, ``federated_noD.ipynb``,
+  ``federated_weight.ipynb``) and their seeded runs under ``runs/``
+  (results-only, local); ``compare_followup.ipynb`` builds the noise-floor and
+  weight-control tables and figures.
+- Executed copies are archived as ``results/notebook.ipynb`` inside each run
+  folder (local-only).
 
 Related
 -------

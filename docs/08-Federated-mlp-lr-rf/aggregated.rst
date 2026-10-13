@@ -127,6 +127,8 @@ Key Takeaways
   Ceftriaxone (0.061) and Piperacillin-Tazobactam (0.037), where site
   :term:`DRIAMS`-D dominates the sample count.
 - **Site D is not dragging the federation down**: the
-  :doc:`site-d-ablation` (Ceftriaxone, Ciprofloxacin, Ceftazidime) shows that
-  removing D from training leaves aggregate performance essentially unchanged
-  (mean Δ ≤ 0.02), while D itself is the site that loses most from exclusion.
+  :doc:`site-d-ablation` (Ceftriaxone, Ciprofloxacin, Ceftazidime, plus a
+  seed-replicated Gentamicin follow-up) shows that removing D from training
+  leaves aggregate performance essentially unchanged, that per-site effects
+  sit within a ±0.01–0.04 noise floor, and that D's aggregation weight is not
+  the mechanism — while D itself is the site that loses most from exclusion.

@@ -29,6 +29,26 @@ test sets of the no-D arm are identical to the archived runs — per-site deltas
 are paired comparisons. Single seed (42), as in the with-D runs: small deltas
 cannot be separated from run-to-run noise.
 
+## Gentamicin follow-up (seed noise floor + weight control)
+
+`Gentamicin/` holds a second-round experiment on the same question:
+
+- `federated_withD.ipynb` — all four clients, sample-proportional aggregation
+  (control arm; mirrors `Drugs/Gentamicin/01-Run`, 40 rounds)
+- `federated_noD.ipynb` — clients A/B/C only
+- `federated_weight.ipynb` — all four clients, **uniform** aggregation weights
+  (D keeps its data but loses its ~39 % weight share; implemented by returning a
+  constant `num_examples` from each client, which Flower's `FedAvg` uses as the
+  aggregation weight)
+- `runs/{arm}_seed{seed}/` — executed copies: seeds 42/43/44 for withD and noD,
+  42/43 for weight; local runs, results-only
+- `compare_followup.ipynb` — noise floor (paired per-seed deltas) and the
+  weight-control comparison
+
+Purpose: quantify run-to-run noise (single-seed deltas in the pilot cannot be
+separated from seed noise) and separate "D's data" from "D's aggregation
+weight".
+
 ## Notes
 
 - Results (CSVs/PDFs/SVGs) are local-only; the notebooks are tracked.
