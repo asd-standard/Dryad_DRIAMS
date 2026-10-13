@@ -64,11 +64,17 @@ Directory Structure
    ├── Agg-Analysis/
    │   ├── aggregated_analysis.ipynb        ← Cross-drug comparison
    │   └── masked_aggregated_analysis.ipynb ← Cross-drug (masked runs)
+   ├── Site-D-Ablation/
+   │   ├── {Drug}/federated_noD.ipynb       ← Leave-D-out run (3-drug pilot)
+   │   ├── Gentamicin/federated_{withD,noD,weight}.ipynb ← Seed/weight follow-up
+   │   └── compare_noD.ipynb, compare_followup.ipynb ← Comparison notebooks
    └── Docs/
 
 Each drug notebook is self-contained: it loads data, preprocesses, runs
 all FL strategies, evaluates, and saves results. The Agg-Analysis
 notebook loads per-drug results and produces cross-drug comparisons.
+Site-D-Ablation re-runs selected drugs without site D (see
+:doc:`site-d-ablation`).
 
 How It All Fits Together
 ------------------------
