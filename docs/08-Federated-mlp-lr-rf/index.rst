@@ -41,8 +41,103 @@ Framework             :term:`Flower (flwr)` with :term:`Ray simulation` backend
 Checkpoints           :term:`Checkpoint` — per-client + global model saved every round
 ===================  =========================================================
 
+Drug Selection
+--------------
+
+Six of the ten drugs available at all four sites are used in 08. The
+selection is not arbitrary:
+
+- **Resistance in every site.** All six reach the 5% resistant-prevalence
+  threshold in each site and have at least ~100 resistant spectra even in
+  the smallest site (DRIAMS-B). The four excluded drugs — Amikacin,
+  Vancomycin, Imipenem and Cefepime — have at least one site where
+  resistance is nearly absent (≤ 2.4%): that client would have little to
+  learn and its per-site metrics would be unstable.
+- **Continuity with the pilots.** Ceftazidime and Ceftriaxone are the two
+  controlled cases of 06a/06b.
+- **Class and mechanism diversity.** Fluoroquinolone (Ciprofloxacin),
+  aminoglycoside (Gentamicin), penicillin/inhibitor combinations
+  (Amoxicillin-Clavulanic acid, Piperacillin-Tazobactam), cephalosporins
+  (Ceftazidime, Ceftriaxone).
+- **Range of difficulty.** From the easiest (Amoxicillin-Clavulanic acid,
+  pooled BalAcc 0.82) to the hardest (Ceftazidime 0.70, Ciprofloxacin
+  0.72) dedicated models in 07.
+
+.. list-table:: Resistant prevalence per site (sites A/B/C/D) — the ten
+   drugs available at all four sites
+   :header-rows: 1
+   :widths: 32 10 10 10 10 8
+
+   * - Drug
+     - A
+     - B
+     - C
+     - D
+     - In 08
+   * - Amoxicillin-Clavulanic acid
+     - 38.9%
+     - 26.2%
+     - 30.7%
+     - 23.0%
+     - yes
+   * - Ciprofloxacin
+     - 20.3%
+     - 15.2%
+     - 10.2%
+     - 11.6%
+     - yes
+   * - Piperacillin-Tazobactam
+     - 20.6%
+     - 14.8%
+     - 11.3%
+     - 8.4%
+     - yes
+   * - Ceftriaxone
+     - 24.7%
+     - 10.4%
+     - 24.7%
+     - 8.0%
+     - yes
+   * - Ceftazidime
+     - 11.0%
+     - 10.6%
+     - 12.2%
+     - 7.5%
+     - yes
+   * - Gentamicin
+     - 18.9%
+     - 8.4%
+     - 13.5%
+     - 4.9%
+     - yes
+   * - Cefepime
+     - 17.4%
+     - 15.2%
+     - 13.1%
+     - 2.4%
+     - no
+   * - Imipenem
+     - 18.4%
+     - 4.3%
+     - 2.1%
+     - 8.1%
+     - no
+   * - Vancomycin
+     - 2.1%
+     - 1.3%
+     - 1.4%
+     - 0.5%
+     - no
+   * - Amikacin
+     - 1.0%
+     - 1.2%
+     - 1.6%
+     - 1.7%
+     - no
+
 Directory Structure
 -------------------
+
 
 ::
 
