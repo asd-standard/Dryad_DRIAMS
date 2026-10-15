@@ -35,7 +35,8 @@ analysis.
 3. ``rf_results.pkl`` — Pooled RF Baseline
 ------------------------------------------
 
-Serialised :term:`Random Forest` results per drug provide the "Pooled RF"
+Serialised :term:`Random Forest` results per drug (produced by ``07-03``,
+the fast subsampled randomized search) provide the "Pooled RF"
 baseline in the aggregated comparison. Since :term:`FedRF` accumulates trees
 across rounds, its final tree count may exceed the centralized RF's fixed
 :term:`n_estimators`, making this comparison particularly interesting.

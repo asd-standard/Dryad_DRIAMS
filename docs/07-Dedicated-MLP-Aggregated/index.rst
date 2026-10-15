@@ -32,9 +32,9 @@ Notebooks
 
 - :notebook:`07-Dedicated-MLP-Aggregated.ipynb <07-Dedicated-MLP-Aggregated/07-Dedicated-MLP-Aggregated.ipynb>` — Main: LR + RF + MLP for 10 drugs
 - :notebook:`07-01-Dedicated-LR-MLP-Aggregated.ipynb <07-Dedicated-MLP-Aggregated/07-01-Dedicated-LR-MLP-Aggregated.ipynb>` — LR + MLP only (no RF)
-- :notebook:`07-02-Dedicated-MLP-ClassWeight.ipynb <07-Dedicated-MLP-Aggregated/07-02-Dedicated-MLP-ClassWeight.ipynb>` — MLP with class weight
+- :notebook:`07-02-Dedicated-MLP-ClassWeight.ipynb <07-Dedicated-MLP-Aggregated/07-02-Dedicated-MLP-ClassWeight.ipynb>` — MLP with class weight (**ran 2026-10-15**; see the class-weight ablation in :doc:`results`)
 - :notebook:`07-02a-Prep-ClassWeight-Inputs.ipynb <07-Dedicated-MLP-Aggregated/07-02a-Prep-ClassWeight-Inputs.ipynb>` — rebuilds 07-02's input caches without MLP training
-- :notebook:`07-03-Dedicated-RF-Fast.ipynb <07-Dedicated-MLP-Aggregated/07-03-Dedicated-RF-Fast.ipynb>` — Faster RF variant
+- :notebook:`07-03-Dedicated-RF-Fast.ipynb <07-Dedicated-MLP-Aggregated/07-03-Dedicated-RF-Fast.ipynb>` — Faster RF variant (**ran to produce the RF columns**)
 
 Models
 ------
@@ -49,8 +49,10 @@ Models
      - :term:`L2 regularization`, ``GridSearchCV(C)``, :term:`Threshold Tuning`
      - Per-drug :term:`C <L2 regularization>`, threshold
    * - RF
-     - :term:`GridSearchCV` (n_estimators, max_depth, min_samples_leaf,
-       class_weight), :term:`Threshold Tuning`
+     - ``RandomizedSearchCV`` (``n_iter=20``, ``cv=2``, 5000-row subsample)
+       over n_estimators, max_depth, min_samples_leaf, class_weight, plus
+       :term:`Threshold Tuning` (see :notebook:`07-03
+       <07-Dedicated-MLP-Aggregated/07-03-Dedicated-RF-Fast.ipynb>`)
      - Per-drug params, threshold
    * - MLP
      - 8×8 :term:`GridSearchCV` lr×dropout, internal val,
@@ -85,6 +87,10 @@ Key Findings
   (0.84 / 0.90) and Amoxicillin-Clavulanic acid (0.82 / 0.89); the hardest are
   Ceftazidime (0.70 / 0.78), Ciprofloxacin (0.72 / 0.80) and Amikacin
   (0.72 / 0.84).
+- Class weighting (07-02) is close to neutral on average: 0.785 vs 0.784
+  BalAcc for the unweighted MLP, while AUC improves on 9 of 10 drugs (mean
+  0.854 vs 0.848). The gains concentrate on the rarest classes — see the
+  class-weight ablation in :doc:`results`.
 - These pooled numbers are the **centralised upper bound** for the federated
   study (08); the federated models aim to recover them without pooling raw data.
 
