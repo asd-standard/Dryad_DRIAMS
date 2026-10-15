@@ -7,7 +7,7 @@ Extends the non-federated Ceftazidime analysis
 (:doc:`analysis`) to a federation setting.
 
 All numbers on this page come from the latest species-masked ``06-03c`` run
-(``Results/06-03-c-Reulsts/results/``, 2026-07-20), whose data-driven mask
+(``Results/06-03c-Results/results/``, 2026-07-20), whose data-driven mask
 selection picked ``majority``; a second run of the same pipeline is used as a
 robustness check below. The Ceftriaxone counterpart lives in
 :doc:`06b </06b-Ceftriaxone-E-coli/federated>`.
@@ -164,7 +164,7 @@ Robustness: A Second ``06-03c`` Run
 -----------------------------------
 
 An earlier run of the same pipeline
-(``Results/06-03-c-Reulsts/01_Results/``, 2026-07-20 04:55) selected the
+(``Results/06-03c-Results/run1-mask-none/``, 2026-07-20 04:55) selected the
 ``none`` mask and lands at FedProx 0.700/0.748, FedAvg MLP 0.678/0.725,
 FedAvg LR 0.675/0.731, FedRF 0.500/0.724, centralized unmasked MLP
 0.659/0.773 and cross-site MLP 0.553/0.551.
@@ -317,9 +317,9 @@ Notebooks
 Files
 -----
 
-- ``Results/06-03-c-Reulsts/results/`` — final run (numbers on this page):
+- ``Results/06-03c-Results/results/`` — final run (numbers on this page):
   ``final_results.csv``, per-round CSVs, ``convergence.pdf``,
   ``heatmap_balacc.pdf``, ``heatmap_auc.pdf``, ``mask_delta.pdf``
-- ``Results/06-03-c-Reulsts/01_Results/results/`` — earlier robustness run
+- ``Results/06-03c-Results/run1-mask-none/results/`` — earlier robustness run
 - ``Results/02-Run/results/`` — basic (E. coli-only) FL run
 - ``Results/06-02-Runs/`` — non-federated iterative runs (see :doc:`analysis`)
