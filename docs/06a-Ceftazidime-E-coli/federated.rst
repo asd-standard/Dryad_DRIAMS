@@ -14,13 +14,14 @@ robustness check below. The Ceftriaxone counterpart lives in
 
 .. note::
 
-   **Provenance — proximal-term fix pending re-run.** These numbers were
-   produced before the September 2026 FedProx correction: the client penalty
-   summed per-tensor ``norm(2)`` distances instead of their squares, so the
-   effective regularisation differed from the canonical
-   ``(mu/2) * ||w - w_global||^2``. All FedProx implementations in the 06a
-   notebooks now use the squared norm; a re-run will refresh the Federated
-   rows (the LR/RF and cross-site rows are unaffected).
+   **Provenance — archived (pre-fix) run.** These numbers come from the
+   earlier protocol: the client penalty summed per-tensor ``norm(2)``
+   distances instead of their squares, so the effective regularisation
+   differed from the canonical ``(mu/2) * ||w - w_global||^2``. The 06a
+   notebooks now implement the corrected penalty, but this Ceftazidime page
+   is retained as the historical record; the corrected-protocol federated
+   numbers are on the :doc:`06b federated page
+   </06b-Ceftriaxone-E-coli/federated>`.
 
 Final Results
 -------------

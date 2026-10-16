@@ -123,6 +123,14 @@ The site-masked counterpart (06-03d) asks whether the **site/instrument**
 signal can be removed to narrow the :term:`Cross-site evaluation` gap. Three
 approaches were tried, and all three failed.
 
+The companion pipeline run
+(:notebook:`06-03d-Site-Masked-Ceftriaxone-Federated.ipynb <06b-Ceftriaxone-E-coli/06-03d-Site-Masked-Ceftriaxone-Federated.ipynb>`,
+2026-10-15) later selected the ``site`` mask as the best of the four
+variants — it minimised the centralized → A→B+C+D gap (0.762 vs 0.619
+BalAcc, a 0.143 gap, against 0.145 for ``none``, 0.158 for ``species`` and
+0.155 for ``double``). The improvement over no masking is marginal, in line
+with the diagnostics below.
+
 Site mask (drop vs K)
 ~~~~~~~~~~~~~~~~~~~~~
 
