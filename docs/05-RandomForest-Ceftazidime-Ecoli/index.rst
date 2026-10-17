@@ -83,6 +83,11 @@ class_weight 'balanced'** with cross-validated Balanced Accuracy **0.6049**.
 The 25% holdout was then scored once: **BalAcc 0.6152 / AUC 0.7805**
 (:term:`OOB error` 0.0987).
 
+**No training loss.** The Random Forest has no differentiable loss: the
+training objective is the Gini impurity, model selection uses cross-validated
+Balanced Accuracy, there is no epoch-wise loss curve or early stopping, and
+the :term:`OOB error` (0.0987) is the only loss-like diagnostic reported.
+
 **Cross-site evaluation** — the main notebook fits on all of Site A (1,255
 spectra, 120 resistant) with the tuned configuration, preprocessing fitted on
 A, and scores B/C/D separately at the :term:`default threshold` of 0.5. Its

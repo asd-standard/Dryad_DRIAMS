@@ -183,6 +183,18 @@ Glossary
       resistance to all drugs simultaneously. Enables inter-drug transfer
       learning.
 
+   Loss
+      The objective minimised during training: log-loss for
+      :term:`LogisticRegression`, cross-entropy for binary MLPs, and
+      :term:`Masked BCE loss` for the multi-label models
+      (:term:`Random Forest` has no differentiable loss). Absolute loss
+      values are only comparable within the same protocol: analyses differ
+      in loss definition, train/validation split, preprocessing and
+      early-stopping rule (e.g., some select the checkpoint on a held-out
+      validation split, the 06/08 centralized MLPs on the training loss).
+      For the federated computation see :term:`Federated training loss` and
+      :term:`Federated validation loss`.
+
    Masked BCE loss
       Binary Cross-Entropy computed only on known (non-NaN) labels. Each
       sample contributes gradients only through drug heads for which a

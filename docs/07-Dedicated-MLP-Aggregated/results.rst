@@ -193,7 +193,10 @@ configurations:
 The reruns use ``MaldiMLPClassifier`` rather than 07's custom PyTorch loop, so
 the curves are representative of the selected configurations, not bit-identical
 to the 07 models (whose final training runs up to 100 epochs with cosine
-``T_max=90`` and starts from the best grid combination).
+``T_max=90``, a 10-epoch warmup and an internal 10% validation split for early
+stopping — patience 10, best-validation weights restored). The 8×8 grid is
+scored on the external validation Balanced Accuracy; the class-weighted
+``CrossEntropyLoss`` applies only to the 07-02 ablation.
 
 Class Weight Ablation
 ---------------------

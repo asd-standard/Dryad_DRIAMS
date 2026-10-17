@@ -90,3 +90,17 @@ RF          GridSearchCV + CV threshold       warm_start=True, accumulates trees
 
 **Outputs:** ``Results/06-02-Runs/`` — ``per_run_results.csv``,
 ``summary.csv``, ``progression.pdf``, ``final_heatmap.pdf``.
+
+Centralized baseline training
+-----------------------------
+
+The centralized MLP baselines quoted on :doc:`federated` (unmasked and
+species-masked variants) train with plain cross-entropy on the pooled
+training split: up to 100 epochs with a 10-epoch warmup and cosine
+``T_max=90``, checkpoint selected every 5 epochs on the loss computed on the
+**training** loader (patience 3), i.e. without a separate validation split.
+The centralized RF has no loss (Gini impurity) and is selected by grid
+search; per-drug thresholds come from the external validation split. Because
+this checkpoint rule differs from the 02/03/04 MLP runs (internal 10%
+validation split), absolute loss values are not comparable across analyses —
+compare dynamics within the same protocol.
