@@ -336,6 +336,20 @@ Glossary
       w_{\text{global}}\|^2`. Higher μ enforces stronger adherence to the
       global model. Value tuned per drug.
 
+   Federated training loss
+      Per-round mean of the clients' local training losses on their own
+      training splits. :term:`FedAvg` and :term:`FedLR` aggregate the four
+      client values as a sample-weighted mean by number of examples;
+      :term:`FedProx` records the per-site values and their simple mean
+      before weight aggregation, and its reported loss includes the
+      :term:`Proximal term (μ)`.
+
+   Federated validation loss
+      Server-side cross-entropy of the global model, evaluated after each
+      aggregation round on the pooled held-out test split (10% per site,
+      weighted by site size). It measures calibration rather than ranking,
+      so it can rise while :term:`Balanced Accuracy` improves.
+
    FedLR
       Federated Logistic Regression. Warm-started scikit-learn
       :term:`LogisticRegression` clients trained with :term:`FedAvg`.
