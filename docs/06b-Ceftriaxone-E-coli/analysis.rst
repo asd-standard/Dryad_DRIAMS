@@ -81,6 +81,25 @@ All-species ``06-03c`` pipeline (same protocol on both pairs):
      - 0.500 / 0.678
      - 0.506 / 0.753
 
+*E. coli*-only federated re-run (FedLR, 2026-10-17)
+---------------------------------------------------
+
+The *E. coli*-only FedLR arm was re-run with the corrected protocol
+(:notebook:`06-03b-Re-Run-lr-Ceftriaxone-E-coli-FIXED.ipynb <06b-Ceftriaxone-E-coli/06-03b-Re-Run-lr-Ceftriaxone-E-coli-FIXED.ipynb>`):
+**8 SAGA iterations per round** instead of 1, per-site worst-site ``C`` and
+decision threshold, same 30 rounds and splits. FedLR moves from
+**0.523 → 0.698** Balanced Accuracy (AUC 0.724 → 0.761) and becomes the best
+federated strategy of that level (FedAvg MLP 0.680, FedProx μ=0.5 0.677,
+FedRF 0.677), ahead of the centralized MLP (0.670) and just below the
+centralized RF (0.702). Per site: A 0.737, B 0.853, C 0.632, D 0.700 — C
+remains the weakest, though it improves from 0.519. The curve is still rising
+at round 30 (more rounds would likely help); 30 were kept for comparability
+with the original run. Results overwrite ``results_e_coli_only/``.
+
+The earlier flat FedLR (~0.5) was a protocol artefact: one warm-started SAGA
+iteration per round is far from convergence, and the decision threshold was
+untuned.
+
 Findings
 --------
 
