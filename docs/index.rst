@@ -26,4 +26,5 @@ to federated learning with Flower, covering 10 drugs and multiple bacterial spec
    06b. Ceftriaxone x E. coli (Federated) <06b-Ceftriaxone-E-coli/index>
    07. Dedicated Per-Drug Models <07-Dedicated-MLP-Aggregated/index>
    08. Federated MLP / LR / RF <08-Federated-mlp-lr-rf/index>
+   Final Report (English) <final-report-en>
    Glossary <glossary>
