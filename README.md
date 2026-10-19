@@ -4,10 +4,10 @@ Predicting antimicrobial resistance (susceptible/resistant) directly from
 MALDI-TOF mass spectra across four Swiss hospitals — from logistic-regression
 baselines to federated learning with [Flower](https://flower.ai/).
 
-[📖 Documentation](https://asd-standard.github.io/Dryad_DRIAMS/) ·
-[📦 DRIAMS dataset](https://doi.org/10.5061/dryad.bzkh1899q) ·
-[🧪 Processing pipeline](00-Data-Processing/README.md) ·
-[📄 DRIAMS paper](https://doi.org/10.1038/s41591-021-01619-9)
+[Documentation](https://asd-standard.github.io/Dryad_DRIAMS/) ·
+[DRIAMS dataset](https://doi.org/10.5061/dryad.bzkh1899q) ·
+[Processing pipeline](00-Data-Processing/README.md) ·
+[DRIAMS paper](https://doi.org/10.1038/s41591-021-01619-9)
 
 ---
 
